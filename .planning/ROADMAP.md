@@ -27,7 +27,15 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
   3. The product catalog contains 20+ seeded products (sports bras, leggings, tennis skirts, jackets, padel sets, pilates sets) readable via the Supabase JS SDK
   4. The `GEMINI_API_KEY` is stored only in Edge Function secrets and is absent from every HTML, JS, and committed file — verifiable by grep
   5. A GitHub Actions scheduled workflow pings Supabase daily so the free-tier project never pauses during assessment review
-**Plans**: TBD
+**Plans**: 7 plans
+Plans:
+- [ ] 01-01-PLAN.md — Supabase schema DDL: 16 tables + RLS + is_admin() + storage buckets
+- [ ] 01-02-PLAN.md — [BLOCKING] Apply 001_schema.sql to Supabase via SQL Editor
+- [ ] 01-03-PLAN.md — Seed catalog: 22+ products, variants, images, categories, collections, testimonials
+- [ ] 01-04-PLAN.md — Repository scaffold: 11 HTML shells, 6 JS modules, Tailwind CSS source, .env.example
+- [ ] 01-05-PLAN.md — style-match Supabase Edge Function stub (Deno, auth-validated, mock response)
+- [ ] 01-06-PLAN.md — Deployment pipeline: netlify.toml, README.md, GitHub Actions keep-alive
+- [ ] 01-07-PLAN.md — [BLOCKING] Apply seed.sql to Supabase via SQL Editor
 
 ### Phase 2: Brand Shell + Homepage
 **Goal**: A visitor landing on Elvora encounters a complete premium editorial homepage with all eight sections and can navigate to the brand content pages — the quiet luxury visual identity is fully established and inherited by all future pages
