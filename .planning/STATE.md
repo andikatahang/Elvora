@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-04-PLAN.md (repository scaffold)
-last_updated: "2026-06-10T16:58:16Z"
-last_activity: 2026-06-10 -- Completed plan 01-04 (HTML shells, JS stubs, CSS tokens)
+stopped_at: Completed 01-05-PLAN.md (style-match Edge Function stub)
+last_updated: "2026-06-11T00:00:00Z"
+last_activity: 2026-06-11 -- Completed plan 01-05 (style-match Supabase Edge Function stub)
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 7
-  completed_plans: 2
-  percent: 4
+  completed_plans: 4
+  percent: 57
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-06-10)
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 3 of 7
+Plan: 5 of 7
 Status: Ready to execute
-Last activity: 2026-06-10 -- Completed plan 01-04 (HTML shells, JS stubs, CSS tokens)
+Last activity: 2026-06-11 -- Completed plan 01-05 (style-match Edge Function stub)
 
-Progress: [░░░░░░░░░░] 4%
+Progress: [████░░░░░░] 57%
 
 ## Performance Metrics
 
@@ -68,6 +68,7 @@ Recent decisions affecting current work:
 - Plan 01-04: Supabase JS SDK loaded via CDN ESM (no npm); env var fallback: import.meta.env?.VITE_* ?? window.__ENV
 - Plan 01-04: css/style.css gitignored — Tailwind CLI generates it at Netlify build time
 - Plan 01-04: All 11 HTML shells created with correct boilerplate; 5 JS stubs wired to shared supabase.js singleton
+- Plan 01-05: CORS locked to https://elvora.netlify.app (not wildcard) for style-match Edge Function stub (Deno); GEMINI_API_KEY not called in stub — deferred to Phase 5
 
 ### Pending Todos
 
@@ -90,6 +91,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-10T16:58:16Z
-Stopped at: Completed 01-04-PLAN.md (repository scaffold)
-Resume file: .planning/phases/01-foundation/01-05-PLAN.md
+Last session: 2026-06-11T00:00:00Z
+Stopped at: Completed 01-05-PLAN.md (style-match Edge Function stub)
+Resume file: .planning/phases/01-foundation/01-06-PLAN.md
