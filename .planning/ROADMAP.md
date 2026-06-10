@@ -33,7 +33,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 **Plans**: 7 plansPlans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Supabase schema DDL: 16 tables + RLS + is_admin() + storage buckets
+- [x] 01-01-PLAN.md — Supabase schema DDL: 16 tables + RLS + is_admin() + storage buckets
 - [ ] 01-04-PLAN.md — Repository scaffold: 11 HTML shells, 6 JS modules, Tailwind CSS source, .env.example
 - [ ] 01-05-PLAN.md — style-match Supabase Edge Function stub (Deno, auth-validated, mock response)
 
@@ -153,7 +153,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 1/7 | In Progress|  |
 | 2. Brand Shell + Homepage | 0/TBD | Not started | - |
 | 3. Product Catalog | 0/TBD | Not started | - |
 | 4. Auth + Customer Account | 0/TBD | Not started | - |
