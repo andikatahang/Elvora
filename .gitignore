@@ -1,0 +1,6 @@
+.env
+node_modules/
+# Generated CSS — not committed; Netlify builds it
+css/style.css
+.DS_Store
+*.log
