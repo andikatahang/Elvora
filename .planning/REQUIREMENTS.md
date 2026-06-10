@@ -1076,22 +1076,64 @@ The following features were considered and explicitly deferred from v1 scope:
 
 ## Traceability Matrix
 
-| Requirement ID | Feature Area | Phase | Priority |
-|---------------|-------------|-------|----------|
-| F-046, F-047, F-048, F-050 | Data Layer & Schema | Phase 1 | Must |
-| F-049, F-051 | Infrastructure & Deployment | Phase 1 | Must |
-| NF-004, NF-006 | Design System & Shell | Phase 2 | Must |
-| NF-001, NF-002, NF-003 | Design System & All Pages | Phase 2+ | Must |
-| F-001–F-007 | Homepage | Phase 2 | Must |
-| F-008–F-012 | Product Catalog (PLP) | Phase 3 | Must |
-| F-013–F-019 | Product Detail Page (PDP) | Phase 3 | Must |
-| F-025–F-027 | Auth | Phase 4 | Must |
-| F-028–F-029 | Account Features | Phase 4 | Must |
-| F-020–F-024 | Cart & Checkout | Phase 5 | Must |
-| F-036–F-042 | Admin Panel | Phase 6 | Must |
-| F-030–F-035 | AI Style Match | Phase 7 | Must/Should |
-| F-043–F-045 | Brand Content Pages | Phase 2–3 | Must |
-| NF-005 | Security | Phase 1 + ongoing | Must |
-| NF-007 | AI Documentation | Phase 7 | Must |
-| NF-008 | Deployment Readiness | Phase 1 + Phase 7 | Must |
-| F-035 | AI Session Persistence | Phase 7 | Should |
+| Requirement ID | Feature Area | Phase | Status |
+|----------------|--------------|-------|--------|
+| F-046 | Supabase Database Schema | Phase 1 | Pending |
+| F-047 | Supabase Auth Integration | Phase 1 | Pending |
+| F-048 | Supabase Storage Integration | Phase 1 | Pending |
+| F-049 | AI Proxy Edge Function | Phase 1 | Pending |
+| F-050 | Seeded Product Catalog | Phase 1 | Pending |
+| F-051 | Deployment Pipeline | Phase 1 | Pending |
+| NF-005 | Security | Phase 1 | Pending |
+| NF-006 | Code Maintainability | Phase 1 | Pending |
+| NF-008 | Deployment Readiness | Phase 1 | Pending |
+| F-001 | Editorial Hero Section | Phase 2 | Pending |
+| F-002 | Featured Activity Collections | Phase 2 | Pending |
+| F-003 | Best Sellers Section | Phase 2 | Pending |
+| F-004 | Lifestyle / Lookbook Grid | Phase 2 | Pending |
+| F-005 | Brand Story Section | Phase 2 | Pending |
+| F-006 | Testimonials Section | Phase 2 | Pending |
+| F-007 | Newsletter Signup | Phase 2 | Pending |
+| F-043 | About / Brand Story Page | Phase 2 | Pending |
+| F-044 | Lifestyle Editorial Content | Phase 2 | Pending |
+| F-045 | Contact / FAQ Page | Phase 2 | Pending |
+| NF-001 | Responsive Mobile-First Design | Phase 2 | Pending |
+| NF-002 | Page Load Performance | Phase 2 | Pending |
+| NF-003 | Accessibility Baseline | Phase 2 | Pending |
+| NF-004 | Brand Aesthetic Consistency | Phase 2 | Pending |
+| F-008 | Product Listing Page | Phase 3 | Pending |
+| F-009 | Activity Category Filtering | Phase 3 | Pending |
+| F-010 | Color Swatches on Product Cards | Phase 3 | Pending |
+| F-011 | Product Search with Autosuggest | Phase 3 | Pending |
+| F-012 | Sort Options | Phase 3 | Pending |
+| F-013 | Multi-Image Product Gallery | Phase 3 | Pending |
+| F-014 | Sticky Add to Cart Bar | Phase 3 | Pending |
+| F-015 | Size Guide Modal | Phase 3 | Pending |
+| F-016 | Fabric & Material Details | Phase 3 | Pending |
+| F-017 | Complete the Look — Outfit Pairing | Phase 3 | Pending |
+| F-018 | Related Products Grid | Phase 3 | Pending |
+| F-019 | Customer Reviews on PDP | Phase 3 | Pending |
+| F-025 | User Registration | Phase 4 | Pending |
+| F-026 | User Login & Logout | Phase 4 | Pending |
+| F-027 | Session Persistence | Phase 4 | Pending |
+| F-028 | Wishlist / Saved Items | Phase 4 | Pending |
+| F-029 | Saved AI Style Preferences | Phase 4 | Pending |
+| F-020 | Slide-out Mini Cart | Phase 5 | Pending |
+| F-021 | Full Cart Page | Phase 5 | Pending |
+| F-022 | Guest Checkout | Phase 5 | Pending |
+| F-023 | Multi-Step Checkout Flow | Phase 5 | Pending |
+| F-024 | Order Record Creation | Phase 5 | Pending |
+| F-036 | Admin Authentication & Access Control | Phase 6 | Pending |
+| F-037 | Product CRUD | Phase 6 | Pending |
+| F-038 | Product Image Upload | Phase 6 | Pending |
+| F-039 | Category & Collection Management | Phase 6 | Pending |
+| F-040 | Homepage Content Management | Phase 6 | Pending |
+| F-041 | Testimonials Management | Phase 6 | Pending |
+| F-042 | Order Read View | Phase 6 | Pending |
+| F-030 | Style Match Landing Page | Phase 7 | Pending |
+| F-031 | Photo Upload | Phase 7 | Pending |
+| F-032 | Style Preference Input Form | Phase 7 | Pending |
+| F-033 | AI Outfit Combination Recommendations | Phase 7 | Pending |
+| F-034 | Complementary Colour Guidance | Phase 7 | Pending |
+| F-035 | Style Match Session Persistence | Phase 7 | Pending |
+| NF-007 | AI Usage Documentation | Phase 7 | Pending |

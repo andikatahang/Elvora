@@ -1,0 +1,126 @@
+# Roadmap: Elvora
+
+## Overview
+
+Elvora is built in seven dependency-ordered phases. The schema and seed data land first because every other phase reads from them. The design system comes second because every page component inherits from it. The product catalog follows as a read-only surface that can be verified immediately against real data. Auth unlocks cart persistence and AI session saving, so it precedes both. Cart and checkout ship next as the purchase flow that auth enables. The admin panel is isolated CRUD that validates against the working storefront. Finally, the AI Style Match feature — the project's core differentiator — ships last because it requires the catalog, auth, storage, and edge function infrastructure to all be stable before prompt iteration begins.
+
+## Phases
+
+- [ ] **Phase 1: Foundation** - Supabase schema (all tables + RLS), seed catalog (20+ products), storage buckets, deployment pipeline, keep-alive ping
+- [ ] **Phase 2: Brand Shell + Homepage** - Tailwind v4 design system, component library, full 8-section homepage, brand content pages (About, FAQ, Contact)
+- [ ] **Phase 3: Product Catalog** - PLP with filtering/search/sort, PDP with gallery, sticky ATC, size guide, fabric details, Complete the Look, reviews
+- [ ] **Phase 4: Auth + Customer Account** - Signup/login/session, wishlist, saved AI preferences, account dashboard
+- [ ] **Phase 5: Cart + Checkout** - Mini cart drawer, full cart page, guest checkout, multi-step checkout, order creation with price snapshot
+- [ ] **Phase 6: Admin Panel** - Protected admin routes, product CRUD + image upload, category/collection management, homepage content, testimonials, order read view
+- [ ] **Phase 7: AI Style Match** - Style Match landing page, photo upload, preference inputs, Edge Function → Claude Vision, outfit recommendations, colour guidance, session persistence
+
+## Phase Details
+
+### Phase 1: Foundation
+**Goal**: The data layer, infrastructure, and deployment pipeline are in place — every subsequent phase builds on a stable, secured, publicly accessible backend
+**Mode:** mvp
+**Depends on**: Nothing (first phase)
+**Requirements**: F-046, F-047, F-048, F-049, F-050, F-051, NF-005, NF-006, NF-008
+**Success Criteria** (what must be TRUE):
+  1. A visitor can open the deployed public URL and receive a response — the app is live on Netlify with Supabase connected
+  2. All 16 database tables exist with Row Level Security enabled and policies written — an anonymous query to any table returns only what RLS permits
+  3. The product catalog contains 20+ seeded products (sports bras, leggings, tennis skirts, jackets, padel sets, pilates sets) readable via the Supabase JS SDK
+  4. The `ANTHROPIC_API_KEY` is stored only in Edge Function secrets and is absent from every HTML, JS, and committed file — verifiable by grep
+  5. A GitHub Actions scheduled workflow pings Supabase daily so the free-tier project never pauses during assessment review
+**Plans**: TBD
+
+### Phase 2: Brand Shell + Homepage
+**Goal**: A visitor landing on Elvora encounters a complete, premium editorial homepage with all eight sections and can navigate to the brand content pages — the visual identity is fully established and inherited by all future pages
+**Mode:** mvp
+**Depends on**: Phase 1
+**Requirements**: F-001, F-002, F-003, F-004, F-005, F-006, F-007, F-043, F-044, F-045, NF-001, NF-002, NF-003, NF-004
+**Success Criteria** (what must be TRUE):
+  1. The homepage renders all eight sections — hero, featured collections, best sellers, lookbook grid, lifestyle editorial blocks, brand story, testimonials, and newsletter signup — at all four breakpoints (375px, 768px, 1024px, 1280px+) with no horizontal scroll
+  2. The design system design tokens (cream, sage, slate, ivory, charcoal palette; display serif + body sans-serif typefaces) are defined in Tailwind config and used consistently — no default framework colours appear anywhere in the UI
+  3. A visitor can navigate to the About/Brand Story, Contact/FAQ, and back to the homepage without broken links, and the pages read as premium editorial content
+  4. Clicking a featured collection card on the homepage navigates to the activity-filtered product listing page
+  5. Submitting the newsletter form shows a confirmation message and stores the email in the `newsletter_subscribers` table
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 3: Product Catalog
+**Goal**: A visitor can browse all products, filter by activity, search by name, and view full product detail pages with imagery, size guidance, fabric information, outfit pairings, and customer reviews — the core shopping discovery experience is complete
+**Mode:** mvp
+**Depends on**: Phase 2
+**Requirements**: F-008, F-009, F-010, F-011, F-012, F-013, F-014, F-015, F-016, F-017, F-018, F-019
+**Success Criteria** (what must be TRUE):
+  1. A visitor can filter the product listing by activity category (All, Padel, Pilates, Tennis, Training, Running) and sort by New Arrivals, Price Low–High, Price High–Low, and Best Sellers — filter and sort state are reflected in the URL
+  2. Typing in the search bar shows a live autosuggest dropdown of matching product names; pressing Enter or selecting a suggestion navigates to the correct result
+  3. On a product detail page, a visitor can swipe through at least three product images, select a colour swatch (updating the main image), select a size, open the size guide modal (closeable by Escape key), and read fabric composition and care instructions
+  4. A visitor scrolling down a PDP sees the sticky Add to Cart bar appear after passing the main ATC button, and it reflects the currently selected size and colour
+  5. A visitor can see 2–3 "Complete the Look" product cards and at least 4 related products on every PDP, and can read seeded customer reviews with star ratings and fit feedback
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 4: Auth + Customer Account
+**Goal**: A user can create an account, log in, maintain their session across page loads, save products to a wishlist, and store AI style preferences — authenticated state is reflected consistently across the entire site
+**Mode:** mvp
+**Depends on**: Phase 3
+**Requirements**: F-025, F-026, F-027, F-028, F-029
+**Success Criteria** (what must be TRUE):
+  1. A new user can register with first name, last name, email, and password; on success they are automatically logged in and redirected to their account dashboard
+  2. A returning user can log in, navigate across multiple pages, and remain logged in after a full browser refresh — the header shows their account name and cart badge throughout
+  3. A logged-in user can add products to their wishlist from both the PLP and PDP, view all saved items on their wishlist page, and remove items — wishlist state persists in Supabase and is user-scoped
+  4. After completing an AI Style Match session, a logged-in user is prompted to save their preferences (activity, fit, aesthetic, colour); those preferences pre-fill the Style Match form on next visit
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 5: Cart + Checkout
+**Goal**: A visitor — guest or authenticated — can add products to the cart, review and adjust the order, complete a multi-step checkout, and receive an order confirmation with a persisted order record
+**Mode:** mvp
+**Depends on**: Phase 4
+**Requirements**: F-020, F-021, F-022, F-023, F-024
+**Success Criteria** (what must be TRUE):
+  1. Adding a product to the cart from any page opens the slide-out mini cart drawer showing the item with correct variant (colour/size), price, and a running subtotal — the cart icon badge in the header updates immediately
+  2. A guest visitor can proceed through all four checkout steps (Shipping, Review, Payment placeholder, Confirmation) without creating an account, providing only an email address, and receives a confirmation page with an order ID
+  3. An authenticated user's cart persists in Supabase across sessions; a guest cart stored in localStorage is merged into the authenticated cart upon login
+  4. On checkout confirmation, an order record exists in the Supabase `orders` table with snapshotted `unit_price`, `product_name`, and `variant_label` on each order item — the cart is cleared
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 6: Admin Panel
+**Goal**: An admin user can manage the entire product catalog, categories, collections, homepage content, testimonials, and view orders through a protected admin section — all changes are immediately reflected on the storefront
+**Mode:** mvp
+**Depends on**: Phase 5
+**Requirements**: F-036, F-037, F-038, F-039, F-040, F-041, F-042
+**Success Criteria** (what must be TRUE):
+  1. An unauthenticated visitor or non-admin user navigating to any `/admin/*` route is redirected to the homepage and receives no data from Supabase — verified from an incognito session
+  2. An admin can create a new product (with name, description, category, price, fabric details, and at least one variant), upload product images to Supabase Storage, and see the product appear live on the PLP without a code deploy
+  3. An admin can update which four collections appear in the homepage featured grid and which products appear as best sellers — changes are visible on the homepage immediately after save
+  4. An admin can create, edit, toggle visibility of, and delete testimonials, and the homepage testimonials section reflects those changes without a redeploy
+  5. An admin can view the order list (sorted by most recent) and drill into any order to see all line items with product name, variant, quantity, and unit price
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 7: AI Style Match
+**Goal**: A visitor can upload a photo and/or specify style preferences, receive 2–3 named outfit recommendations from the Elvora catalog with complementary colour guidance, and — if logged in — save and revisit past sessions
+**Mode:** mvp
+**Depends on**: Phase 6
+**Requirements**: F-030, F-031, F-032, F-033, F-034, F-035, NF-007
+**Success Criteria** (what must be TRUE):
+  1. A visitor on the Style Match landing page understands the three-step flow (Upload → Preferences → Discover) and can click "Find My Style" to reach the Style Match form — the page is accessible from the main navigation
+  2. A visitor can upload a JPEG or PNG photo (resized client-side to max 800px), select preferences via visual chip selectors (activity, fit, aesthetic, colour), submit the form, and see a loading state ("Finding your style…") while the Edge Function processes the request
+  3. The Style Match returns 2–3 named outfit combinations, each comprising 2–3 product cards linking to real PDPs, alongside 1–2 sentences of colour guidance referencing Elvora's palette — the `ANTHROPIC_API_KEY` is not present in any client-side file or network request headers
+  4. A logged-in user's completed Style Match session is saved to `ai_style_sessions` in Supabase with preferences, recommended product IDs, colour guidance, and timestamp — they can view past sessions from their account
+  5. An `AI-USAGE.md` document exists in the repository explaining what AI tools were used, how the Style Match feature works, the Edge Function proxy pattern, and is clear enough for a non-technical assessor
+**Plans**: TBD
+**UI hint**: yes
+
+---
+
+## Progress
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 1. Foundation | 0/TBD | Not started | - |
+| 2. Brand Shell + Homepage | 0/TBD | Not started | - |
+| 3. Product Catalog | 0/TBD | Not started | - |
+| 4. Auth + Customer Account | 0/TBD | Not started | - |
+| 5. Cart + Checkout | 0/TBD | Not started | - |
+| 6. Admin Panel | 0/TBD | Not started | - |
+| 7. AI Style Match | 0/TBD | Not started | - |
