@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 1 context gathered
-last_updated: "2026-06-10T16:54:21.539Z"
-last_activity: 2026-06-10 -- Phase 01 execution started
+stopped_at: Completed 01-04-PLAN.md (repository scaffold)
+last_updated: "2026-06-10T16:58:16Z"
+last_activity: 2026-06-10 -- Completed plan 01-04 (HTML shells, JS stubs, CSS tokens)
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 7
-  completed_plans: 1
-  percent: 0
+  completed_plans: 2
+  percent: 4
 ---
 
 # Project State
@@ -26,25 +26,25 @@ See: .planning/PROJECT.md (updated 2026-06-10)
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 2 of 7
+Plan: 3 of 7
 Status: Ready to execute
-Last activity: 2026-06-10 -- Phase 01 execution started
+Last activity: 2026-06-10 -- Completed plan 01-04 (HTML shells, JS stubs, CSS tokens)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [░░░░░░░░░░] 4%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: 0 hours
+- Total plans completed: 2
+- Average duration: ~8 min
+- Total execution time: 0.1 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01 | 2 plans | ~8 min | ~4 min |
 
 **Recent Trend:**
 
@@ -65,6 +65,9 @@ Recent decisions affecting current work:
 - Project init: Admin role stored in `raw_app_meta_data`; checked via `is_admin()` RLS function
 - Project init: AI API key in Edge Function secrets only — never in any client-side file
 - Project init: Cart hybrid — localStorage for guests, Supabase for authenticated; merge on login
+- Plan 01-04: Supabase JS SDK loaded via CDN ESM (no npm); env var fallback: import.meta.env?.VITE_* ?? window.__ENV
+- Plan 01-04: css/style.css gitignored — Tailwind CLI generates it at Netlify build time
+- Plan 01-04: All 11 HTML shells created with correct boilerplate; 5 JS stubs wired to shared supabase.js singleton
 
 ### Pending Todos
 
@@ -87,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-10T16:54:21.535Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-foundation/01-CONTEXT.md
+Last session: 2026-06-10T16:58:16Z
+Stopped at: Completed 01-04-PLAN.md (repository scaffold)
+Resume file: .planning/phases/01-foundation/01-05-PLAN.md
