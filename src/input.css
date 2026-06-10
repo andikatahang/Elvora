@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --color-sage: #A8BFA3;
+  --color-rose: #D8A7A7;
+  --color-beige: #F5F1ED;
+  --color-charcoal: #2E2E2E;
+  --color-lavender: #C6B7E2;
+  --color-sage-light: #E8F0E6;
+  --color-rose-light: #F5E8E8;
+  --color-text-muted: #8A8A8A;
+
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Poppins', sans-serif;
+}
+
+:root {
+  /* Mirror as native CSS custom properties for non-Tailwind CSS */
+  --sage: #A8BFA3;
+  --rose: #D8A7A7;
+  --beige: #F5F1ED;
+  --charcoal: #2E2E2E;
+  --lavender: #C6B7E2;
+  --sage-light: #E8F0E6;
+  --rose-light: #F5E8E8;
+  --text-muted: #8A8A8A;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--beige);
+  color: var(--charcoal);
+  overflow-x: hidden;
+}
