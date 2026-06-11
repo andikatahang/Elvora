@@ -120,7 +120,7 @@ SUPABASE_URL and SUPABASE_ANON_KEY must be set in the Netlify dashboard under Si
 
 Steps:
 1. Go to Netlify dashboard > elvorastudio.netlify.app > Site Settings > Environment Variables
-2. Add `SUPABASE_URL` = your Supabase project URL (e.g. https://gxniqferbetfyvdqoolj.supabase.co)
+2. Add `SUPABASE_URL` = your Supabase project URL (e.g. `https://your-project-ref.supabase.co`)
 3. Add `SUPABASE_ANON_KEY` = your Supabase anon (public) key
 4. Trigger a redeploy
 5. Verify: open DevTools Console at https://elvorastudio.netlify.app — zero "supabaseUrl is required" errors
