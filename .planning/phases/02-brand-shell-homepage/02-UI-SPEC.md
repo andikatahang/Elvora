@@ -23,7 +23,7 @@ created: 2026-06-11
 | Component library | none — hand-rolled utility classes via Tailwind v4 |
 | Icon library | Inline SVG only — no external icon library |
 | Font — display | Playfair Display (Google Fonts CDN) — 400, 400i, 500, 500i, 700 |
-| Font — body | Poppins (Google Fonts CDN) — 300, 400, 500, 600 |
+| Font — body | Poppins (Google Fonts CDN) — 400, 600 |
 
 **Source:** `src/input.css` `@theme` block (pre-existing). Do NOT redefine tokens. Extend only if needed.
 
@@ -46,8 +46,8 @@ Declared values (8-point base, multiples of 4):
 | 5xl | 100px | Section vertical padding (default for all homepage sections) |
 
 **Exceptions:**
-- Nav horizontal padding: 48px (3xl) on desktop; collapses to 20px on mobile
-- Marquee section vertical padding: 18px (not on the 8pt scale — matches prototype exactly per D-02)
+- Nav horizontal padding: 48px (3xl) on desktop; collapses to 16px (md) on mobile
+- Marquee section vertical padding: 16px (md) — grid-aligned, visually near-identical to prototype
 - Touch targets (nav icons, wishlist-btn, cart badge, social-btn): minimum 44×44px per NF-001
 - Newsletter section vertical padding: 80px (4xl) — compact by design
 - Footer: 72px top / 40px bottom — matches prototype
@@ -56,24 +56,28 @@ Declared values (8-point base, multiples of 4):
 
 ## Typography
 
-Four roles declared. All sizes use Tailwind v4 utility classes (e.g., `text-[11px]` for non-standard).
+Four tiers declared. All sizes use Tailwind v4 utility classes (e.g., `text-[11px]` for non-standard).
 
-| Role | Family | Size | Weight | Line Height | Letter Spacing | Usage |
+| Tier | Family | Size | Weight | Line Height | Letter Spacing | Usage |
 |------|--------|------|--------|-------------|----------------|-------|
 | Display | Playfair Display | clamp(48px, 5vw, 72px) | 700 | 1.1 | — | Hero `h1`, homepage display headlines |
-| Heading | Playfair Display | clamp(32px, 4vw, 52px) | 700 | 1.15 | — | Section titles (`section-title`), brand story title |
-| Subheading | Playfair Display | 22–28px | 600–700 | 1.2 | — | Product card names, collection names, modal titles, testimonial quote marks |
-| Body | Poppins | 15px | 300–400 | 1.8 | — | Hero description, story text, testimonial body, footer tagline |
-| Label | Poppins | 12px | 500 | 1.4 | 2px | Nav links, CTA buttons, product badges, view-all links, section section-labels |
-| Caption | Poppins | 11px | 400–500 | 1.4 | 2–5px | Section labels (`section-label`), category counts, marquee items, cart badge, footer col titles |
-| Micro | Poppins | 10px | 400–500 | 1.4 | 2–4px | Scroll indicator, hero-badge-text, stat-label |
+| Heading | Playfair Display | clamp(22px, 4vw, 52px) | 700 | 1.15–1.2 | — | Section titles (`section-title`), brand story title, product card names, collection names, modal titles, testimonial quote marks |
+| Body | Poppins | 14–15px | 400 | 1.8 | — | Hero description, story text, testimonial body, footer tagline, nav links, CTA buttons, product badges, view-all links, section-labels, footer links |
+| Caption | Poppins | 11–12px | 400 | 1.4 | 2–5px | Section labels (`section-label`), category counts, marquee items, cart badge, footer col titles, scroll indicator, hero-badge-text, stat-label |
+
+**Active font weights — Poppins only:**
+- 400 (regular) — body copy, captions, footer links
+- 600 (semibold) — labels, button text, nav links, emphasis, price display
+
+**Playfair Display weights used:** 700 only for Display and Heading tiers.
 
 **Rules:**
-- Display and Heading roles: `font-family: var(--font-display)` (Playfair Display)
-- All other roles: `font-family: var(--font-body)` (Poppins)
+- Display and Heading tiers: `font-family: var(--font-display)` (Playfair Display)
+- All other tiers: `font-family: var(--font-body)` (Poppins)
 - Italic emphasis (`em`) in headings: color `--color-rose` — used for emotional word stress ("*Wear Your*", "*Story*")
 - No `font-size` below 16px on form inputs (prevents iOS Safari auto-zoom per NF-001)
-- Newsletter input: 14px minimum — acceptable as it is not a text entry field on iOS's zoom-trigger path; use `font-size: 16px` on the actual `<input>` element to be safe
+- Newsletter input: use `font-size: 16px` on the actual `<input>` element to prevent iOS zoom
+- Poppins weights 300 and 500 are NOT loaded and NOT used — remove from Google Fonts request
 
 ---
 
@@ -117,7 +121,7 @@ Components required in Phase 2. All are hand-rolled with Tailwind utility classe
 - Transparent over hero → frosted glass after 80px scroll: `bg-beige/90 backdrop-blur-md border-b border-sage/20`
 - Logo: wordmark "ELVORA" with SVG flower-O glyph replacing the O — Playfair Display 700
 - Nav links: 12px / weight 500 / letter-spacing 2px / uppercase — [New Arrivals, Collections, Style Match, About, Contact]
-- Nav actions: search icon, user icon, bag icon — each 20×20px, 44×44px touch target
+- Nav actions: search icon (`aria-label="Search"`), user icon (`aria-label="Your account"`), bag icon (`aria-label="Shopping bag"`) — each 20×20px SVG, 44×44px touch target
 - Cart badge: 16×16px circle, rose bg, white 9px text — `Alpine.store('cart').count` (stubbed 0 in Phase 2)
 - **Mobile hamburger** (below `md:`): 3-bar icon top-right; opens full-height right slide-out drawer with all nav links + icons + close button — Alpine.js `x-show` + transition
 
@@ -132,7 +136,7 @@ Components required in Phase 2. All are hand-rolled with Tailwind utility classe
 
 ### Marquee Strip
 
-- Full-width charcoal bar, 18px vertical padding, overflow hidden
+- Full-width charcoal bar, 16px vertical padding, overflow hidden
 - CSS animation `marquee` 20s linear infinite — duplicated content for seamless loop
 - Items: 11px / letter-spacing 4px / uppercase / `rgba(255,255,255,0.6)` — separated by 4px rose dots
 - Content: "New Arrivals" · "Premium Activewear" · "Designed for Movement" · "Quiet Luxury" · "Free Shipping Over $150" · (repeat)
@@ -306,7 +310,7 @@ All layouts target these four breakpoints per NF-001:
 | Secondary CTA (hero) | Find My Style |
 | Collections section label | CURATED FOR YOU |
 | Collections section title | Shop by Activity |
-| View all link | View All |
+| View all link | View All Collections |
 | Best sellers section label | COMMUNITY FAVORITES |
 | Best sellers section title | Best Sellers |
 | Brand story section label | OUR STORY |
@@ -322,7 +326,7 @@ All layouts target these four breakpoints per NF-001:
 | Newsletter section title | Join the Inner Circle |
 | Newsletter sub-copy | Be the first to discover new collections, exclusive offers, and style inspiration. |
 | Newsletter input placeholder | Your email address |
-| Newsletter button | Join |
+| Newsletter button | Join the Circle |
 | Newsletter success message | You're on the list. Welcome to Elvora. |
 | Newsletter duplicate message | You're already part of the inner circle. |
 | Newsletter error message | Something went wrong — please try again. |
@@ -376,6 +380,7 @@ Per NF-003 (WCAG 2.1 AA):
 - Mobile nav drawer: focus trap when open; Escape closes
 - Hamburger button: `aria-label="Open navigation menu"` / `aria-label="Close navigation menu"` toggle
 - FAQ accordion: `aria-expanded` on trigger buttons
+- Nav icon buttons: `aria-label="Search"` on search icon, `aria-label="Your account"` on user icon, `aria-label="Shopping bag"` on bag icon
 - Form inputs: `<label>` elements associated via `for`/`id` (newsletter input has implicit label via placeholder — add `aria-label="Email address"`)
 - Heading hierarchy: `h1` on hero headline only; `h2` on all section titles; `h3` on card/item names
 
