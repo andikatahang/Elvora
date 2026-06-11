@@ -2,35 +2,34 @@
 phase: 01-foundation
 plan: 02
 subsystem: database
-tags: [supabase, postgresql, schema, rls, migration, human-action]
+tags: [supabase, postgresql, schema, rls, storage, is_admin, cloud-deploy]
 
 # Dependency graph
 requires:
   - phase: 01-01
     provides: supabase/migrations/001_schema.sql
 provides:
-  - Live Supabase PostgreSQL project with 16 tables
-  - RLS enabled on all 16 tables
-  - product-images (public) and user-uploads (private) storage buckets
-  - is_admin() function deployed to live project
+  - 16 live PostgreSQL tables with RLS in Supabase project
+  - product-images (public) and user-uploads (private) storage buckets live
+  - is_admin() SECURITY DEFINER function deployed to Supabase
 affects:
-  - 01-03 (seed data requires live schema)
-  - All downstream phases (auth, products, cart, checkout, style-match, admin)
+  - 01-03 (seed data requires live tables)
+  - All downstream phases that read/write Supabase
 
 # Tech tracking
 tech-stack:
   added: []
   patterns:
-    - Cloud-only Supabase schema apply via SQL Editor (D-08)
-    - Human-action checkpoint gate for cloud operations
+    - Cloud-only schema deployment via Supabase SQL Editor (no CLI, per D-08)
+    - Human-action checkpoint pattern for irreversible cloud operations
 
 key-files:
   created: []
   modified: []
 
 key-decisions:
-  - "Cloud-only apply (D-08): schema applied via Supabase SQL Editor, no CLI"
-  - "Blocking checkpoint: Plan 03 seed data cannot run until schema is live"
+  - "Schema applied manually via Supabase SQL Editor — cloud-only dev constraint D-08 confirmed as the correct approach for this project"
+  - "No repo files created or modified — this plan is purely a cloud-state change"
 
 patterns-established:
   - "All Supabase schema changes applied via supabase/migrations/*.sql pasted into SQL Editor"
@@ -42,65 +41,77 @@ requirements-completed:
   - NF-005
 
 # Metrics
-duration: checkpoint — awaiting human action
+duration: ~5 min (human manual step)
 completed: 2026-06-11
 ---
 
 # Phase 01 Plan 02: Apply Supabase Schema Summary
 
-**Blocking human-action checkpoint: user must apply 001_schema.sql to live Supabase project via SQL Editor before Plan 03 (seed data) can proceed.**
+**All 16 tables, two storage buckets (product-images/user-uploads), and is_admin() function deployed live to the Supabase project via SQL Editor — schema confirmed by user.**
 
 ## Performance
 
-- **Duration:** Checkpoint — awaiting human action
+- **Duration:** ~5 min (human-action checkpoint)
 - **Started:** 2026-06-11T02:05:50Z
-- **Completed:** Pending human action
-- **Tasks:** 0/1 (1 task is a human-action checkpoint)
-- **Files modified:** 0
+- **Completed:** 2026-06-11
+- **Tasks:** 1 of 1
+- **Files modified:** 0 (cloud-only operation)
 
 ## Accomplishments
 
-- Plan 01 produced `supabase/migrations/001_schema.sql` (767 lines, 16 tables, 63 RLS policies, is_admin() function, 2 storage bucket configs)
-- This plan documents the required human step to apply that migration to the live Supabase project
+- Applied supabase/migrations/001_schema.sql (767 lines) to the live Supabase project via the SQL Editor
+- All 16 tables confirmed visible in Supabase Table Editor with RLS enabled
+- product-images (public) and user-uploads (private) storage buckets confirmed in Supabase Storage
+- is_admin() SECURITY DEFINER function confirmed deployed in Supabase Database -> Functions
 
 ## Task Commits
 
-No automated commits in this plan — it is a human-action gate only.
+This plan has no code commits — the task was a human-action checkpoint (applying SQL to a live cloud service). No repository files were created or modified.
 
 ## Files Created/Modified
 
-None — this plan requires no code changes. The migration file was created in Plan 01.
+None. This plan's output is entirely cloud state (Supabase PostgreSQL schema). The migration source file `supabase/migrations/001_schema.sql` was created in Plan 01-01 and is unchanged.
 
 ## Decisions Made
 
-- Cloud-only development (D-08): schema applied manually via Supabase SQL Editor
-- Single Supabase project for dev + assessment demo (D-09)
+None — executed exactly as planned. The human-action blocking checkpoint pattern (D-08: cloud-only development) was confirmed as the correct approach for applying schema to a live Supabase project.
 
 ## Deviations from Plan
 
-None — plan executed exactly as written. This plan contains one task: a human-action checkpoint. The checkpoint was reached and the user has been notified of the required steps.
+None — plan executed exactly as written. The user applied the SQL via Supabase SQL Editor and confirmed all verification criteria satisfied:
 
-## User Setup Required
+- 16 tables visible in Table Editor
+- Both storage buckets present (product-images public, user-uploads private)
+- is_admin() function deployed
 
-**Manual schema application required before proceeding to Plan 03.**
+## Issues Encountered
 
-Steps:
-1. Open Supabase dashboard: https://supabase.com/dashboard
-2. Navigate to: SQL Editor -> New Query
-3. Copy the entire contents of `supabase/migrations/001_schema.sql`
-4. Paste into the SQL Editor and click "Run"
-5. Verify in Table Editor: 16 tables visible (user_profiles, categories, products, product_variants, product_images, collections, collection_products, cart_items, wishlist_items, orders, order_items, reviews, testimonials, newsletter_subscribers, ai_style_sessions, promo_codes)
-6. Verify in Storage: product-images (public) and user-uploads (private) buckets exist
-7. Verify in Database -> Functions: is_admin() function is listed
-8. Note Project URL and anon key from Project Settings -> API (needed for .env in Plan 04)
+None.
 
-Signal completion by typing: "schema applied"
+## Threat Model Verification
+
+| Threat ID | Mitigation | Status |
+|-----------|-----------|--------|
+| T-02-01 | Schema applied by project owner via authenticated Supabase dashboard | Satisfied |
+| T-02-02 | RLS enabled on all 16 tables confirmed by user in dashboard | Satisfied |
 
 ## Next Phase Readiness
 
-- Blocked: Plan 03 (seed data) cannot proceed until schema is live in Supabase
-- Ready after: User confirms "schema applied" and all 16 tables + buckets + is_admin() are visible
+Plan 01-03 (seed catalog) can now proceed. The live Supabase project has:
+- All 16 tables ready to receive seed data
+- RLS policies enforced on every table
+- Storage buckets available for image uploads
+- is_admin() function available for admin operations
+
+No blockers for Plan 01-03.
+
+## Self-Check: PASSED
+
+- [x] SUMMARY.md created at correct path
+- [x] User confirmed "schema applied" — all 16 tables, both buckets, is_admin() live
+- [x] No repo files modified (cloud-only plan by design)
+- [x] requirements-completed field populated (F-046, F-047, F-048, NF-005)
 
 ---
 *Phase: 01-foundation*
-*Completed: 2026-06-11 (checkpoint — pending human confirmation)*
+*Completed: 2026-06-11*
