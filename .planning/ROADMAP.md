@@ -6,7 +6,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 ## Phases
 
-- [ ] **Phase 1: Foundation** - Setup repository, Supabase schema (all tables + RLS), seed catalog (20+ products), storage buckets, deployment pipeline, keep-alive ping
+- [x] **Phase 1: Foundation** - Setup repository, Supabase schema (all tables + RLS), seed catalog (20+ products), storage buckets, deployment pipeline, keep-alive ping
 - [ ] **Phase 2: Brand Shell + Homepage** - Quiet luxury Tailwind v4 design system, component library, full 8-section homepage, About page, Contact/FAQ page
 - [ ] **Phase 3: Product Catalog** - PLP with filtering/search/sort, PDP with gallery, sticky ATC, size guide, fabric details, Complete the Look, recommendations, reviews
 - [ ] **Phase 4: Auth + Customer Account** - Signup/login/session persistence, wishlist, saved AI style preferences, account dashboard
@@ -40,12 +40,12 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 **Wave 2** *(blocked on Wave 1 completion)*
 
 - [x] 01-02-PLAN.md — [BLOCKING] Apply 001_schema.sql to Supabase via SQL Editor
-- [ ] 01-03-PLAN.md — Seed catalog: 22+ products, variants, images, categories, collections, testimonials
+- [x] 01-03-PLAN.md — Seed catalog: 22+ products, variants, images, categories, collections, testimonials
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-06-PLAN.md — Deployment pipeline: netlify.toml, README.md, GitHub Actions keep-alive
-- [ ] 01-07-PLAN.md — [BLOCKING] Apply seed.sql to Supabase via SQL Editor
+- [x] 01-06-PLAN.md — Deployment pipeline: netlify.toml, README.md, GitHub Actions keep-alive
+- [x] 01-07-PLAN.md — [BLOCKING] Apply seed.sql to Supabase via SQL Editor
 
 ### Phase 2: Brand Shell + Homepage
 
@@ -153,7 +153,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 4/7 | In Progress|  |
+| 1. Foundation | 7/7 | Complete | 2026-06-11 |
 | 2. Brand Shell + Homepage | 0/TBD | Not started | - |
 | 3. Product Catalog | 0/TBD | Not started | - |
 | 4. Auth + Customer Account | 0/TBD | Not started | - |
