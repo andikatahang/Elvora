@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 2 UI-SPEC approved
-last_updated: "2026-06-11T17:51:27.592Z"
-last_activity: 2026-06-11 -- All 7 plans done; seed data applied to Supabase
+last_updated: "2026-06-11T17:54:00.059Z"
+last_activity: 2026-06-11 -- Phase 01 execution started
 progress:
   total_phases: 7
-  completed_phases: 1
-  total_plans: 7
-  completed_plans: 7
-  percent: 14
+  completed_phases: 0
+  total_plans: 9
+  completed_plans: 8
+  percent: 0
 ---
 
 # Project State
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-06-10)
 
 ## Current Position
 
-Phase: 01 (foundation) — COMPLETE
-Plan: 7 of 7
-Status: Ready to execute
-Last activity: 2026-06-11 -- All 7 plans done; seed data applied to Supabase
+Phase: 01 (foundation) — EXECUTING
+Plan: 1 of 9
+Status: Executing Phase 01
+Last activity: 2026-06-11 -- Phase 01 execution started
 
 Progress: [██████████] 100%
 
@@ -72,6 +72,9 @@ Recent decisions affecting current work:
 - Plan 01-02: Schema applied to live Supabase via SQL Editor (D-08 cloud-only constraint) — 16 tables, 2 storage buckets, is_admin() confirmed live by user
 - Plan 01-06: Netlify deployed at https://elvorastudio.netlify.app; package.json added (tailwindcss@^4 devDep) to fix build; netlify.toml input path corrected from css/input.css to src/input.css
 - Plan 01-03: supabase/seed.sql complete — 22 products, 220 variants, 44 images, 32 reviews, 5 testimonials
+- Plan 01-08: Build-time env injection via Netlify echo command writing window.__ENV to js/__env.js — no Vite, no additional libraries
+- Plan 01-08: js/__env.js loaded as plain script (not type=module) so it executes synchronously before ES modules evaluate
+- Plan 01-08: js/__env.js gitignored to avoid committing build-time generated file with real env values
 
 ### Pending Todos
 
@@ -94,6 +97,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-11T14:38:27.550Z
-Stopped at: Phase 2 UI-SPEC approved
-Resume file: .planning/phases/02-brand-shell-homepage/02-UI-SPEC.md
+Last session: 2026-06-11T18:03:00Z
+Stopped at: Completed 01-08-PLAN.md
+Resume file: None

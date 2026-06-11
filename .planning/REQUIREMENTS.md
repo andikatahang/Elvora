@@ -1083,10 +1083,10 @@ The following features were considered and explicitly deferred from v1 scope:
 | F-048 | Supabase Storage Integration | Phase 1 | Pending |
 | F-049 | AI Proxy Edge Function | Phase 1 | Pending |
 | F-050 | Seeded Product Catalog | Phase 1 | Pending |
-| F-051 | Deployment Pipeline | Phase 1 | Pending |
-| NF-005 | Security | Phase 1 | Pending |
+| F-051 | Deployment Pipeline | Phase 1 | Complete |
+| NF-005 | Security | Phase 1 | Complete |
 | NF-006 | Code Maintainability | Phase 1 | Pending |
-| NF-008 | Deployment Readiness | Phase 1 | Pending |
+| NF-008 | Deployment Readiness | Phase 1 | Complete |
 | F-001 | Editorial Hero Section | Phase 2 | Pending |
 | F-002 | Featured Activity Collections | Phase 2 | Pending |
 | F-003 | Best Sellers Section | Phase 2 | Pending |
