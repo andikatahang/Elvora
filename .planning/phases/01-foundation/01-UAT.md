@@ -1,9 +1,9 @@
 ---
-status: complete
+status: resolved
 phase: 01-foundation
 source: 01-01-SUMMARY.md, 01-02-SUMMARY.md, 01-03-SUMMARY.md, 01-04-SUMMARY.md, 01-05-SUMMARY.md, 01-06-SUMMARY.md, 01-07-SUMMARY.md
 started: 2026-06-11T22:00:00Z
-updated: 2026-06-12T00:00:00Z
+updated: 2026-06-12T02:30:00Z
 ---
 
 ## Current Test
@@ -17,9 +17,8 @@ updated: 2026-06-12T00:00:00Z
 
 ### 1. Cold Start Smoke Test
 expected: Kill any running local server (if applicable). Clear browser cache / open incognito. Visit https://elvorastudio.netlify.app cold. The page loads — not a blank screen, not a 404, not a "page not found" Netlify error. The HTML renders with a visible background (beige #F5F1ED) and the browser tab title shows "ELVORA". CSS compiles correctly on Netlify (beige background is visible, not the browser default white). No console errors about missing CSS or JS modules on first load.
-result: issue
-reported: "There is error on console: [Error] Error: supabaseUrl is required. (anonymous function) (+esm:7:7399) Y (+esm:7:7630) Z (+esm:7:11893) Module Code (supabase.js:10) [Error] Source Map loading errors (x2) [Error] Failed to load resource: the server responded with a status of 404 () (c46e56684ecdb0e7d6ad18928ad5340abc882a37fefbb22d9b289b02328c6c7f.map)"
-severity: major
+result: pass
+re_verified: 2026-06-12 — supabaseUrl error resolved after plan 01-08 deployed (window.__ENV injection via Netlify build command)
 
 ### 2. All 11 HTML Page Shells Present
 expected: In the project root, all 11 HTML files exist with correct structure: index.html, shop.html, product.html, cart.html, checkout.html, auth.html, account.html, style-match.html, about.html, contact.html, admin.html. Each file has a page-specific `<title>` ("ELVORA — Shop", "ELVORA — Sign In", etc.), a Google Fonts link (Playfair Display + Poppins), a `<link rel="stylesheet" href="/css/style.css">`, and a `<script type="module" src="/js/supabase.js">` at end of body. No inline JS or inline styles in the `<body>`.
@@ -47,15 +46,14 @@ result: pass
 
 ### 8. Keep-Alive Workflow Scheduled
 expected: `.github/workflows/keepalive.yml` exists in the repo and contains a `schedule:` cron entry that runs daily (or on a regular interval). On GitHub > Actions tab, the workflow appears in the list. The purpose is to ping Supabase so the free-tier project never pauses during assessment review.
-result: issue
-reported: "Schedule is '0 8 * * 1' — every Monday 08:00 UTC, not daily. Workflow exists and appears in GitHub Actions."
-severity: minor
+result: pass
+re_verified: 2026-06-12 — cron changed from '0 8 * * 1' (Monday) to '0 8 * * *' (daily) by plan 01-09
 
 ## Summary
 
 total: 8
-passed: 6
-issues: 2
+passed: 8
+issues: 0
 pending: 0
 skipped: 0
 blocked: 0
@@ -63,21 +61,15 @@ blocked: 0
 ## Gaps
 
 - truth: "Page loads with no console errors — Supabase client initialises cleanly"
-  status: failed
-  reason: "User reported: Error: supabaseUrl is required — Supabase client crashes on init because SUPABASE_URL and SUPABASE_ANON_KEY are not set in the Netlify deployment environment"
+  status: resolved
+  reason: "Fixed by plan 01-08: Netlify build command generates js/__env.js with window.__ENV; all 11 HTML shells load it before supabase.js"
   severity: major
   test: 1
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  re_verified: 2026-06-12
 
 - truth: "Keep-alive workflow pings Supabase daily to prevent free-tier pause"
-  status: failed
-  reason: "User reported: schedule is '0 8 * * 1' (every Monday) not daily — one failed job means project pauses before next run"
+  status: resolved
+  reason: "Fixed by plan 01-09: cron changed from '0 8 * * 1' to '0 8 * * *'"
   severity: minor
   test: 8
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  re_verified: 2026-06-12
