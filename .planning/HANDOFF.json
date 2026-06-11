@@ -1,59 +1,66 @@
 {
   "version": "1.0",
-  "timestamp": "2026-06-10T18:50:12.929Z",
+  "timestamp": "2026-06-11T02:39:55.220Z",
   "phase": "01",
   "phase_name": "foundation",
   "phase_dir": ".planning/phases/01-foundation",
-  "plan": 2,
-  "task": 0,
-  "total_tasks": 7,
+  "plan": 6,
+  "task": 2,
+  "total_tasks": 2,
   "status": "paused",
   "completed_tasks": [
     {"id": "01-01", "name": "Supabase schema migration (001_schema.sql)", "status": "done", "commit": "f47a2cd"},
     {"id": "01-04", "name": "Repository scaffold — HTML shells, JS stubs, CSS tokens", "status": "done", "commit": "f3482a1"},
-    {"id": "01-05", "name": "style-match Edge Function stub (Deno)", "status": "done", "commit": "197a95d"}
+    {"id": "01-05", "name": "style-match Edge Function stub (Deno)", "status": "done", "commit": "197a95d"},
+    {"id": "01-02", "name": "Apply schema to Supabase (manual checkpoint)", "status": "done", "commit": "2f6b70d"},
+    {"id": "01-06-task1", "name": "Create netlify.toml, README.md, keepalive.yml", "status": "done", "commit": "6ed93d8"}
   ],
   "remaining_tasks": [
-    {"id": "01-02", "name": "Apply schema to Supabase (manual checkpoint)", "status": "not_started"},
-    {"id": "01-06", "name": "Deploy config files + Netlify deploy checkpoint", "status": "not_started"},
+    {"id": "01-06-task2", "name": "Deploy to Netlify and verify public URL", "status": "in_progress", "progress": "Files created and committed (6ed93d8). Awaiting user to push to GitHub and deploy via Netlify dashboard."},
     {"id": "01-03", "name": "Write seed.sql — 20+ products, variants, images", "status": "not_started"},
     {"id": "01-07", "name": "Apply seed data to Supabase (manual checkpoint)", "status": "not_started"}
   ],
   "blockers": [
     {
-      "description": "01-02 requires human to paste 001_schema.sql into Supabase SQL Editor before Wave 3 can run",
+      "description": "01-06 Task 2 requires human to push repo to GitHub and create Netlify site with SUPABASE_URL + SUPABASE_ANON_KEY env vars, then confirm live URL",
       "type": "human_action",
-      "workaround": "None — cloud-only dev (D-08), no CLI push available"
+      "workaround": "None — requires Netlify dashboard access"
     },
     {
-      "description": "01-07 requires human to paste seed.sql into Supabase SQL Editor",
+      "description": "01-07 requires human to paste seed.sql into Supabase SQL Editor after 01-03 creates the file",
       "type": "human_action",
-      "workaround": "None — same constraint"
+      "workaround": "None — cloud-only dev (D-08)"
     }
   ],
   "human_actions_pending": [
     {
-      "action": "Paste supabase/migrations/001_schema.sql into Supabase SQL Editor and run it",
-      "context": "Creates all 16 tables, RLS policies, is_admin() function, and storage buckets in live project",
+      "action": "Push repo to GitHub, create Netlify site, add SUPABASE_URL + SUPABASE_ANON_KEY env vars, deploy, confirm live URL by typing 'deployed' + URL",
+      "context": "01-06 Task 2 is paused waiting for this. netlify.toml, README.md, and .github/workflows/keepalive.yml are already committed (6ed93d8).",
       "blocking": true
     },
     {
-      "action": "Create Netlify site from GitHub repo and set SUPABASE_URL + SUPABASE_ANON_KEY env vars",
-      "context": "Required to verify the Netlify deploy in plan 01-06",
-      "blocking": true
+      "action": "Add SUPABASE_URL as GitHub Actions secret (repo Settings → Secrets → Actions)",
+      "context": "Required for the keepalive.yml workflow to ping Supabase /auth/v1/health",
+      "blocking": false
     },
     {
-      "action": "Paste supabase/seed.sql into Supabase SQL Editor and run it (after 01-03 creates the file)",
-      "context": "Populates products, variants, images, categories, collections, testimonials",
+      "action": "Paste supabase/seed.sql into Supabase SQL Editor after plan 01-03 creates it",
+      "context": "01-07 checkpoint — populates the product catalog",
       "blocking": true
     }
   ],
   "decisions": [
-    {"decision": "All 16 tables with RLS from the start", "rationale": "Security posture — no table unprotected at any point", "phase": "01"},
-    {"decision": "Edge Function CORS locked to elvora.netlify.app", "rationale": "D-13 decision — no wildcard origin in production", "phase": "01"},
-    {"decision": "Sequential execution (no worktrees)", "rationale": "origin/HEAD unresolved — worktree.base-check returned shouldDegrade=true", "phase": "01"}
+    {"decision": "All 16 tables with RLS applied to live Supabase project", "rationale": "User confirmed 'schema applied' — tables, buckets, is_admin() all live", "phase": "01"},
+    {"decision": "Edge Function CORS locked to elvora.netlify.app", "rationale": "D-13 — no wildcard origin in production", "phase": "01"},
+    {"decision": "Sequential execution (no worktrees)", "rationale": "origin/HEAD unresolved — worktree.base-check returned shouldDegrade=true", "phase": "01"},
+    {"decision": "netlify.toml uses npx @tailwindcss/cli@next", "rationale": "Tailwind v4 CLI is under @next tag; plain @tailwindcss/cli installs v3", "phase": "01"},
+    {"decision": "Commit messages in English (conventional commits)", "rationale": "User preference updated this session — executor agents previously wrote in Indonesian; all future commits should be English", "phase": "01"}
   ],
-  "uncommitted_files": [".claude/ (user config, not part of workflow)", "elvora_updated-3.html (reference file, not part of workflow)"],
-  "next_action": "Execute Wave 2: spawn executor for 01-02 (manual checkpoint) then 01-06 (netlify config files + deploy checkpoint)",
-  "context_notes": "Wave 1 (3 autonomous plans) completed cleanly in sequential mode. Wave 2 starts with two checkpoint plans — 01-02 needs user to apply schema to Supabase before 01-03 can run. 01-06 auto-creates netlify.toml/README/keepalive but then halts for user to deploy. Wave 3 (01-03) and Wave 4 (01-07) follow after human actions."
+  "uncommitted_files": [
+    ".planning/config.json (modified — state updates, safe to leave)",
+    "supabase/config.toml (untracked — Supabase CLI local dev artifact; D-08 is cloud-only, likely not needed)",
+    "supabase/.gitignore (untracked — Supabase CLI artifact)"
+  ],
+  "next_action": "User types 'deployed' + live Netlify URL → spawn fresh continuation agent for 01-06 Task 2 → close SUMMARY.md → then spawn executor for 01-03 (seed.sql, fully autonomous)",
+  "context_notes": "Wave 2 is mid-flight. 01-02 closed cleanly (schema live in Supabase). 01-06 Task 1 auto-ran and committed netlify.toml/README/keepalive.yml. Paused at 01-06 Task 2 Netlify deploy checkpoint. Spawn a FRESH continuation agent (not resume) when user provides deployed signal — the 01-06 executor agent (a8685615701bad219) already returned. After 01-06 closes, Wave 3 (01-03 seed.sql) is fully autonomous. Wave 4 (01-07) is another human checkpoint. Note: supabase/config.toml and supabase/.gitignore are Supabase CLI artifacts that appeared untracked — investigate before committing."
 }
