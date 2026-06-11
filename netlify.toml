@@ -1,5 +1,5 @@
 [build]
-  command = "npx @tailwindcss/cli@next -i src/input.css -o css/style.css --minify"
+  command = "npm install && npx tailwindcss -i src/input.css -o css/style.css --minify"
   publish = "."
 
 [build.environment]

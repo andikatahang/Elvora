@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "01-03-PLAN.md — next plan (seed catalog)"
-last_updated: "2026-06-11T02:30:00Z"
-last_activity: 2026-06-11 -- Plan 01-02 complete (schema applied to Supabase)
+stopped_at: "01-07-PLAN.md — apply seed.sql to Supabase (human checkpoint)"
+last_updated: "2026-06-11T09:15:00Z"
+last_activity: 2026-06-11 -- Plans 01-06 and 01-03 complete; site live at https://elvorastudio.netlify.app (pending redeploy with build fix)
 progress:
   total_phases: 7
   completed_phases: 0
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-06-10)
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 2 of 7
+Plan: 6 of 7
 Status: Executing Phase 01
-Last activity: 2026-06-11 -- Plan 01-02 complete (schema applied to live Supabase)
+Last activity: 2026-06-11 -- Plans 01-06 and 01-03 complete; site live, seed.sql ready
 
-Progress: [████░░░░░░] 57%
+Progress: [██████░░░░] 86%
 
 ## Performance Metrics
 
@@ -70,6 +70,8 @@ Recent decisions affecting current work:
 - Plan 01-04: All 11 HTML shells created with correct boilerplate; 5 JS stubs wired to shared supabase.js singleton
 - Plan 01-05: CORS locked to https://elvora.netlify.app (not wildcard) for style-match Edge Function stub (Deno); GEMINI_API_KEY not called in stub — deferred to Phase 5
 - Plan 01-02: Schema applied to live Supabase via SQL Editor (D-08 cloud-only constraint) — 16 tables, 2 storage buckets, is_admin() confirmed live by user
+- Plan 01-06: Netlify deployed at https://elvorastudio.netlify.app; package.json added (tailwindcss@^4 devDep) to fix build; netlify.toml input path corrected from css/input.css to src/input.css
+- Plan 01-03: supabase/seed.sql complete — 22 products, 220 variants, 44 images, 32 reviews, 5 testimonials
 
 ### Pending Todos
 
@@ -92,6 +94,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-11T02:30:00Z
-Stopped at: Plan 01-02 complete — proceeding to 01-03 (seed catalog)
-Resume file: .planning/phases/01-foundation/01-03-PLAN.md
+Last session: 2026-06-11T09:15:00Z
+Stopped at: Plans 01-06 and 01-03 closed — proceeding to 01-07 (apply seed.sql to Supabase, human checkpoint)
+Resume file: .planning/phases/01-foundation/01-07-PLAN.md
