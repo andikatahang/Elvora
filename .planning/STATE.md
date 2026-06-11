@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "01-02-PLAN.md — blocking human-action checkpoint: apply 001_schema.sql to Supabase"
-last_updated: "2026-06-11T02:05:50Z"
-last_activity: 2026-06-11 -- Plan 01-02 reached human-action checkpoint
+stopped_at: "01-03-PLAN.md — next plan (seed catalog)"
+last_updated: "2026-06-11T02:30:00Z"
+last_activity: 2026-06-11 -- Plan 01-02 complete (schema applied to Supabase)
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 7
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-06-10)
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 1 of 7
+Plan: 2 of 7
 Status: Executing Phase 01
-Last activity: 2026-06-11 -- Phase 01 execution started
+Last activity: 2026-06-11 -- Plan 01-02 complete (schema applied to live Supabase)
 
 Progress: [████░░░░░░] 57%
 
@@ -69,7 +69,7 @@ Recent decisions affecting current work:
 - Plan 01-04: css/style.css gitignored — Tailwind CLI generates it at Netlify build time
 - Plan 01-04: All 11 HTML shells created with correct boilerplate; 5 JS stubs wired to shared supabase.js singleton
 - Plan 01-05: CORS locked to https://elvora.netlify.app (not wildcard) for style-match Edge Function stub (Deno); GEMINI_API_KEY not called in stub — deferred to Phase 5
-- Plan 01-02: Blocking human-action checkpoint — user must apply 001_schema.sql via Supabase SQL Editor before Plan 03 can proceed
+- Plan 01-02: Schema applied to live Supabase via SQL Editor (D-08 cloud-only constraint) — 16 tables, 2 storage buckets, is_admin() confirmed live by user
 
 ### Pending Todos
 
@@ -92,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-11T02:05:50Z
-Stopped at: 01-02-PLAN.md — blocking human-action checkpoint (apply SQL to Supabase dashboard)
-Resume file: .planning/phases/01-foundation/01-03-PLAN.md (after schema applied)
+Last session: 2026-06-11T02:30:00Z
+Stopped at: Plan 01-02 complete — proceeding to 01-03 (seed catalog)
+Resume file: .planning/phases/01-foundation/01-03-PLAN.md

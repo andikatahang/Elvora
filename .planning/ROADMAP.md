@@ -39,7 +39,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — [BLOCKING] Apply 001_schema.sql to Supabase via SQL Editor
+- [x] 01-02-PLAN.md — [BLOCKING] Apply 001_schema.sql to Supabase via SQL Editor
 - [ ] 01-03-PLAN.md — Seed catalog: 22+ products, variants, images, categories, collections, testimonials
 
 **Wave 3** *(blocked on Wave 2 completion)*
@@ -153,7 +153,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 3/7 | In Progress|  |
+| 1. Foundation | 4/7 | In Progress|  |
 | 2. Brand Shell + Homepage | 0/TBD | Not started | - |
 | 3. Product Catalog | 0/TBD | Not started | - |
 | 4. Auth + Customer Account | 0/TBD | Not started | - |
