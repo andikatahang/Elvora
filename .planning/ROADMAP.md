@@ -51,7 +51,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 **Wave 4** *(gap-closure — blocked on Wave 3 + UAT)*
 
 - [x] 01-08-PLAN.md — [GAP] Netlify env injection: window.__ENV for Supabase client init + HTML script tags
-- [ ] 01-09-PLAN.md — [GAP] keepalive cron: weekly → daily (0 8 * * *)
+- [x] 01-09-PLAN.md — [GAP] keepalive cron: weekly → daily (0 8 * * *)
 
 ### Phase 2: Brand Shell + Homepage
 
@@ -159,7 +159,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 8/9 | Executing | 2026-06-11 |
+| 1. Foundation | 9/9 | Complete   | 2026-06-11 |
 | 2. Brand Shell + Homepage | 0/TBD | Not started | - |
 | 3. Product Catalog | 0/TBD | Not started | - |
 | 4. Auth + Customer Account | 0/TBD | Not started | - |
