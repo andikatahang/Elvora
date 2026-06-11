@@ -30,7 +30,8 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
   4. The `GEMINI_API_KEY` is stored only in Edge Function secrets and is absent from every HTML, JS, and committed file — verifiable by grep
   5. A GitHub Actions scheduled workflow pings Supabase daily so the free-tier project never pauses during assessment review
 
-**Plans**: 7 plansPlans:
+**Plans**: 9 plans (7 original + 2 gap-closure)
+
 **Wave 1**
 
 - [x] 01-01-PLAN.md — Supabase schema DDL: 16 tables + RLS + is_admin() + storage buckets
@@ -46,6 +47,11 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 - [x] 01-06-PLAN.md — Deployment pipeline: netlify.toml, README.md, GitHub Actions keep-alive
 - [x] 01-07-PLAN.md — [BLOCKING] Apply seed.sql to Supabase via SQL Editor
+
+**Wave 4** *(gap-closure — blocked on Wave 3 + UAT)*
+
+- [ ] 01-08-PLAN.md — [GAP] Netlify env injection: window.__ENV for Supabase client init + HTML script tags
+- [ ] 01-09-PLAN.md — [GAP] keepalive cron: weekly → daily (0 8 * * *)
 
 ### Phase 2: Brand Shell + Homepage
 
