@@ -1,0 +1,11 @@
+[build]
+  command = "npx @tailwindcss/cli@next -i src/input.css -o css/style.css --minify"
+  publish = "."
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
