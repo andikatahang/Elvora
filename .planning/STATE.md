@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-05-PLAN.md (style-match Edge Function stub)
-last_updated: "2026-06-11T00:00:00Z"
-last_activity: 2026-06-11 -- Completed plan 01-05 (style-match Supabase Edge Function stub)
+stopped_at: "01-02-PLAN.md — blocking human-action checkpoint: apply 001_schema.sql to Supabase"
+last_updated: "2026-06-11T02:05:50Z"
+last_activity: 2026-06-11 -- Plan 01-02 reached human-action checkpoint
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 7
-  completed_plans: 4
-  percent: 57
+  completed_plans: 3
+  percent: 0
 ---
 
 # Project State
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-06-10)
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 5 of 7
-Status: Ready to execute
-Last activity: 2026-06-11 -- Completed plan 01-05 (style-match Edge Function stub)
+Plan: 1 of 7
+Status: Executing Phase 01
+Last activity: 2026-06-11 -- Phase 01 execution started
 
 Progress: [████░░░░░░] 57%
 
@@ -69,6 +69,7 @@ Recent decisions affecting current work:
 - Plan 01-04: css/style.css gitignored — Tailwind CLI generates it at Netlify build time
 - Plan 01-04: All 11 HTML shells created with correct boilerplate; 5 JS stubs wired to shared supabase.js singleton
 - Plan 01-05: CORS locked to https://elvora.netlify.app (not wildcard) for style-match Edge Function stub (Deno); GEMINI_API_KEY not called in stub — deferred to Phase 5
+- Plan 01-02: Blocking human-action checkpoint — user must apply 001_schema.sql via Supabase SQL Editor before Plan 03 can proceed
 
 ### Pending Todos
 
@@ -91,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-11T00:00:00Z
-Stopped at: Completed 01-05-PLAN.md (style-match Edge Function stub)
-Resume file: .planning/phases/01-foundation/01-06-PLAN.md
+Last session: 2026-06-11T02:05:50Z
+Stopped at: 01-02-PLAN.md — blocking human-action checkpoint (apply SQL to Supabase dashboard)
+Resume file: .planning/phases/01-foundation/01-03-PLAN.md (after schema applied)
