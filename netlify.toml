@@ -1,5 +1,5 @@
 [build]
-  command = "npm install && npx tailwindcss -i src/input.css -o css/style.css --minify"
+  command = "npm install && npm run build:css"
   publish = "."
 
 [build.environment]

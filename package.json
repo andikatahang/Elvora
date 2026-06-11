@@ -2,7 +2,11 @@
   "name": "elvora",
   "private": true,
   "version": "1.0.0",
+  "scripts": {
+    "build:css": "tailwindcss -i src/input.css -o css/style.css --minify"
+  },
   "devDependencies": {
+    "@tailwindcss/cli": "^4",
     "tailwindcss": "^4"
   }
 }
