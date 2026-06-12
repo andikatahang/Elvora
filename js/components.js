@@ -34,8 +34,8 @@ const navHTML = `
       }, { passive: true });
     }
   }"
-  :class="scrolled ? 'bg-beige/90 backdrop-blur-md border-b border-sage/20' : 'bg-transparent'"
-  class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 lg:px-12 py-5 transition-all duration-300"
+  :class="scrolled ? 'shadow-sm' : ''"
+  class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 lg:px-12 py-5 transition-all duration-300 bg-beige/92 backdrop-blur-md border-b border-sage/20"
   role="navigation"
   aria-label="Main navigation"
 >
