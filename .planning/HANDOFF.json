@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-06-12T19:54:59.228Z",
+  "timestamp": "2026-06-12T20:15:37.789Z",
   "phase": "02",
   "phase_name": "brand-shell-homepage",
   "phase_dir": ".planning/phases/02-brand-shell-homepage",
@@ -9,50 +9,42 @@
   "total_tasks": 4,
   "status": "paused",
   "completed_tasks": [
-    {"id": 1, "name": "Design system + nav/footer shell", "status": "done", "commit": "0d0b4e3"},
-    {"id": 2, "name": "Homepage hero + static sections", "status": "done", "commit": "0d0b4e3"},
-    {"id": 3, "name": "About + contact + shop + style-match pages", "status": "done", "commit": "0d0b4e3"},
-    {"id": 4, "name": "Live Supabase sections (best sellers, testimonials, newsletter)", "status": "done", "commit": "0d0b4e3"},
-    {"id": 5, "name": "Align pages to elvora_updated-3.html reference", "status": "done", "commit": "c0505ff"},
-    {"id": 6, "name": "Fix Alpine race condition (store registration)", "status": "done", "commit": "29fbf9c"},
-    {"id": 7, "name": "Fix Supabase graceful degradation (no crash without credentials)", "status": "done", "commit": "e95cad5"},
-    {"id": 8, "name": "Fix nav overflow at 720px (md→lg breakpoint shift)", "status": "done", "commit": "9ec0366"},
-    {"id": 9, "name": "Add placeholder content to shop.html + style-match.html", "status": "done", "commit": "9ec0366"}
+    {"id": 1, "name": "All 4 phase plans executed", "status": "done", "commit": "0d0b4e3"},
+    {"id": 2, "name": "Pages aligned to elvora_updated-3.html reference", "status": "done", "commit": "cce41d4"},
+    {"id": 3, "name": "shop.html: full shop page with filter + product grid", "status": "done", "commit": "cce41d4"},
+    {"id": 4, "name": "lookbook.html: created matching reference gallery", "status": "done", "commit": "cce41d4"},
+    {"id": 5, "name": "Nav labels updated: Home/Shop/Lookbook/About/Contact", "status": "done", "commit": "cce41d4"},
+    {"id": 6, "name": "CSS: added lookbook gallery classes + product card enhancements", "status": "done", "commit": "cce41d4"},
+    {"id": 7, "name": "Nav visibility fix: always-on frosted-beige background", "status": "done", "commit": "78d3f2c"},
+    {"id": 8, "name": "Lookbook CTA button contrast fix: removed charcoal bg override", "status": "done", "commit": "78d3f2c"}
   ],
   "remaining_tasks": [
-    {"id": 10, "name": "UAT — run all 10 test cases from 02-UAT.md and record results", "status": "not_started"},
-    {"id": 11, "name": "Contact page UAT mismatch — UAT test #7 expects FAQ, page now has contact form; update UAT or revert", "status": "not_started"},
-    {"id": 12, "name": "Verify contact page visual consistency with other pages in browser", "status": "not_started"}
+    {"id": 9, "name": "UAT: run all 10 tests in 02-UAT.md in browser", "status": "not_started"},
+    {"id": 10, "name": "Update UAT test #7 (expects FAQ; contact page now has contact form)", "status": "not_started"},
+    {"id": 11, "name": "STATE.md: mark Phase 02 complete after UAT passes", "status": "not_started"}
   ],
   "blockers": [
     {
-      "description": "js/__env.js has empty Supabase credentials locally — Supabase features (best sellers, testimonials, newsletter) will show loading state or error state until credentials are added",
+      "description": "js/__env.js has empty Supabase credentials — live data sections show loading/error state",
       "type": "human_action",
-      "workaround": "Supabase client falls back to no-op stub; pages render without crash"
+      "workaround": "Pages render; Supabase client falls back to no-op stub"
     }
   ],
   "human_actions_pending": [
     {
       "action": "Run UAT: open each page in browser and record results in 02-UAT.md",
-      "context": "All 10 UAT tests are still [pending] — phase is not formally verified until UAT passes",
+      "context": "All 10 tests still [pending] — phase not formally complete until UAT passes",
       "blocking": true
-    },
-    {
-      "action": "Add real Supabase credentials to js/__env.js to test live data sections",
-      "context": "Best Sellers, Testimonials, Newsletter sections need real credentials to test beyond the skeleton/error states",
-      "blocking": false
     }
   ],
   "decisions": [
-    {"decision": "Shifted all nav breakpoints from md: (768px) to lg: (1024px)", "rationale": "5 nav links + action icons overflowed at 768px; 1024px gives sufficient room", "phase": "02"},
-    {"decision": "Contact page rewritten from FAQ accordion to contact form + info grid", "rationale": "elvora_updated-3.html reference shows contact form, not FAQ", "phase": "02"},
-    {"decision": "shop.html and style-match.html get branded 'coming soon' placeholders, not full implementation", "rationale": "Phase 3 (shop) and Phase 5 (style match) are out of scope for Phase 02", "phase": "02"},
-    {"decision": "Alpine.store() registered both in alpine:init and immediately at module load", "rationale": "Prevents TypeError when defer script (Alpine CDN) executes before type=module script (components.js)", "phase": "02"},
-    {"decision": "Supabase client exports no-op Proxy stub when credentials are empty", "rationale": "Prevents supabaseUrl is required crash during local dev and on pages that do not have credentials", "phase": "02"}
+    {"decision": "Nav always shows frosted-beige background (bg-beige/92 backdrop-blur)", "rationale": "Transparent nav made charcoal links invisible over dark charcoal heroes (lookbook, about)", "phase": "02"},
+    {"decision": "Lookbook CTA uses .newsletter class default (sage green) not charcoal override", "rationale": "btn-primary is charcoal; charcoal on charcoal = invisible button", "phase": "02"},
+    {"decision": "Nav labels: Home, Shop, Lookbook, About, Contact — matching reference exactly", "rationale": "User requested pages match reference structure exactly", "phase": "02"},
+    {"decision": "style-match.html kept as placeholder; Style Match moved from nav to footer BRAND column", "rationale": "Reference has no Style Match in nav; it's accessed via floating AI button in reference", "phase": "02"},
+    {"decision": "shop.html uses Alpine.js + 9 seeded static products with category filter", "rationale": "Supabase not configured; static data gives correct visual appearance matching reference", "phase": "02"}
   ],
-  "uncommitted_files": [
-    ".planning/STATE.md"
-  ],
-  "next_action": "Open browser, run UAT tests 1-10 from .planning/phases/02-brand-shell-homepage/02-UAT.md, record pass/fail results, then update STATE.md to phase complete.",
-  "context_notes": "Phase 02 is code-complete. All 4 plans executed, all bug fixes from user review committed. The only remaining work is formal UAT and resolving the UAT/contact-page mismatch (test #7 expects FAQ, page now has a contact form)."
+  "uncommitted_files": [],
+  "next_action": "Open browser (npx serve . or Live Server), run 10 UAT tests from .planning/phases/02-brand-shell-homepage/02-UAT.md, record pass/fail, update test #7 to reflect contact form, then mark Phase 02 complete in STATE.md.",
+  "context_notes": "Phase 02 is code-complete. All pages visually match elvora_updated-3.html reference. Two contrast/visibility bugs fixed this session. lookbook.html was created from scratch. Ready for UAT."
 }
