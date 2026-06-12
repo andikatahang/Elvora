@@ -67,7 +67,21 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
   4. Clicking a featured collection card on the homepage navigates to the activity-filtered product listing page
   5. Submitting the newsletter form shows a confirmation message and stores the email in the `newsletter_subscribers` table
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — Design system (src/input.css component utilities + marquee keyframes), js/components.js (nav + footer injection, Alpine stores), update all 9 HTML placeholder stubs
+
+**Wave 2** *(blocked on Wave 1 completion — runs in parallel)*
+
+- [ ] 02-02-PLAN.md — index.html static sections: hero, marquee strip, featured collections grid, lookbook grid, brand story
+- [ ] 02-03-PLAN.md — about.html editorial layout + contact.html FAQ accordion and contact info
+
+**Wave 3** *(blocked on Wave 2 — 02-02 specifically)*
+
+- [ ] 02-04-PLAN.md — index.html live-data sections: best sellers (Supabase), testimonials (Supabase), newsletter signup (Supabase insert)
+
 **UI hint**: yes
 
 ### Phase 3: Product Catalog
@@ -160,7 +174,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 9/9 | Complete   | 2026-06-11 |
-| 2. Brand Shell + Homepage | 0/TBD | Not started | - |
+| 2. Brand Shell + Homepage | 0/4 | Not started | - |
 | 3. Product Catalog | 0/TBD | Not started | - |
 | 4. Auth + Customer Account | 0/TBD | Not started | - |
 | 5. AI Style Match | 0/TBD | Not started | - |
