@@ -1129,22 +1129,19 @@ Verify these policies exist before testing the newsletter form. If missing, anon
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Alpine CDN + module script load order**
-   - What we know: Alpine `defer` attribute means it runs after DOM parsing. Module scripts (`type="module"`) are also deferred.
-   - What's unclear: Exact execution order between `<script type="module">` and `<script defer>` when both reference external files on CDN
-   - Recommendation: Register Alpine stores inside `alpine:init` event (safest pattern, explicitly documented by Alpine), not outside it. If `components.js` injects HTML that contains Alpine directives, call `Alpine.initTree(element)` after injection to ensure Alpine processes the new nodes.
+1. **Alpine CDN + module script load order** — RESOLVED
+   - Decision: Register Alpine stores inside `alpine:init` event (safest pattern, explicitly documented by Alpine). If `components.js` injects HTML containing Alpine directives, call `Alpine.initTree(element)` after injection.
+   - Rationale: `alpine:init` fires before Alpine processes the DOM, guaranteeing store availability. This is the documented safe pattern.
 
-2. **newsletter_subscribers table RLS policies**
-   - What we know: Phase 01 created the table schema
-   - What's unclear: Whether the INSERT policy for anon was explicitly written in Phase 01 DDL
-   - Recommendation: Executor should verify via Supabase dashboard before testing; add policy if missing: `CREATE POLICY "anon can insert" ON newsletter_subscribers FOR INSERT WITH CHECK (true);`
+2. **newsletter_subscribers table RLS policies** — RESOLVED
+   - Decision: Executor checks via Supabase dashboard → Table Editor → newsletter_subscribers → RLS policies before testing. If INSERT policy for anon is missing, add: `CREATE POLICY "anon can insert" ON newsletter_subscribers FOR INSERT WITH CHECK (true);`
+   - Rationale: Phase 01 schema created the table; the fallback SQL is documented in Plan 04 Task 2 as the verified remediation path.
 
-3. **Tailwind v4 and `grid-cols-[2fr_1fr_1fr]` arbitrary syntax**
-   - What we know: Tailwind v4 supports arbitrary values via `[]` syntax
-   - What's unclear: Whether the underscore-to-space conversion works for `fr` unit values in grid-template-columns
-   - Recommendation: Use inline style `style="grid-template-columns: 2fr 1fr 1fr;"` as safe fallback; test the Tailwind class at build time
+3. **Tailwind v4 and `grid-cols-[2fr_1fr_1fr]` arbitrary syntax** — RESOLVED
+   - Decision: Use inline `style="grid-template-columns: 2fr 1fr 1fr;"` as the safe implementation path for fr-unit grid layouts.
+   - Rationale: Underscore-to-space conversion for `fr` units in Tailwind v4 is unverified at build time; inline style avoids the ambiguity entirely and is already the approach used in Plan 02.
 
 ---
 
