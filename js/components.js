@@ -35,7 +35,7 @@ const navHTML = `
     }
   }"
   :class="scrolled ? 'bg-beige/90 backdrop-blur-md border-b border-sage/20' : 'bg-transparent'"
-  class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 md:px-12 py-5 transition-all duration-300"
+  class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 lg:px-12 py-5 transition-all duration-300"
   role="navigation"
   aria-label="Main navigation"
 >
@@ -45,7 +45,7 @@ const navHTML = `
   </a>
 
   <!-- Desktop nav links -->
-  <ul class="hidden md:flex gap-9 list-none m-0 p-0 items-center">
+  <ul class="hidden lg:flex gap-9 list-none m-0 p-0 items-center">
     <li><a href="/index.html" data-page="/index.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">New Arrivals</a></li>
     <li><a href="/shop.html" data-page="/shop.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Collections</a></li>
     <li><a href="/style-match.html" data-page="/style-match.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Style Match</a></li>
@@ -79,7 +79,7 @@ const navHTML = `
     </a>
 
     <!-- Mobile hamburger -->
-    <button @click="navOpen = true" aria-label="Open navigation menu" class="w-11 h-11 flex items-center justify-center text-charcoal md:hidden">
+    <button @click="navOpen = true" aria-label="Open navigation menu" class="w-11 h-11 flex items-center justify-center text-charcoal lg:hidden">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
         <line x1="4" y1="6" x2="20" y2="6" stroke-linecap="round"/>
         <line x1="4" y1="12" x2="20" y2="12" stroke-linecap="round"/>
@@ -192,7 +192,7 @@ const footerHTML = `
     </div>
 
     <!-- Bottom row -->
-    <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="border-t border-white/10 pt-8 flex flex-col lg:flex-row items-center justify-between gap-4">
       <p class="text-sm text-white/30">© 2026 Elvora. All rights reserved.</p>
       <div class="flex gap-6">
         <a href="#" class="text-sm text-white/30 hover:text-rose transition-colors no-underline">Privacy Policy</a>
