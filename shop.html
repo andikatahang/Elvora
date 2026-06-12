@@ -6,24 +6,98 @@
   <title>Shop — ELVORA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"></script>
 </head>
 <body>
   <div id="nav-root"></div>
-  <main>
+
+  <main
+    x-data="{
+      activeFilter: 'all',
+      products: [
+        { id:1, name:'Serenity Legging', sub:'Leggings', category:'leggings', price:'Rp 450.000', badge:'best seller', badgeClass:'', bgClass:'product-img-bg-1', img:'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=400&q=80', stars:4.9, reviews:248 },
+        { id:2, name:'Flow Crop Top', sub:'Tops', category:'tops', price:'Rp 280.000', badge:'new', badgeClass:'new', bgClass:'product-img-bg-2', img:'https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=400&q=80', stars:4.8, reviews:156 },
+        { id:3, name:'Grace Jacket', sub:'Jackets', category:'jackets', price:'Rp 650.000', badge:'', badgeClass:'', bgClass:'product-img-bg-3', img:'https://images.unsplash.com/photo-1617952236317-0bd127407984?w=400&q=80', stars:4.7, reviews:89 },
+        { id:4, name:'Aura Sport Hijab', sub:'Sport Hijab', category:'hijab', price:'Rp 185.000', badge:'trending', badgeClass:'trending', bgClass:'product-img-bg-4', img:'https://images.unsplash.com/photo-1590650516494-0c8e4a4dd67e?w=400&q=80', stars:4.9, reviews:312 },
+        { id:5, name:'Power Run Legging', sub:'Leggings', category:'leggings', price:'Rp 520.000', badge:'new', badgeClass:'new', bgClass:'product-img-bg-1', img:'https://images.unsplash.com/photo-1594381898411-846e7d193883?w=400&q=80', stars:4.8, reviews:178 },
+        { id:6, name:'Calm Yoga Top', sub:'Tops', category:'tops', price:'Rp 310.000', badge:'', badgeClass:'', bgClass:'product-img-bg-2', img:'https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=400&q=80', stars:4.6, reviews:94 },
+        { id:7, name:'Swift Zip Jacket', sub:'Jackets', category:'jackets', price:'Rp 720.000', badge:'best seller', badgeClass:'', bgClass:'product-img-bg-3', img:'https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=400&q=80', stars:4.8, reviews:201 },
+        { id:8, name:'Cloud Socks 3-Pack', sub:'Socks', category:'socks', price:'Rp 120.000', badge:'new', badgeClass:'new', bgClass:'product-img-bg-4', img:'https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?w=400&q=80', stars:4.9, reviews:445 },
+        { id:9, name:'Bloom Hijab Set', sub:'Sport Hijab', category:'hijab', price:'Rp 210.000', badge:'', badgeClass:'', bgClass:'product-img-bg-1', img:'https://images.unsplash.com/photo-1551489186-cf8726f514f8?w=400&q=80', stars:4.7, reviews:167 },
+      ],
+      get filtered() {
+        return this.activeFilter === 'all' ? this.products : this.products.filter(p => p.category === this.activeFilter);
+      }
+    }"
+  >
+
+    <!-- ═══ Shop Hero ════════════════════════════════════════════════════════ -->
     <div class="shop-hero">
-      <p class="section-label">Collections</p>
+      <p class="section-label">The Collection</p>
       <h1 class="shop-hero-title">Welcome to Elvora</h1>
-      <p class="shop-hero-sub">Full catalog launching soon</p>
+      <p class="shop-hero-sub">101 styles · Free shipping above Rp 500K</p>
     </div>
-    <div class="shop-body" style="text-align:center;padding-top:80px;padding-bottom:120px;">
-      <p style="font-family:var(--font-display);font-size:clamp(24px,3vw,36px);font-weight:700;color:var(--charcoal);margin-bottom:16px;">Our Collection is Coming</p>
-      <p style="font-size:15px;color:var(--text-muted);font-weight:300;max-width:400px;margin:0 auto 40px;line-height:1.8;">We're curating the perfect pieces for you. Check back soon or explore the homepage in the meantime.</p>
-      <a href="/index.html" class="btn-primary">Back to Home</a>
+
+    <!-- ═══ Shop Body ════════════════════════════════════════════════════════ -->
+    <div class="shop-body">
+
+      <!-- Toolbar -->
+      <div class="shop-toolbar">
+        <div class="filter-pills">
+          <button class="filter-pill" :class="activeFilter === 'all' && 'active'" @click="activeFilter = 'all'">All</button>
+          <button class="filter-pill" :class="activeFilter === 'leggings' && 'active'" @click="activeFilter = 'leggings'">Leggings</button>
+          <button class="filter-pill" :class="activeFilter === 'tops' && 'active'" @click="activeFilter = 'tops'">Tops</button>
+          <button class="filter-pill" :class="activeFilter === 'jackets' && 'active'" @click="activeFilter = 'jackets'">Jackets</button>
+          <button class="filter-pill" :class="activeFilter === 'hijab' && 'active'" @click="activeFilter = 'hijab'">Sport Hijab</button>
+          <button class="filter-pill" :class="activeFilter === 'socks' && 'active'" @click="activeFilter = 'socks'">Socks</button>
+        </div>
+        <div class="shop-sort">
+          <span>Sort by</span>
+          <select class="sort-select">
+            <option>Newest</option>
+            <option>Best Selling</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Product Grid -->
+      <div class="shop-grid">
+        <template x-for="p in filtered" :key="p.id">
+          <a :href="'/product.html?id=' + p.id" class="product-card">
+            <div class="product-img">
+              <div
+                class="product-img-bg"
+                :class="p.bgClass"
+                :style="p.img ? 'background-image:url(' + p.img + ');background-size:cover;background-position:center top;width:100%;height:100%;' : 'width:100%;height:100%;'"
+              ></div>
+              <span x-show="p.badge" x-text="p.badge" class="product-badge" :class="p.badgeClass"></span>
+              <button class="wishlist-btn" @click.prevent aria-label="Save to wishlist">♡</button>
+            </div>
+            <div class="product-info">
+              <p x-text="p.sub" class="product-sub"></p>
+              <h3 x-text="p.name" class="product-name"></h3>
+              <div class="product-price-row">
+                <span x-text="p.price" class="product-price"></span>
+                <div class="product-stars">
+                  <span class="star">★</span>
+                  <span x-text="p.stars"></span>
+                  <span class="star-count" x-text="'(' + p.reviews + ')'"></span>
+                </div>
+              </div>
+              <button class="add-cart-btn" @click.prevent>Add to Bag</button>
+            </div>
+          </a>
+        </template>
+      </div>
+
     </div>
+
   </main>
+
   <div id="footer-root"></div>
   <script src="/js/__env.js"></script>
   <script type="module" src="/js/supabase.js"></script>

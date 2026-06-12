@@ -46,9 +46,9 @@ const navHTML = `
 
   <!-- Desktop nav links -->
   <ul class="hidden lg:flex gap-9 list-none m-0 p-0 items-center">
-    <li><a href="/index.html" data-page="/index.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">New Arrivals</a></li>
-    <li><a href="/shop.html" data-page="/shop.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Collections</a></li>
-    <li><a href="/style-match.html" data-page="/style-match.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Style Match</a></li>
+    <li><a href="/index.html" data-page="/index.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Home</a></li>
+    <li><a href="/shop.html" data-page="/shop.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Shop</a></li>
+    <li><a href="/lookbook.html" data-page="/lookbook.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Lookbook</a></li>
     <li><a href="/about.html" data-page="/about.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">About</a></li>
     <li><a href="/contact.html" data-page="/contact.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Contact</a></li>
   </ul>
@@ -108,9 +108,9 @@ const navHTML = `
       </svg>
     </button>
     <ul class="list-none m-0 p-0 flex flex-col gap-6">
-      <li><a href="/index.html" class="text-white text-base tracking-widest uppercase hover:text-rose transition-colors no-underline">New Arrivals</a></li>
-      <li><a href="/shop.html" class="text-white text-base tracking-widest uppercase hover:text-rose transition-colors no-underline">Collections</a></li>
-      <li><a href="/style-match.html" class="text-white text-base tracking-widest uppercase hover:text-rose transition-colors no-underline">Style Match</a></li>
+      <li><a href="/index.html" class="text-white text-base tracking-widest uppercase hover:text-rose transition-colors no-underline">Home</a></li>
+      <li><a href="/shop.html" class="text-white text-base tracking-widest uppercase hover:text-rose transition-colors no-underline">Shop</a></li>
+      <li><a href="/lookbook.html" class="text-white text-base tracking-widest uppercase hover:text-rose transition-colors no-underline">Lookbook</a></li>
       <li><a href="/about.html" class="text-white text-base tracking-widest uppercase hover:text-rose transition-colors no-underline">About</a></li>
       <li><a href="/contact.html" class="text-white text-base tracking-widest uppercase hover:text-rose transition-colors no-underline">Contact</a></li>
     </ul>
@@ -161,10 +161,11 @@ const footerHTML = `
       <div>
         <h3 class="text-[11px] tracking-[4px] uppercase text-white font-medium mb-6">SHOP</h3>
         <ul class="list-none m-0 p-0 flex flex-col gap-3">
-          <li><a href="/index.html" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">New Arrivals</a></li>
-          <li><a href="/shop.html" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Best Sellers</a></li>
-          <li><a href="/shop.html" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Collections</a></li>
-          <li><a href="/style-match.html" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Style Match</a></li>
+          <li><a href="/shop.html" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">All Products</a></li>
+          <li><a href="/shop.html?category=leggings" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Leggings</a></li>
+          <li><a href="/shop.html?category=jackets" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Jackets</a></li>
+          <li><a href="/shop.html?category=tops" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Tops</a></li>
+          <li><a href="/shop.html?category=hijab" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Sport Hijab</a></li>
         </ul>
       </div>
 
@@ -184,9 +185,9 @@ const footerHTML = `
         <h3 class="text-[11px] tracking-[4px] uppercase text-white font-medium mb-6">BRAND</h3>
         <ul class="list-none m-0 p-0 flex flex-col gap-3">
           <li><a href="/about.html" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Our Story</a></li>
-          <li><a href="/about.html" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Sustainability</a></li>
-          <li><a href="#" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Press</a></li>
-          <li><a href="#" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Careers</a></li>
+          <li><a href="/lookbook.html" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Lookbook</a></li>
+          <li><a href="/style-match.html" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Style Match</a></li>
+          <li><a href="/contact.html" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Careers</a></li>
         </ul>
       </div>
     </div>
