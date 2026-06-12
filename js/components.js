@@ -7,17 +7,19 @@ import { supabase } from './supabase.js';
 // Expose supabase client globally so Alpine inline x-data strings can access it
 window.supabase = supabase;
 
-// Register Alpine stores before Alpine processes x-data directives
-document.addEventListener('alpine:init', () => {
-  Alpine.store('cart', {
-    count: 0,
-    items: []
-  });
-  Alpine.store('auth', {
-    user: null,
-    loggedIn: false
-  });
-});
+// Register Alpine stores — must happen before Alpine.initTree calls below.
+// alpine:init fires before Alpine processes the initial DOM, but ES modules
+// load after deferred scripts, so the event has already fired by the time
+// this module runs. We register stores directly via Alpine.store() instead.
+function registerStores() {
+  if (!Alpine.store('cart')) Alpine.store('cart', { count: 0, items: [] });
+  if (!Alpine.store('auth')) Alpine.store('auth', { user: null, loggedIn: false });
+}
+
+// alpine:init path: fires if Alpine hasn't initialized yet (e.g. script order changes)
+document.addEventListener('alpine:init', registerStores);
+// Direct path: Alpine has already initialized before this module ran
+if (window.Alpine) registerStores();
 
 // ─── Nav HTML ────────────────────────────────────────────────────────────────
 
