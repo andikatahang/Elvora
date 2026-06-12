@@ -40,3 +40,103 @@ body {
   color: var(--charcoal);
   overflow-x: hidden;
 }
+
+/* Responsive asymmetric collections grid */
+.collections-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .collections-grid {
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .collections-grid .padel-card {
+    grid-row: span 2;
+  }
+}
+
+@layer components {
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--color-sage);
+    font-weight: 500;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--color-charcoal);
+  }
+
+  .btn-primary {
+    background-color: var(--color-charcoal);
+    color: white;
+    padding: 16px 36px;
+    border-radius: 9999px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: all 0.3s;
+    font-family: var(--font-body);
+    text-decoration: none;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-rose);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    color: var(--color-charcoal);
+    padding: 16px 36px;
+    border: 1.5px solid var(--color-charcoal);
+    border-radius: 9999px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: all 0.3s;
+    font-family: var(--font-body);
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--color-rose);
+    color: var(--color-rose);
+  }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 20s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+@keyframes scrollAnim {
+  0%   { transform: scaleY(0); transform-origin: top; }
+  50%  { transform: scaleY(1); transform-origin: top; }
+  51%  { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}

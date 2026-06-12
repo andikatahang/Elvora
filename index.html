@@ -3,13 +3,468 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ELVORA — Home</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <title>ELVORA — Premium Women's Activewear</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"></script>
 </head>
 <body>
-  <main><!-- Phase 2 fills this --></main>
+  <div id="nav-root"></div>
+
+  <main>
+
+    <!-- ═══ Section 1: Hero ═══════════════════════════════════════════════ -->
+    <section class="min-h-screen grid grid-cols-1 md:grid-cols-2">
+      <!-- Left: editorial copy -->
+      <div class="flex flex-col justify-center px-8 md:px-16 py-32 md:py-20 pt-28 md:pt-28">
+        <span class="section-label mb-6">WHERE MOVEMENT MEETS ELEGANCE</span>
+        <h1 class="font-display font-bold text-[clamp(48px,5vw,72px)] leading-[1.1] text-charcoal mb-7">
+          Elevate Your<br>
+          <em class="italic text-rose">Active Life</em>
+        </h1>
+        <p class="text-[15px] leading-[1.8] text-text-muted max-w-[400px] mb-12 font-light">
+          Premium activewear crafted for the woman who moves with purpose. From padel courts to pilates studios — wear what you love.
+        </p>
+        <div class="flex gap-4 flex-wrap items-center">
+          <a href="/shop.html" class="btn-primary">Discover the Collection</a>
+          <a href="/style-match.html" class="btn-secondary">Find My Style</a>
+        </div>
+        <!-- Floating stat badge (desktop) -->
+        <div class="hidden md:inline-flex items-center gap-3 mt-14 bg-white/80 backdrop-blur-sm rounded-full px-5 py-3 w-fit shadow-sm">
+          <span class="font-display font-bold text-charcoal text-base">200+</span>
+          <span class="text-[11px] tracking-[2px] uppercase text-text-muted">Premium Styles</span>
+        </div>
+      </div>
+
+      <!-- Right: hero image -->
+      <div class="relative overflow-hidden bg-sage-light min-h-[60vh] md:min-h-screen">
+        <img
+          src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1200&q=80"
+          alt="Woman in premium activewear"
+          class="w-full h-full object-cover"
+          fetchpriority="high"
+          width="800"
+          height="1067"
+        />
+        <!-- Scroll indicator (desktop) -->
+        <div class="hidden md:flex absolute bottom-10 right-10 flex-col items-center gap-2">
+          <span class="text-[9px] tracking-[3px] uppercase text-charcoal/40 rotate-90 origin-center">Scroll</span>
+          <div class="w-px h-12 bg-charcoal/20 overflow-hidden relative">
+            <div class="absolute inset-0 bg-charcoal/60" style="animation: scrollAnim 2s ease-in-out infinite;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 2: Marquee strip ═════════════════════════════════════ -->
+    <section class="bg-charcoal py-[18px] overflow-hidden" aria-label="Brand marquee" aria-hidden="true">
+      <div class="marquee-track flex gap-[60px] w-max">
+        <div class="flex gap-[60px] flex-shrink-0 items-center">
+          <span class="text-[11px] tracking-[4px] uppercase text-white/60">New Arrivals</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-rose flex-shrink-0"></span>
+          <span class="text-[11px] tracking-[4px] uppercase text-white/60">Premium Activewear</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-rose flex-shrink-0"></span>
+          <span class="text-[11px] tracking-[4px] uppercase text-white/60">Designed for Movement</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-rose flex-shrink-0"></span>
+          <span class="text-[11px] tracking-[4px] uppercase text-white/60">Quiet Luxury</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-rose flex-shrink-0"></span>
+          <span class="text-[11px] tracking-[4px] uppercase text-white/60">Free Shipping Over $150</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-rose flex-shrink-0"></span>
+        </div>
+        <div class="flex gap-[60px] flex-shrink-0 items-center" aria-hidden="true">
+          <span class="text-[11px] tracking-[4px] uppercase text-white/60">New Arrivals</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-rose flex-shrink-0"></span>
+          <span class="text-[11px] tracking-[4px] uppercase text-white/60">Premium Activewear</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-rose flex-shrink-0"></span>
+          <span class="text-[11px] tracking-[4px] uppercase text-white/60">Designed for Movement</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-rose flex-shrink-0"></span>
+          <span class="text-[11px] tracking-[4px] uppercase text-white/60">Quiet Luxury</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-rose flex-shrink-0"></span>
+          <span class="text-[11px] tracking-[4px] uppercase text-white/60">Free Shipping Over $150</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-rose flex-shrink-0"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: Featured Collections ══════════════════════════════ -->
+    <section class="bg-white py-[100px] px-8 md:px-16">
+      <div class="max-w-[1280px] mx-auto">
+        <div class="flex items-end justify-between mb-12 flex-wrap gap-4">
+          <div>
+            <span class="section-label">CURATED FOR YOU</span>
+            <h2 class="section-title mt-3">Shop by Activity</h2>
+          </div>
+          <a href="/shop.html" class="text-[12px] tracking-[2px] uppercase text-charcoal border-b border-charcoal hover:text-rose hover:border-rose transition-colors pb-0.5 no-underline">View All Collections</a>
+        </div>
+
+        <!-- Asymmetric grid: 2fr 1fr 1fr on desktop, single column on mobile -->
+        <div class="collections-grid">
+
+            <!-- Padel — spans 2 rows on desktop -->
+            <a href="/shop.html?category=padel"
+               class="padel-card rounded-[20px] overflow-hidden relative cursor-pointer transition-transform duration-300 hover:scale-[1.02] block min-h-[200px] md:min-h-[520px]"
+               aria-label="Shop Padel collection">
+              <div class="absolute inset-0 bg-gradient-to-br from-sage to-[#7A9E75]"></div>
+              <div class="absolute inset-0 bg-charcoal/15 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+              <div class="absolute bottom-7 left-7 right-7">
+                <p class="font-display text-[22px] font-semibold text-white mb-1">Padel</p>
+                <p class="text-[11px] tracking-[2px] uppercase text-white/80">24 Styles</p>
+              </div>
+            </a>
+
+            <!-- Pilates -->
+            <a href="/shop.html?category=pilates"
+               class="rounded-[20px] overflow-hidden relative cursor-pointer transition-transform duration-300 hover:scale-[1.02] block min-h-[200px] md:min-h-[248px]"
+               aria-label="Shop Pilates collection">
+              <div class="absolute inset-0 bg-gradient-to-br from-rose to-[#C47B7B]"></div>
+              <div class="absolute inset-0 bg-charcoal/15 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+              <div class="absolute bottom-7 left-7 right-7">
+                <p class="font-display text-[22px] font-semibold text-white mb-1">Pilates</p>
+                <p class="text-[11px] tracking-[2px] uppercase text-white/80">18 Styles</p>
+              </div>
+            </a>
+
+            <!-- Tennis -->
+            <a href="/shop.html?category=tennis"
+               class="rounded-[20px] overflow-hidden relative cursor-pointer transition-transform duration-300 hover:scale-[1.02] block min-h-[200px] md:min-h-[248px]"
+               aria-label="Shop Tennis collection">
+              <div class="absolute inset-0 bg-gradient-to-br from-lavender to-[#9B87CA]"></div>
+              <div class="absolute inset-0 bg-charcoal/15 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+              <div class="absolute bottom-7 left-7 right-7">
+                <p class="font-display text-[22px] font-semibold text-white mb-1">Tennis</p>
+                <p class="text-[11px] tracking-[2px] uppercase text-white/80">12 Styles</p>
+              </div>
+            </a>
+
+            <!-- Training -->
+            <a href="/shop.html?category=training"
+               class="rounded-[20px] overflow-hidden relative cursor-pointer transition-transform duration-300 hover:scale-[1.02] block min-h-[200px] md:min-h-[248px]"
+               aria-label="Shop Training collection">
+              <div class="absolute inset-0 bg-gradient-to-br from-[#C9B99A] to-[#A89072]"></div>
+              <div class="absolute inset-0 bg-charcoal/15 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+              <div class="absolute bottom-7 left-7 right-7">
+                <p class="font-display text-[22px] font-semibold text-white mb-1">Training</p>
+                <p class="text-[11px] tracking-[2px] uppercase text-white/80">30 Styles</p>
+              </div>
+            </a>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: Lifestyle / Lookbook Grid ══════════════════════════ -->
+    <section class="bg-beige py-[100px] px-8 md:px-16">
+      <div class="max-w-[1280px] mx-auto">
+        <div class="text-center mb-12">
+          <span class="section-label">AS STYLED</span>
+          <h2 class="section-title mt-3">The Elvora Edit</h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div class="aspect-square rounded-[12px] overflow-hidden relative group cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&q=80" alt="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" loading="lazy" width="400" height="400">
+            <div class="absolute inset-0 bg-charcoal/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"></div>
+          </div>
+          <div class="aspect-square rounded-[12px] overflow-hidden relative group cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80" alt="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" loading="lazy" width="400" height="400">
+            <div class="absolute inset-0 bg-charcoal/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"></div>
+          </div>
+          <div class="aspect-square rounded-[12px] overflow-hidden relative group cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80" alt="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" loading="lazy" width="400" height="400">
+            <div class="absolute inset-0 bg-charcoal/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"></div>
+          </div>
+          <div class="aspect-square rounded-[12px] overflow-hidden relative group cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=400&q=80" alt="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" loading="lazy" width="400" height="400">
+            <div class="absolute inset-0 bg-charcoal/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"></div>
+          </div>
+          <div class="aspect-square rounded-[12px] overflow-hidden relative group cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=400&q=80" alt="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" loading="lazy" width="400" height="400">
+            <div class="absolute inset-0 bg-charcoal/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"></div>
+          </div>
+          <div class="aspect-square rounded-[12px] overflow-hidden relative group cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=400&q=80" alt="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" loading="lazy" width="400" height="400">
+            <div class="absolute inset-0 bg-charcoal/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: Brand Story ════════════════════════════════════════ -->
+    <section class="bg-charcoal py-[100px] px-8 md:px-16">
+      <div class="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+
+        <!-- Left: copy -->
+        <div>
+          <span class="section-label">OUR STORY</span>
+          <h2 class="font-display font-bold text-[clamp(32px,4vw,52px)] leading-[1.15] text-white mt-3 mb-6">
+            Crafted for <em class="italic text-lavender">Movement</em>
+          </h2>
+          <p class="font-light text-[15px] leading-[1.9] text-white/65 mb-5">
+            Elvora was born from a belief that activewear should be as refined as the women who wear it. We design for the padel court, the pilates studio, and every moment in between.
+          </p>
+          <p class="font-light text-[15px] leading-[1.9] text-white/65 mb-5">
+            Each piece is considered — the fabric, the fit, the finish. Because when you feel elevated, you move elevated.
+          </p>
+          <!-- Stats -->
+          <div class="flex gap-10 mt-10 mb-10 flex-wrap">
+            <div class="flex flex-col">
+              <span class="font-display text-[36px] font-bold text-white leading-none">200+</span>
+              <span class="text-[11px] tracking-[2px] uppercase text-white/50 mt-1">Products</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-display text-[36px] font-bold text-white leading-none">6</span>
+              <span class="text-[11px] tracking-[2px] uppercase text-white/50 mt-1">Sport Activities</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-display text-[36px] font-bold text-white leading-none">50,000+</span>
+              <span class="text-[11px] tracking-[2px] uppercase text-white/50 mt-1">Happy Customers</span>
+            </div>
+          </div>
+          <a href="/about.html" class="text-[12px] tracking-[2px] uppercase text-white border-b border-white/30 hover:border-rose hover:text-rose transition-colors pb-0.5 no-underline">Discover Our Story</a>
+        </div>
+
+        <!-- Right: stacked images -->
+        <div class="relative">
+          <div class="rounded-[20px] overflow-hidden aspect-[4/5] w-full">
+            <img
+              src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80"
+              alt="Elvora brand lifestyle"
+              class="w-full h-full object-cover"
+              loading="lazy"
+              width="600"
+              height="750"
+            />
+          </div>
+          <!-- Floating inset image -->
+          <div class="absolute -bottom-6 -left-6 w-2/5 aspect-square rounded-[16px] overflow-hidden shadow-xl">
+            <div class="w-full h-full bg-gradient-to-br from-rose to-[#C47B7B]"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══ Section 6: Best Sellers ══════════════════════════════════════ -->
+    <section
+      class="bg-beige py-[100px] px-8 md:px-16"
+      x-data="{
+        products: [],
+        loading: true,
+        error: false,
+        async init() {
+          try {
+            const { data, error } = await supabase
+              .from('products')
+              .select('id, name, price, product_images(*), product_variants(color_name, color_hex)')
+              .order('created_at', { ascending: false })
+              .limit(4);
+            if (error) throw error;
+            this.products = data || [];
+          } catch (e) {
+            this.error = true;
+          } finally {
+            this.loading = false;
+          }
+        }
+      }"
+    >
+      <div class="max-w-[1280px] mx-auto">
+        <div class="flex items-end justify-between mb-12 flex-wrap gap-4">
+          <div>
+            <span class="section-label">COMMUNITY FAVORITES</span>
+            <h2 class="section-title mt-3">Best Sellers</h2>
+          </div>
+          <a href="/shop.html" class="text-[12px] tracking-[2px] uppercase text-charcoal border-b border-charcoal hover:text-rose hover:border-rose transition-colors pb-0.5 no-underline">View All</a>
+        </div>
+
+        <!-- Loading skeleton -->
+        <div x-show="loading" class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <template x-for="i in 4" :key="i">
+            <div class="bg-sage-light animate-pulse rounded-[20px] aspect-[3/4]"></div>
+          </template>
+        </div>
+
+        <!-- Error state -->
+        <div x-show="error && !loading" class="text-center py-12">
+          <p class="font-display text-2xl mb-3 text-charcoal">Our best sellers are on their way.</p>
+          <a href="/shop.html" class="text-sage underline">Explore our full collection in the meantime.</a>
+        </div>
+
+        <!-- Product grid -->
+        <div x-show="!loading && !error" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <template x-for="product in products" :key="product.id">
+            <a
+              :href="'/product.html?id=' + product.id"
+              class="block bg-white rounded-[20px] overflow-hidden group hover:-translate-y-1.5 hover:shadow-[0_20px_48px_rgba(0,0,0,0.08)] transition-all duration-300 no-underline"
+            >
+              <!-- Image area -->
+              <div class="aspect-[3/4] overflow-hidden relative">
+                <img
+                  :src="(product.product_images?.[0]?.image_url ?? '') + '?width=400&quality=75'"
+                  :alt="product.name"
+                  class="w-full h-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.08]"
+                  loading="lazy"
+                  width="400"
+                  height="533"
+                />
+              </div>
+              <!-- Product info -->
+              <div class="p-5">
+                <h3 x-text="product.name" class="font-display text-base font-semibold text-charcoal mb-1.5"></h3>
+                <p class="text-[11px] text-text-muted tracking-[1px] uppercase mb-3">Activewear</p>
+                <span x-text="'$' + (product.price ?? '')" class="font-body text-base font-semibold text-charcoal"></span>
+                <!-- Colour swatches -->
+                <div class="flex gap-1.5 mt-3">
+                  <template x-for="v in (product.product_variants ?? []).slice(0, 4)" :key="v.color_name">
+                    <span
+                      class="w-3 h-3 rounded-full border border-charcoal/10 flex-shrink-0"
+                      :style="'background:' + v.color_hex"
+                      :title="v.color_name"
+                    ></span>
+                  </template>
+                </div>
+              </div>
+            </a>
+          </template>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 7: Testimonials ══════════════════════════════════════ -->
+    <section
+      class="bg-white py-[100px] px-8 md:px-16"
+      x-data="{
+        testimonials: [],
+        loading: true,
+        async init() {
+          try {
+            const { data, error } = await supabase
+              .from('testimonials')
+              .select('*')
+              .eq('is_active', true)
+              .limit(3);
+            if (error) throw error;
+            this.testimonials = data || [];
+          } catch (e) {
+            /* silent fail — graceful empty state */
+          } finally {
+            this.loading = false;
+          }
+        }
+      }"
+    >
+      <div class="max-w-[1280px] mx-auto">
+        <div class="text-center mb-14">
+          <span class="section-label">WORN WITH LOVE</span>
+          <h2 class="section-title mt-3">What Our Community Says</h2>
+        </div>
+
+        <!-- Loading skeleton -->
+        <div x-show="loading" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <template x-for="i in 3" :key="i">
+            <div class="bg-beige animate-pulse rounded-[20px] h-48"></div>
+          </template>
+        </div>
+
+        <!-- Testimonial grid -->
+        <div x-show="!loading" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <template x-for="(t, i) in testimonials" :key="t.id">
+            <div class="bg-beige rounded-[20px] p-8">
+              <p class="font-display text-[48px] font-bold text-rose leading-none mb-4">"</p>
+              <p x-text="t.content || t.quote" class="font-display text-[15px] italic font-normal leading-[1.8] text-charcoal mb-6"></p>
+              <!-- Author -->
+              <div class="flex items-center gap-4">
+                <div
+                  class="w-11 h-11 rounded-full flex-shrink-0 flex items-center justify-center text-white text-sm font-semibold"
+                  :class="i % 3 === 0 ? 'bg-sage' : i % 3 === 1 ? 'bg-rose' : 'bg-lavender'"
+                  x-text="(t.customer_name || 'E').charAt(0).toUpperCase()"
+                ></div>
+                <div>
+                  <p x-text="t.customer_name" class="font-body text-[14px] font-semibold text-charcoal"></p>
+                  <p x-text="t.activity_label || t.activity || 'Elvora Member'" class="text-[11px] text-text-muted"></p>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 8: Newsletter Signup ══════════════════════════════════ -->
+    <!-- NOTE: Supabase newsletter_subscribers table requires RLS policy:
+         CREATE POLICY "anon_insert" ON newsletter_subscribers FOR INSERT WITH CHECK (true); -->
+    <section
+      class="bg-sage py-20 md:py-[80px] px-8 md:px-16 text-center"
+      x-data="{
+        email: '',
+        submitted: false,
+        loading: false,
+        errorMsg: '',
+        async submitNewsletter() {
+          if (!this.email || !this.email.includes('@')) return;
+          this.loading = true;
+          this.errorMsg = '';
+          try {
+            const { error } = await supabase
+              .from('newsletter_subscribers')
+              .insert({ email: this.email });
+            if (error) {
+              this.errorMsg = error.code === '23505'
+                ? 'You\'re already part of the inner circle.'
+                : 'Something went wrong — please try again.';
+            } else {
+              this.submitted = true;
+            }
+          } catch (e) {
+            this.errorMsg = 'Something went wrong — please try again.';
+          } finally {
+            this.loading = false;
+          }
+        }
+      }"
+    >
+      <!-- Success state -->
+      <div x-show="submitted" class="py-8">
+        <p class="font-display text-2xl md:text-3xl font-bold text-white italic">You're on the list. Welcome to Elvora.</p>
+      </div>
+
+      <!-- Form state -->
+      <div x-show="!submitted">
+        <h2 class="font-display text-[clamp(28px,4vw,48px)] font-bold text-white mb-3">Join the Inner Circle</h2>
+        <p class="text-white/75 text-[15px] font-light mb-10">Be the first to discover new collections, exclusive offers, and style inspiration.</p>
+        <form
+          @submit.prevent="submitNewsletter"
+          class="flex max-w-[480px] mx-auto bg-white rounded-full overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
+        >
+          <input
+            type="email"
+            x-model="email"
+            placeholder="Your email address"
+            aria-label="Email address"
+            required
+            class="flex-1 border-none outline-none px-7 bg-transparent text-charcoal font-body"
+            style="font-size: 16px;"
+          />
+          <button
+            type="submit"
+            :disabled="loading"
+            :class="loading ? 'opacity-60 cursor-not-allowed' : ''"
+            class="bg-charcoal text-white px-8 rounded-full m-1 text-[12px] tracking-[2px] uppercase font-medium font-body transition-colors hover:bg-rose"
+          >
+            <span x-show="!loading">Join the Circle</span>
+            <span x-show="loading">…</span>
+          </button>
+        </form>
+        <p x-show="errorMsg" x-text="errorMsg" class="text-white/80 text-sm mt-4"></p>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="footer-root"></div>
   <script src="/js/__env.js"></script>
   <script type="module" src="/js/supabase.js"></script>
+  <script type="module" src="/js/components.js"></script>
 </body>
 </html>

@@ -3,13 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ELVORA — About</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <title>Our Story — ELVORA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"></script>
 </head>
 <body>
-  <main><!-- Phase 2 fills this --></main>
+  <div id="nav-root"></div>
+
+  <main>
+
+    <!-- ═══ Section 1: Page Hero ══════════════════════════════════════════ -->
+    <section class="relative min-h-[60vh] flex items-end overflow-hidden bg-charcoal">
+      <img
+        src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=1600&q=80"
+        alt=""
+        class="absolute inset-0 w-full h-full object-cover opacity-60"
+        fetchpriority="high"
+        width="1600"
+        height="900"
+      />
+      <div class="relative z-10 px-8 md:px-16 pb-16 md:pb-20">
+        <span class="section-label text-sage/80">Our Story</span>
+        <h1 class="font-display font-bold text-[clamp(40px,5vw,64px)] text-white leading-[1.1] mt-4">
+          Designed for the Woman Who <em class="italic text-rose">Moves</em>
+        </h1>
+      </div>
+    </section>
+
+    <!-- ═══ Section 2: Brand Narrative ═══════════════════════════════════ -->
+    <section class="bg-beige py-[100px] px-8 md:px-16">
+      <div class="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-20 items-center">
+
+        <!-- Left: copy -->
+        <div>
+          <h2 class="section-title mb-8">Born from a belief that activewear should be as refined as the women who wear it.</h2>
+          <p class="font-body text-[17px] leading-[1.9] text-charcoal/80 mb-5">
+            Elvora began with a simple question: why should activewear compromise on elegance? We believe the women who move through the world with purpose deserve clothing that matches their standard.
+          </p>
+          <p class="font-body text-[17px] leading-[1.9] text-charcoal/80 mb-5">
+            Our collections are crafted for padel, pilates, tennis, training, and every wellness ritual in between. Each piece is designed with intention — fabric that performs, silhouettes that flatter, and a finish that feels luxurious.
+          </p>
+          <a href="/shop.html" class="btn-primary mt-6 inline-block">Shop the Collection</a>
+        </div>
+
+        <!-- Right: lifestyle image -->
+        <img
+          src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=80"
+          alt="Model in Elvora activewear"
+          class="rounded-[20px] w-full aspect-[4/5] object-cover"
+          loading="lazy"
+          width="800"
+          height="1000"
+        />
+
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: Values Strip ═══════════════════════════════════════ -->
+    <section class="bg-charcoal py-20 px-8 md:px-16">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-[900px] mx-auto text-center">
+
+        <div>
+          <h3 class="font-display text-[22px] font-bold text-white mb-3">Crafted with Intention</h3>
+          <p class="text-[14px] text-white/60 leading-[1.8] font-light">Every piece is designed to perform, flatter, and endure.</p>
+        </div>
+
+        <div>
+          <h3 class="font-display text-[22px] font-bold text-white mb-3">For Every Practice</h3>
+          <p class="text-[14px] text-white/60 leading-[1.8] font-light">Padel, pilates, tennis, training — we design for the full spectrum of movement.</p>
+        </div>
+
+        <div>
+          <h3 class="font-display text-[22px] font-bold text-white mb-3">Quietly Luxurious</h3>
+          <p class="text-[14px] text-white/60 leading-[1.8] font-light">Premium fabrics, considered silhouettes, and a finish that feels elevated.</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <div id="footer-root"></div>
   <script src="/js/__env.js"></script>
   <script type="module" src="/js/supabase.js"></script>
+  <script type="module" src="/js/components.js"></script>
 </body>
 </html>
