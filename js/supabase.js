@@ -7,4 +7,9 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const SUPABASE_URL = import.meta.env?.VITE_SUPABASE_URL ?? window.__ENV?.SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env?.VITE_SUPABASE_ANON_KEY ?? window.__ENV?.SUPABASE_ANON_KEY;
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const noop = () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } });
+const stub = new Proxy({}, { get: () => stub, apply: noop });
+
+export const supabase = SUPABASE_URL && SUPABASE_ANON_KEY
+  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : stub;
