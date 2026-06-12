@@ -7,7 +7,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 ## Phases
 
 - [x] **Phase 1: Foundation** - Setup repository, Supabase schema (all tables + RLS), seed catalog (20+ products), storage buckets, deployment pipeline, keep-alive ping
-- [ ] **Phase 2: Brand Shell + Homepage** - Quiet luxury Tailwind v4 design system, component library, full 8-section homepage, About page, Contact/FAQ page
+- [x] **Phase 2: Brand Shell + Homepage** - Quiet luxury Tailwind v4 design system, component library, full 8-section homepage, About page, Contact/FAQ page (completed 2026-06-12)
 - [ ] **Phase 3: Product Catalog** - PLP with filtering/search/sort, PDP with gallery, sticky ATC, size guide, fabric details, Complete the Look, recommendations, reviews
 - [ ] **Phase 4: Auth + Customer Account** - Signup/login/session persistence, wishlist, saved AI style preferences, account dashboard
 - [ ] **Phase 5: AI Style Match** - Gemini Vision photo upload → outfit recommendations → colour guidance → session persistence
@@ -71,16 +71,16 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — Design system (src/input.css component utilities + marquee keyframes), js/components.js (nav + footer injection, Alpine stores), update all 9 HTML placeholder stubs
+- [x] 02-01-PLAN.md — Design system (src/input.css component utilities + marquee keyframes), js/components.js (nav + footer injection, Alpine stores), update all 9 HTML placeholder stubs
 
 **Wave 2** *(blocked on Wave 1 completion — runs in parallel)*
 
-- [ ] 02-02-PLAN.md — index.html static sections: hero, marquee strip, featured collections grid, lookbook grid, brand story
-- [ ] 02-03-PLAN.md — about.html editorial layout + contact.html FAQ accordion and contact info
+- [x] 02-02-PLAN.md — index.html static sections: hero, marquee strip, featured collections grid, lookbook grid, brand story
+- [x] 02-03-PLAN.md — about.html editorial layout + contact.html FAQ accordion and contact info
 
 **Wave 3** *(blocked on Wave 2 — 02-02 specifically)*
 
-- [ ] 02-04-PLAN.md — index.html live-data sections: best sellers (Supabase), testimonials (Supabase), newsletter signup (Supabase insert)
+- [x] 02-04-PLAN.md — index.html live-data sections: best sellers (Supabase), testimonials (Supabase), newsletter signup (Supabase insert)
 
 **UI hint**: yes
 
@@ -174,7 +174,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 9/9 | Complete   | 2026-06-11 |
-| 2. Brand Shell + Homepage | 0/4 | Not started | - |
+| 2. Brand Shell + Homepage | 4/4 | Complete   | 2026-06-12 |
 | 3. Product Catalog | 0/TBD | Not started | - |
 | 4. Auth + Customer Account | 0/TBD | Not started | - |
 | 5. AI Style Match | 0/TBD | Not started | - |
