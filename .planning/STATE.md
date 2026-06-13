@@ -80,6 +80,12 @@ Recent decisions affecting current work:
 
 None yet.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260613-vot | Update Running category sub-categories to Run Era, Pace Mode, Runner's High in UI filters nav and lookbook | 2026-06-13 | cd3cea6 | [260613-vot-update-running-category-sub-categories-t](.planning/quick/260613-vot-update-running-category-sub-categories-t/) |
+
 ### Blockers/Concerns
 
 - Phase 7 (AI Style Match): Claude Vision prompt engineering for reliable structured JSON needs 2–3 iteration cycles — reserve time
@@ -97,6 +103,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-13T03:37:33.669Z
-Stopped at: context exhaustion at 75% (2026-06-13)
+Last session: 2026-06-13T15:57:00.000Z
+Stopped at: Quick task 260613-vot complete — Running sub-categories added (Run Era, Pace Mode, Runner's High)
 Resume file: None
