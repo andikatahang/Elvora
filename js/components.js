@@ -24,7 +24,7 @@ if (window.Alpine) registerStores();
 // ─── Nav HTML ────────────────────────────────────────────────────────────────
 
 const navHTML = `
-<nav
+<div
   x-data="{
     navOpen: false,
     scrolled: false,
@@ -34,61 +34,64 @@ const navHTML = `
       }, { passive: true });
     }
   }"
-  :class="scrolled ? 'shadow-sm' : ''"
-  class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 lg:px-12 py-5 transition-all duration-300 bg-beige/92 backdrop-blur-md border-b border-sage/20"
-  role="navigation"
-  aria-label="Main navigation"
 >
-  <!-- Logo -->
-  <a href="/index.html" class="font-display font-bold text-2xl tracking-widest text-charcoal hover:text-rose transition-colors no-underline flex items-center gap-1">
-    ELV<svg class="inline w-6 h-6 -mt-0.5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.7"/><circle cx="12" cy="5" r="1.5" fill="currentColor" opacity="0.4"/><circle cx="12" cy="19" r="1.5" fill="currentColor" opacity="0.4"/><circle cx="5" cy="12" r="1.5" fill="currentColor" opacity="0.4"/><circle cx="19" cy="12" r="1.5" fill="currentColor" opacity="0.4"/></svg>RA
-  </a>
-
-  <!-- Desktop nav links -->
-  <ul class="hidden lg:flex gap-9 list-none m-0 p-0 items-center">
-    <li><a href="/index.html" data-page="/index.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Home</a></li>
-    <li><a href="/shop.html" data-page="/shop.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Shop</a></li>
-    <li><a href="/lookbook.html" data-page="/lookbook.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Lookbook</a></li>
-    <li><a href="/about.html" data-page="/about.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">About</a></li>
-    <li><a href="/contact.html" data-page="/contact.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Contact</a></li>
-  </ul>
-
-  <!-- Nav actions -->
-  <div class="flex items-center gap-3">
-    <!-- Search -->
-    <button aria-label="Search" class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/>
-      </svg>
-    </button>
-
-    <!-- User account -->
-    <a href="/auth.html" aria-label="Your account" class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/>
-      </svg>
+  <nav
+    :class="scrolled ? 'shadow-sm' : ''"
+    class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 lg:px-12 py-5 transition-all duration-300 bg-beige/92 backdrop-blur-md border-b border-sage/20"
+    role="navigation"
+    aria-label="Main navigation"
+  >
+    <!-- Logo -->
+    <a href="/index.html" class="font-display font-bold text-2xl tracking-widest text-charcoal hover:text-rose transition-colors no-underline flex items-center gap-1">
+      ELV<svg class="inline w-6 h-6 -mt-0.5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.7"/><circle cx="12" cy="5" r="1.5" fill="currentColor" opacity="0.4"/><circle cx="12" cy="19" r="1.5" fill="currentColor" opacity="0.4"/><circle cx="5" cy="12" r="1.5" fill="currentColor" opacity="0.4"/><circle cx="19" cy="12" r="1.5" fill="currentColor" opacity="0.4"/></svg>RA
     </a>
 
-    <!-- Cart bag -->
-    <a href="/cart.html" aria-label="Shopping bag" class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors relative">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke-linecap="round"/><line x1="3" y1="6" x2="21" y2="6"/>
-        <path d="M16 10a4 4 0 01-8 0" stroke-linecap="round"/>
-      </svg>
-      <span x-show="$store.cart.count > 0" x-text="$store.cart.count" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose text-white text-[9px] flex items-center justify-center font-semibold" style="display:none;"></span>
-    </a>
+    <!-- Desktop nav links -->
+    <ul class="hidden lg:flex gap-9 list-none m-0 p-0 items-center">
+      <li><a href="/index.html" data-page="/index.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Home</a></li>
+      <li><a href="/shop.html" data-page="/shop.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Shop</a></li>
+      <li><a href="/lookbook.html" data-page="/lookbook.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Lookbook</a></li>
+      <li><a href="/about.html" data-page="/about.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">About</a></li>
+      <li><a href="/contact.html" data-page="/contact.html" class="nav-link text-[12px] font-medium tracking-[2px] uppercase text-charcoal hover:text-rose transition-colors no-underline">Contact</a></li>
+    </ul>
 
-    <!-- Mobile hamburger -->
-    <button @click="navOpen = true" aria-label="Open navigation menu" class="w-11 h-11 flex items-center justify-center text-charcoal lg:hidden">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-        <line x1="4" y1="6" x2="20" y2="6" stroke-linecap="round"/>
-        <line x1="4" y1="12" x2="20" y2="12" stroke-linecap="round"/>
-        <line x1="4" y1="18" x2="20" y2="18" stroke-linecap="round"/>
-      </svg>
-    </button>
-  </div>
+    <!-- Nav actions -->
+    <div class="flex items-center gap-3">
+      <!-- Search -->
+      <button aria-label="Search" class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/>
+        </svg>
+      </button>
 
-  <!-- Mobile drawer -->
+      <!-- User account -->
+      <a href="/auth.html" aria-label="Your account" class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/>
+        </svg>
+      </a>
+
+      <!-- Cart bag -->
+      <a href="/cart.html" aria-label="Shopping bag" class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors relative">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke-linecap="round"/><line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0" stroke-linecap="round"/>
+        </svg>
+        <span x-show="$store.cart.count > 0" x-text="$store.cart.count" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose text-white text-[9px] flex items-center justify-center font-semibold" style="display:none;"></span>
+      </a>
+
+      <!-- Mobile hamburger -->
+      <button @click="navOpen = true" aria-label="Open navigation menu" class="w-11 h-11 flex items-center justify-center text-charcoal lg:hidden">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <line x1="4" y1="6" x2="20" y2="6" stroke-linecap="round"/>
+          <line x1="4" y1="12" x2="20" y2="12" stroke-linecap="round"/>
+          <line x1="4" y1="18" x2="20" y2="18" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile drawer — sibling of nav, outside backdrop-filter context -->
   <div
     x-show="navOpen"
     x-transition:enter="transition ease-out duration-300"
@@ -98,8 +101,8 @@ const navHTML = `
     x-transition:leave-start="translate-x-0"
     x-transition:leave-end="translate-x-full"
     @keydown.escape.window="navOpen = false"
-    class="fixed inset-y-0 right-0 w-72 bg-charcoal z-[200] flex flex-col p-8"
-    style="display:none; background-color: var(--charcoal);"
+    class="fixed inset-y-0 right-0 w-72 z-[200] flex flex-col p-8"
+    style="display:none; background-color:#2E2E2E;"
   >
     <button @click="navOpen = false" aria-label="Close navigation menu" class="self-end mb-8 text-white hover:text-rose transition-colors">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
@@ -124,14 +127,14 @@ const navHTML = `
     </div>
   </div>
 
-  <!-- Backdrop -->
+  <!-- Backdrop — sibling of nav, outside backdrop-filter context -->
   <div
     x-show="navOpen"
     @click="navOpen = false"
-    class="fixed inset-0 bg-charcoal/50 z-[150]"
-    style="display:none;"
+    class="fixed inset-0 z-[150]"
+    style="display:none; background-color:rgba(46,46,46,0.5);"
   ></div>
-</nav>
+</div>
 `;
 
 // ─── Footer HTML ──────────────────────────────────────────────────────────────
