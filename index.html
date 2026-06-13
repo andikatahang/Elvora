@@ -19,11 +19,11 @@
     <section class="hero">
       <div class="hero-content">
         <p class="hero-tag fade-up">New Collection 2025</p>
-        <h1 class="hero-title fade-up delay-1">Move with<br><em>Grace &</em><br>Strength</h1>
+        <h1 class="hero-title fade-up delay-1">Elevate Your<br><em>Active Life</em></h1>
         <p class="hero-desc fade-up delay-2">Activewear designed for women who refuse to choose between performance and elegance. Feel powerful in every motion.</p>
         <div class="hero-actions fade-up delay-3">
-          <a href="/shop.html" class="btn-primary">Shop Collection</a>
-          <a href="/lookbook.html" class="btn-secondary">View Lookbook</a>
+          <a href="/shop.html" class="btn-primary">Discover the Collection</a>
+          <a href="/style-match.html" class="btn-secondary">Find Your Style</a>
         </div>
       </div>
       <div class="hero-visual">
@@ -76,52 +76,52 @@
       </div>
       <div class="categories-grid">
 
-        <a href="/shop.html?category=leggings" class="cat-card large">
-          <img src="https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&q=80" alt="Leggings" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">
+        <a href="/shop.html?category=padel" class="cat-card large">
+          <img src="https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&q=80" alt="Padel" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">
           <div class="cat-overlay"></div>
-          <div class="cat-icon">🧘</div>
+          <div class="cat-icon">🎾</div>
           <div class="cat-info">
-            <div class="cat-name">Leggings</div>
+            <div class="cat-name">Padel</div>
             <div class="cat-count">32 styles</div>
           </div>
         </a>
 
-        <a href="/shop.html?category=jackets" class="cat-card medium">
-          <img src="https://images.unsplash.com/photo-1617952236317-0bd127407984?w=400&q=80" alt="Jackets" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">
+        <a href="/shop.html?category=pilates" class="cat-card medium">
+          <img src="https://images.unsplash.com/photo-1617952236317-0bd127407984?w=400&q=80" alt="Pilates" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">
           <div class="cat-overlay"></div>
-          <div class="cat-icon">🧥</div>
+          <div class="cat-icon">🧘</div>
           <div class="cat-info">
-            <div class="cat-name">Jackets</div>
+            <div class="cat-name">Pilates</div>
             <div class="cat-count">18 styles</div>
           </div>
         </a>
 
-        <a href="/shop.html?category=tops" class="cat-card medium">
-          <img src="https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=400&q=80" alt="Tops" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">
+        <a href="/shop.html?category=tennis" class="cat-card medium">
+          <img src="https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=400&q=80" alt="Tennis" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">
           <div class="cat-overlay"></div>
-          <div class="cat-icon">👕</div>
+          <div class="cat-icon">🎾</div>
           <div class="cat-info">
-            <div class="cat-name">Tops</div>
+            <div class="cat-name">Tennis</div>
             <div class="cat-count">24 styles</div>
           </div>
         </a>
 
-        <a href="/shop.html?category=sport-hijab" class="cat-card medium">
-          <img src="https://images.unsplash.com/photo-1590650516494-0c8e4a4dd67e?w=400&q=80" alt="Sport Hijab" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">
+        <a href="/shop.html?category=training" class="cat-card medium">
+          <img src="https://images.unsplash.com/photo-1590650516494-0c8e4a4dd67e?w=400&q=80" alt="Training" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">
           <div class="cat-overlay"></div>
-          <div class="cat-icon">🧕</div>
+          <div class="cat-icon">💪</div>
           <div class="cat-info">
-            <div class="cat-name">Sport Hijab</div>
+            <div class="cat-name">Training</div>
             <div class="cat-count">15 styles</div>
           </div>
         </a>
 
-        <a href="/shop.html?category=socks" class="cat-card medium">
-          <img src="https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?w=400&q=80" alt="Socks" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">
+        <a href="/shop.html?category=wellness" class="cat-card medium">
+          <img src="https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?w=400&q=80" alt="Wellness" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">
           <div class="cat-overlay"></div>
-          <div class="cat-icon">🧦</div>
+          <div class="cat-icon">🌿</div>
           <div class="cat-info">
-            <div class="cat-name">Socks</div>
+            <div class="cat-name">Wellness</div>
             <div class="cat-count">12 styles</div>
           </div>
         </a>
@@ -319,6 +319,8 @@
           this.loading = true;
           this.errorMsg = '';
           try {
+            const configured = !!(window.__ENV?.SUPABASE_URL);
+            if (!configured) { this.success = true; return; }
             const { error } = await supabase
               .from('newsletter_subscribers')
               .insert({ email: this.email });

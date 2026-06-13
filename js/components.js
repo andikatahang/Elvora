@@ -99,7 +99,7 @@ const navHTML = `
     x-transition:leave-end="translate-x-full"
     @keydown.escape.window="navOpen = false"
     class="fixed inset-y-0 right-0 w-72 bg-charcoal z-[200] flex flex-col p-8"
-    style="display:none;"
+    style="display:none; background-color: var(--charcoal);"
   >
     <button @click="navOpen = false" aria-label="Close navigation menu" class="self-end mb-8 text-white hover:text-rose transition-colors">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
