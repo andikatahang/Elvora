@@ -21,7 +21,7 @@ created: 2026-06-14
 | Preset | not applicable |
 | Component library | none — bespoke component layer in `src/input.css` |
 | Icon library | SVG inline icons (consistent with Phase 2 nav pattern) |
-| Font — display | Playfair Display (serif), wght 700 only, loaded via Google Fonts CDN |
+| Font — display | Playfair Display (serif), wght 400 only, loaded via Google Fonts CDN |
 | Font — body | Poppins (sans-serif), wght 400/600, loaded via Google Fonts CDN |
 | Image carousel | Swiper.js v11 via CDN (D-10 from CONTEXT.md) |
 
@@ -47,7 +47,7 @@ Exceptions:
 - Touch targets (wishlist button, swatch) minimum 44×44px per NF-001 — swatch hit area uses 44px even if visual swatch dot is 12px (padding overlay)
 - Sticky ATC bar: 56px fixed height, z-index above content
 - Swiper thumbnail strip: 80px height (thumbnail images 72px + 8px gap)
-- Sub-category pill row: 8px vertical padding, 20px horizontal padding — matches existing `.filter-pill` pattern
+
 
 Source: `src/input.css` (established patterns), REQUIREMENTS.md §NF-001
 
@@ -61,18 +61,18 @@ All sizes in px. Inherits Phase 2 type scale exactly — do NOT introduce new si
 |------|------|------------|--------|-------------|------|-------|
 | 1 | Label | 10–13px | 400 (regular) | 1.4 | Poppins | Section labels (`.section-label` 10px), badge/pill text (11–12px), size chart table cells (13px), review count, size guide link, load-more-reviews link |
 | 2 | Body | 14–16px | 400 (regular) | 1.8 | Poppins | Product description, review text, fabric details (14px), product price and review star aggregate number (15px, weight 600), sub-category label (15–16px), form inputs (16px on mobile per NF-001) |
-| 3 | Heading | 16–28px | 600 (semibold) | 1.3 | Playfair Display | Product card name (16px), size guide modal heading (22px), PDP product title (up to 28px at max viewport — `clamp(22px, 3vw, 28px)`) |
-| 4 | Display | clamp(40px, 5vw, 64px) | 700 (bold) | 1.1 | Playfair Display | Shop hero title (existing `.shop-hero-title`) — PDP not applicable |
+| 3 | Heading | 16–28px | 400 (regular) | 1.3 | Playfair Display | Product card name (16px), size guide modal heading (22px), PDP product title (up to 28px at max viewport — `clamp(22px, 3vw, 28px)`) |
+| 4 | Display | clamp(40px, 5vw, 64px) | 400 (regular) | 1.1 | Playfair Display | Shop hero title (existing `.shop-hero-title`) — PDP not applicable |
 
 Specific rules (all are weight, color, or decoration variants within the 4 tiers above — not new size tiers):
 
-- **Product card name (Tier 3):** Playfair Display 16px weight 600, `color: var(--charcoal)`
+- **Product card name (Tier 3):** Playfair Display 16px weight 400, `color: var(--charcoal)`
 - **Product price (Tier 2):** Poppins 15px weight 600, `color: var(--charcoal)`
-- **PDP product title (Tier 3):** Playfair Display `clamp(22px, 3vw, 28px)` weight 700, line-height 1.2 — this is the upper end of Tier 3
+- **PDP product title (Tier 3):** Playfair Display `clamp(22px, 3vw, 28px)` weight 400, line-height 1.2 — this is the upper end of Tier 3
 - **Review star aggregate number (Tier 2):** Poppins 15px weight 600; star glyphs `color: #F0C060`
 - **Review count (Tier 1):** Poppins 11px weight 400, `color: var(--text-muted)`
 - **Fit feedback pill text (Tier 1):** Poppins 11px weight 400, uppercase, letter-spacing 1px
-- **Size guide modal heading (Tier 3):** Playfair Display 22px weight 600
+- **Size guide modal heading (Tier 3):** Playfair Display 22px weight 400
 - **Size chart table (Tier 1):** Poppins 13px weight 400, header row weight 600
 - **Form input text (Tier 2):** Poppins 14px weight 400 desktop; minimum 16px on mobile `<input>` elements to prevent iOS Safari auto-zoom (NF-001)
 - **Section labels `.section-label` (Tier 1):** Poppins 10px weight 600, letter-spacing 5px, uppercase, `color: var(--sage)`
@@ -144,7 +144,7 @@ Components required for Phase 3 (all built custom — no shadcn):
 | Component | Class Pattern | Notes |
 |-----------|--------------|-------|
 | Activity tab bar | `.filter-pills` + `.filter-pill` + `.active` | Existing class — reuse. Active = `bg: var(--charcoal)`, text: white |
-| Sub-category pill row | `.sub-pills` (new) + `.sub-pill` + `.active` | Same visual as `.filter-pill` but smaller: padding 6px 16px, font-size 11px. Horizontally scrollable on mobile (`overflow-x: auto; scrollbar-width: none`) |
+| Sub-category pill row | `.sub-pills` (new) + `.sub-pill` + `.active` | Same visual as `.filter-pill` but smaller: padding 4px 16px, font-size 11px. Horizontally scrollable on mobile (`overflow-x: auto; scrollbar-width: none`) |
 | Sort select | `.sort-select` | Existing class — reuse. Replace `<select>` default with styled wrapper if needed |
 | Product card | `.product-card` | Existing class — extend with swatch hover image update (Alpine x-bind:style) |
 | Colour swatch (card) | `.swatch` | Existing 12px dot. Active swatch: 1.5px solid `var(--charcoal)` outline, 2px offset |
@@ -161,7 +161,7 @@ Components required for Phase 3 (all built custom — no shadcn):
 |-----------|--------------|-------|
 | Swiper gallery | Swiper.js v11 thumbs module | Main image aspect-ratio 4/5 on mobile, 3/4 on desktop. Thumbnail strip: 4 visible thumbs, scrollable |
 | Colour swatch (PDP) | `.pdp-swatch` (new) | 24px dot, active ring: 2px solid `var(--charcoal)`, 3px offset. Hover: scale(1.1) |
-| Size button | `.size-btn` (new) | Border 1.5px solid `rgba(46,46,46,0.2)`, border-radius 8px, padding 10px 16px, Poppins 13px weight 400 (Tier 1). Active: border-color `var(--charcoal)` + bg `var(--charcoal)` + text white. Sold out: opacity 0.4, cursor not-allowed, text-decoration line-through |
+| Size button | `.size-btn` (new) | Border 1.5px solid `rgba(46,46,46,0.2)`, border-radius 8px, padding 8px 16px, Poppins 13px weight 400 (Tier 1). Active: border-color `var(--charcoal)` + bg `var(--charcoal)` + text white. Sold out: opacity 0.4, cursor not-allowed, text-decoration line-through |
 | Size guide link | `.size-guide-link` (new) | Matches `.view-all` underline style, Poppins 12px (Tier 1), inline next to size label |
 | Size guide modal | `.modal-overlay` + `.modal-content` (new) | Overlay: `rgba(0,0,0,0.4)` backdrop, blur(4px). Content: white bg, border-radius 20px, max-width 520px, padding 40px, focus-trapped |
 | ATC button (main) | `.atc-main` (new) | Matches `.btn-primary` pill style — full-width on mobile, fixed width 280px on desktop, 56px height |
