@@ -55,29 +55,55 @@ Source: `src/input.css` (established patterns), REQUIREMENTS.md §NF-001
 
 ## Typography
 
-All sizes in px. Inherits Phase 2 type scale exactly — do NOT introduce new sizes.
+All sizes in px. Inherits Phase 2 type scale exactly — do NOT introduce new sizes beyond these 4 tiers.
 
-| Role | Size | Weight | Line Height | Font | Usage |
-|------|------|--------|-------------|------|-------|
-| Body | 14px | 400 (regular) | 1.8 | Poppins | Review text, fabric details, product description body |
-| Label | 11–12px | 500 (medium) | 1.4 | Poppins | Filter pills, sort label, badge text, swatch count overflow, section-label utility class |
-| Subheading | 15–16px | 500–600 (medium/semibold) | 1.5 | Poppins | Product price, product category sub-label, review author name |
-| Heading | 16–22px | 600 (semibold) | 1.3 | Playfair Display | Product card name (16px), PDP product name (22–28px), section headings |
-| Display | clamp(40px, 5vw, 64px) | 700 (bold) | 1.1 | Playfair Display | Shop hero title (existing `.shop-hero-title`), PDP not applicable |
+| Tier | Role | Size Range | Weight | Line Height | Font | Usage |
+|------|------|------------|--------|-------------|------|-------|
+| 1 | Label | 10–13px | 500 (medium) | 1.4 | Poppins | Section labels (`.section-label` 10px), badge/pill text (11–12px), size chart table cells (13px), review count, size guide link, load-more-reviews link |
+| 2 | Body | 14–16px | 400 (regular) | 1.8 | Poppins | Product description, review text, fabric details (14px), product price and review star aggregate number (15px, weight 600), sub-category label (15–16px, weight 500), form inputs (16px on mobile per NF-001) |
+| 3 | Heading | 16–28px | 600 (semibold) | 1.3 | Playfair Display | Product card name (16px), size guide modal heading (22px), PDP product title (up to 28px at max viewport — `clamp(22px, 3vw, 28px)`) |
+| 4 | Display | clamp(40px, 5vw, 64px) | 700 (bold) | 1.1 | Playfair Display | Shop hero title (existing `.shop-hero-title`) — PDP not applicable |
 
-Specific rules:
-- Product card name: Playfair Display 16px weight 600, `color: var(--charcoal)`
-- Product price: Poppins 15px weight 600, `color: var(--charcoal)`
-- PDP product title: Playfair Display `clamp(28px, 3vw, 40px)` weight 700, line-height 1.2
-- Review star aggregate: Poppins 15px weight 600 (the number), star glyphs `color: #F0C060`
-- Review count: Poppins 11px weight 400, `color: var(--text-muted)`
-- Fit feedback pill text: Poppins 11px weight 500, uppercase, letter-spacing 1px
-- Size guide modal heading: Playfair Display 22px weight 600
-- Size chart table: Poppins 13px weight 400, header row weight 500
-- Form input text: Poppins 14px weight 400 (minimum 16px on mobile per NF-001 — use `font-size: 16px` on `<input>` elements to prevent iOS Safari auto-zoom)
-- Section labels (.section-label): Poppins 10px weight 500, letter-spacing 5px, uppercase, `color: var(--sage)`
+Specific rules (all are weight, color, or decoration variants within the 4 tiers above — not new size tiers):
+
+- **Product card name (Tier 3):** Playfair Display 16px weight 600, `color: var(--charcoal)`
+- **Product price (Tier 2):** Poppins 15px weight 600, `color: var(--charcoal)`
+- **PDP product title (Tier 3):** Playfair Display `clamp(22px, 3vw, 28px)` weight 700, line-height 1.2 — this is the upper end of Tier 3
+- **Review star aggregate number (Tier 2):** Poppins 15px weight 600; star glyphs `color: #F0C060`
+- **Review count (Tier 1):** Poppins 11px weight 400, `color: var(--text-muted)`
+- **Fit feedback pill text (Tier 1):** Poppins 11px weight 500, uppercase, letter-spacing 1px
+- **Size guide modal heading (Tier 3):** Playfair Display 22px weight 600
+- **Size chart table (Tier 1):** Poppins 13px weight 400, header row weight 500
+- **Form input text (Tier 2):** Poppins 14px weight 400 desktop; minimum 16px on mobile `<input>` elements to prevent iOS Safari auto-zoom (NF-001)
+- **Section labels `.section-label` (Tier 1):** Poppins 10px weight 500, letter-spacing 5px, uppercase, `color: var(--sage)`
+- **Accordion trigger (Tier 1):** Poppins 13px weight 500
+- **Size button label (Tier 1):** Poppins 13px weight 500
 
 Source: `src/input.css` (all established classes), REQUIREMENTS.md §NF-001
+
+---
+
+## Visuals
+
+### Primary Screen Focal Points
+
+- **PLP primary anchor:** Product card image — the image-first card layout draws the eye before name or price. Cards must allocate at minimum 60% of card height to the product image; name and price sit in a compact info strip below.
+- **PDP primary anchor:** Main Swiper gallery image — full-bleed left column on desktop (55% width), `fetchpriority="high"` on first slide `<img>`. The gallery is the single most prominent element on the page and must load fast and render at full quality before all other PDP sections.
+
+### Visual Hierarchy Rules
+
+- PLP: image → price → name → swatches (reading order matches visual weight)
+- PDP: gallery (left) → product name + price (top right) → size/colour selectors → ATC button — all right-column elements stack in this order on mobile
+- Section headings ("Complete the Look", "You Might Also Love", "What Our Community Says") use `.section-label` above Playfair Display heading — same double-header pattern as Phase 2 homepage sections
+- White product cards (`--white`) float above the `--beige` page background — no additional border or shadow needed on default state; `box-shadow` only on hover
+
+### Image Treatment
+
+- All product card images: aspect-ratio 3/4 (portrait), `object-fit: cover`, `object-position: top`
+- PDP main gallery: aspect-ratio 4/5 on mobile, 3/4 on desktop
+- Complete the Look cards: narrower variant, aspect-ratio 3/4
+
+Source: `elvora_updated-3.html` (visual reference), CONTEXT.md §Canonical Refs
 
 ---
 
@@ -135,18 +161,18 @@ Components required for Phase 3 (all built custom — no shadcn):
 |-----------|--------------|-------|
 | Swiper gallery | Swiper.js v11 thumbs module | Main image aspect-ratio 4/5 on mobile, 3/4 on desktop. Thumbnail strip: 4 visible thumbs, scrollable |
 | Colour swatch (PDP) | `.pdp-swatch` (new) | 24px dot, active ring: 2px solid `var(--charcoal)`, 3px offset. Hover: scale(1.1) |
-| Size button | `.size-btn` (new) | Border 1.5px solid `rgba(46,46,46,0.2)`, border-radius 8px, padding 10px 16px, Poppins 13px weight 500. Active: border-color `var(--charcoal)` + bg `var(--charcoal)` + text white. Sold out: opacity 0.4, cursor not-allowed, text-decoration line-through |
-| Size guide link | `.size-guide-link` (new) | Matches `.view-all` underline style, Poppins 12px, inline next to size label |
+| Size button | `.size-btn` (new) | Border 1.5px solid `rgba(46,46,46,0.2)`, border-radius 8px, padding 10px 16px, Poppins 13px weight 500 (Tier 1). Active: border-color `var(--charcoal)` + bg `var(--charcoal)` + text white. Sold out: opacity 0.4, cursor not-allowed, text-decoration line-through |
+| Size guide link | `.size-guide-link` (new) | Matches `.view-all` underline style, Poppins 12px (Tier 1), inline next to size label |
 | Size guide modal | `.modal-overlay` + `.modal-content` (new) | Overlay: `rgba(0,0,0,0.4)` backdrop, blur(4px). Content: white bg, border-radius 20px, max-width 520px, padding 40px, focus-trapped |
 | ATC button (main) | `.atc-main` (new) | Matches `.btn-primary` pill style — full-width on mobile, fixed width 280px on desktop, 56px height |
 | Sticky ATC bar | `.sticky-atc` (new) | Fixed bottom: 0, full-width, white bg, border-top 1px solid `rgba(168,191,163,0.3)`, z-index 50, height 64px, hidden until IntersectionObserver fires |
-| Fabric accordion | `.accordion-item` + `.accordion-trigger` + `.accordion-body` (new) | Border-top 1px solid `rgba(46,46,46,0.1)`. Trigger: Poppins 13px weight 500. Icon: + / − toggle, `color: var(--text-muted)`. Body: Poppins 14px weight 300, line-height 1.8 |
+| Fabric accordion | `.accordion-item` + `.accordion-trigger` + `.accordion-body` (new) | Border-top 1px solid `rgba(46,46,46,0.1)`. Trigger: Poppins 13px weight 500 (Tier 1). Icon: + / − toggle, `color: var(--text-muted)`. Body: Poppins 14px weight 300 (Tier 2), line-height 1.8 |
 | Complete the Look | `.look-grid` (new) | 2–3 cards in a horizontal row. Card: narrower variant of `.product-card` without ATC reveal |
 | Related products | `.related-grid` (new) | 4-column grid (desktop), 2-column (mobile), reuses `.product-card` |
-| Review aggregate | `.review-summary` (new) | Large star rating number (Playfair Display 32px), star row, total count |
+| Review aggregate | `.review-summary` (new) | Large star rating number Playfair Display 32px (Tier 3 upper bound, semibold), star row, total count |
 | Review card | `.review-card` (new) | White bg, border-radius 16px, padding 24px. Fit badge as pill |
-| Fit badge | `.fit-badge` (new) | Poppins 10px weight 500, uppercase, letter-spacing 1px, border-radius 20px. Runs Small: `bg: #FEF3C7, color: #92400E`. True to Size: `bg: var(--sage-light), color: var(--charcoal)`. Runs Large: `bg: #FEE2E2, color: #991B1B` |
-| Load more (reviews) | `.reviews-load-more` (new) | Matches `.view-all` underline style, centered, Poppins 12px |
+| Fit badge | `.fit-badge` (new) | Poppins 10px weight 500 (Tier 1), uppercase, letter-spacing 1px, border-radius 20px. Runs Small: `bg: #FEF3C7, color: #92400E`. True to Size: `bg: var(--sage-light), color: var(--charcoal)`. Runs Large: `bg: #FEE2E2, color: #991B1B` |
+| Load more (reviews) | `.reviews-load-more` (new) | Matches `.view-all` underline style, centered, Poppins 12px (Tier 1) |
 
 Source: `src/input.css` (existing classes noted), CONTEXT.md §Specific Ideas, REQUIREMENTS.md §F-010/F-013/F-014/F-015/F-019
 
