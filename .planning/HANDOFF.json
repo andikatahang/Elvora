@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-06-13T03:39:54.222Z",
+  "phase": "02",
+  "phase_name": "brand-shell-homepage",
+  "phase_dir": ".planning/phases/02-brand-shell-homepage",
+  "plan": 4,
+  "task": 4,
+  "total_tasks": 4,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": 1, "name": "Phase 02 UAT 9/9 passed (fresh verification pass)", "status": "done", "commit": "b74666e"},
+    {"id": 2, "name": "Mobile drawer backdrop-filter containing block fix", "status": "done", "commit": "0dfcd9c"},
+    {"id": 3, "name": "Newsletter this.success typo fixed to this.submitted", "status": "done", "commit": "32f7dc2"},
+    {"id": 4, "name": "Contact + newsletter success modal pop-ups (x-if centered)", "status": "done", "commit": "0ef51d6"},
+    {"id": 5, "name": "about.html heading + CTA + brand pillars dark strip", "status": "done", "commit": "dabcb16"},
+    {"id": 6, "name": "Best sellers animate-pulse skeleton fix", "status": "done", "commit": "dabcb16"}
+  ],
+  "remaining_tasks": [],
+  "blockers": [],
+  "human_actions_pending": [
+    {
+      "action": "Verify pop-up modals are centered on both pages after latest fix",
+      "context": "User confirmed pop-ups appeared top-left; fix applied (x-if instead of x-show). Needs browser confirmation.",
+      "blocking": false
+    }
+  ],
+  "decisions": [
+    {"decision": "Modal pop-ups use x-if (not x-show) for overlay divs with display:flex", "rationale": "x-show removes display:flex when toggling; x-if adds/removes element entirely preserving inline styles", "phase": "02"},
+    {"decision": "Mobile drawer and backdrop are siblings of nav (not children)", "rationale": "nav has backdrop-filter which in Chrome/WebKit creates containing block for fixed descendants, clipping drawer to nav height", "phase": "02"},
+    {"decision": "Nav always shows frosted-beige background (bg-beige/92 backdrop-blur)", "rationale": "Transparent nav made charcoal links invisible over dark hero backgrounds", "phase": "02"}
+  ],
+  "uncommitted_files": [],
+  "next_action": "Run /gsd-plan-phase 3 to plan Phase 03 (Product Catalog — PLP + PDP).",
+  "context_notes": "Phase 02 is fully complete. UAT 9/9 passed. All code committed. Session ended due to context exhaustion at 77%. No outstanding issues."
+}
