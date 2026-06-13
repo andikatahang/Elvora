@@ -320,7 +320,7 @@
           this.errorMsg = '';
           try {
             const configured = !!(window.__ENV?.SUPABASE_URL);
-            if (!configured) { this.success = true; return; }
+            if (!configured) { this.submitted = true; return; }
             const { error } = await supabase
               .from('newsletter_subscribers')
               .insert({ email: this.email });
