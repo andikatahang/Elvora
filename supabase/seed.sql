@@ -25,7 +25,10 @@ INSERT INTO collections (id, name, slug, description, is_featured, display_order
   ('b1000000-0000-0000-0000-000000000003', 'The Padel Edit',    'padel-edit',        'Court-ready pieces engineered for padel and tennis',                  true,  3),
   ('b1000000-0000-0000-0000-000000000004', 'Studio Essentials', 'studio-essentials', 'The foundations of every pilates and yoga wardrobe',                  true,  4),
   ('b1000000-0000-0000-0000-000000000005', 'Summer Collection', 'summer-collection', 'Lightweight, breathable pieces for warm-weather training',            false, 5),
-  ('b1000000-0000-0000-0000-000000000006', 'Core Range',        'core-range',        'Timeless, versatile pieces that anchor any active wardrobe',          false, 6);
+  ('b1000000-0000-0000-0000-000000000006', 'Core Range',        'core-range',        'Timeless, versatile pieces that anchor any active wardrobe',          false, 6),
+  ('b1000000-0000-0000-0000-000000000007', 'Run Era',           'run-era',           'High-performance running pieces for the dedicated pavement runner',    true,  7),
+  ('b1000000-0000-0000-0000-000000000008', 'Pace Mode',         'pace-mode',         'Speed-focused activewear engineered for interval and track training',  false, 8),
+  ('b1000000-0000-0000-0000-000000000009', 'Runner''s High',    'runners-high',      'The post-run glow — recovery and casual styles for the running lifestyle', false, 9);
 
 -- ============================================================
 -- SECTION 3: PRODUCTS  (22 products across 7 categories)

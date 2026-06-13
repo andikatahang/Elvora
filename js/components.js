@@ -169,6 +169,9 @@ const footerHTML = `
           <li><a href="/shop.html?category=jackets" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Jackets</a></li>
           <li><a href="/shop.html?category=tops" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Tops</a></li>
           <li><a href="/shop.html?category=hijab" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Sport Hijab</a></li>
+          <li><a href="/shop.html?collection=run-era" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Run Era</a></li>
+          <li><a href="/shop.html?collection=pace-mode" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Pace Mode</a></li>
+          <li><a href="/shop.html?collection=runners-high" class="text-sm text-white/45 hover:text-rose transition-colors font-light no-underline">Runner's High</a></li>
         </ul>
       </div>
 

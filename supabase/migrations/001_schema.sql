@@ -69,7 +69,7 @@ create policy "user_profiles_update_own"
 
 -- -----------------------------------------------------------------------------
 -- TABLE 2: categories
--- Product categories (Padel, Pilates, Tennis, Training, Running, Wellness).
+-- Product categories (Padel, Pilates, Tennis, Training, Running [Run Era · Pace Mode · Runner's High], Wellness).
 -- -----------------------------------------------------------------------------
 
 create table if not exists categories (
