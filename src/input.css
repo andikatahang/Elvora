@@ -69,6 +69,15 @@ body {
   }
   .btn-secondary:hover { border-color: var(--rose); color: var(--rose); }
 
+  .btn-light {
+    background: white; color: var(--charcoal);
+    padding: 16px 36px; border: none; border-radius: 50px;
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 500; cursor: pointer; transition: all 0.3s;
+    font-family: var(--font-body); text-decoration: none; display: inline-block;
+  }
+  .btn-light:hover { background: var(--rose); color: white; transform: translateY(-2px); }
+
   .view-all {
     font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
     color: var(--charcoal); text-decoration: none; font-weight: 500;
@@ -387,6 +396,25 @@ body {
 }
 .about-values { background: var(--white); padding: 100px 64px; }
 .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; margin-top: 60px; }
+
+.brand-pillars {
+  background: var(--charcoal); padding: 80px 64px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.brand-pillars-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 48px; max-width: 1200px; margin: 0 auto; text-align: center;
+}
+.pillar-heading {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 700; color: white; margin-bottom: 16px;
+}
+.pillar-divider {
+  width: 32px; height: 2px; background: var(--rose); margin: 0 auto 20px;
+}
+.pillar-text {
+  font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.8; font-weight: 300;
+}
 .value-card {
   text-align: center; padding: 48px 32px;
   border-radius: 24px; background: var(--beige); transition: transform 0.3s;
@@ -578,6 +606,8 @@ body {
   .about-hero { padding: 120px 24px 60px; }
   .about-values { padding: 60px 24px; }
   .values-grid { grid-template-columns: 1fr; }
+  .brand-pillars { padding: 60px 24px; }
+  .brand-pillars-grid { grid-template-columns: 1fr; gap: 32px; }
   .shop-hero { padding: 120px 24px 40px; }
   .shop-body { padding: 32px 24px 60px; }
   .shop-grid { grid-template-columns: repeat(2, 1fr); }
