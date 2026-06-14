@@ -8,14 +8,422 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"></script>
 </head>
 <body>
   <div id="nav-root"></div>
-  <main><!-- Phase 3 fills this --></main>
+
+  <main x-data="{
+    product: null,
+    loading: true,
+    selectedColour: null,
+    selectedSize: null,
+    showSizeGuide: false,
+    stickyVisible: false,
+    accordionFabric: false,
+    accordionCare: false,
+    _mainSwiper: null,
+
+    async init() {
+      const slug = new URLSearchParams(window.location.search).get('slug');
+      if (!slug) { window.location.href = '/shop.html'; return; }
+
+      const data = await window.getProduct(slug);
+      if (!data) { window.location.href = '/shop.html'; return; }
+
+      this.product = data;
+      this.selectedColour = data.product_variants?.[0]?.colour || null;
+
+      this.$nextTick(() => {
+        this.initSwiper();
+        this.initStickyObserver();
+      });
+
+      this.loading = false;
+    },
+
+    initSwiper() {
+      const thumbsSwiper = new Swiper('.swiper-thumbs', {
+        spaceBetween: 8,
+        slidesPerView: 4,
+        freeMode: true,
+        watchSlidesProgress: true,
+      });
+      this._mainSwiper = new Swiper('.swiper-main', {
+        spaceBetween: 0,
+        loop: false,
+        thumbs: { swiper: thumbsSwiper },
+        lazy: { loadPrevNext: true },
+      });
+    },
+
+    initStickyObserver() {
+      const btn = document.querySelector('.atc-main');
+      if (!btn) return;
+      new IntersectionObserver(([e]) => {
+        this.stickyVisible = !e.isIntersecting;
+      }, { threshold: 0 }).observe(btn);
+    },
+
+    openSizeGuide() {
+      this.showSizeGuide = true;
+      this.\$nextTick(() => {
+        const m = document.querySelector('.size-guide-modal');
+        const first = m?.querySelector('button, [href], input');
+        if (first) first.focus();
+      });
+    },
+
+    closeSizeGuide() {
+      this.showSizeGuide = false;
+      document.querySelector('.size-guide-btn')?.focus();
+    },
+
+    trapFocus(e) {
+      if (!this.showSizeGuide) return;
+      const modal = document.querySelector('.size-guide-modal');
+      if (!modal) return;
+      const focusable = modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex=\"-1\"])');
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.key === 'Tab') {
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+      if (e.key === 'Escape') this.closeSizeGuide();
+    },
+
+    addToBag() {
+      if (!this.selectedSize) { alert('Please select a size'); return; }
+      Alpine.store('cart').add({
+        productId: this.product.id,
+        name: this.product.name,
+        slug: this.product.slug,
+        colour: this.selectedColour,
+        size: this.selectedSize,
+        price: this.product.base_price,
+      });
+      Toastify({
+        text: 'Added to Bag',
+        duration: 2500,
+        gravity: 'bottom',
+        position: 'right',
+        style: {
+          background: 'var(--charcoal)',
+          color: '#ffffff',
+          borderRadius: '50px',
+          fontSize: '12px',
+          letterSpacing: '2px',
+        },
+      }).showToast();
+    },
+
+    selectColour(colour) {
+      this.selectedColour = colour;
+      if (!this.product?.product_images || !this._mainSwiper) return;
+      const images = this.product.product_images;
+      const idx = images.findIndex(img => img.colour === colour);
+      if (idx >= 0) this._mainSwiper.slideTo(idx);
+    },
+
+    get uniqueColours() {
+      if (!this.product?.product_variants) return [];
+      const seen = new Set();
+      return this.product.product_variants.filter(v => {
+        if (seen.has(v.colour)) return false;
+        seen.add(v.colour);
+        return true;
+      });
+    },
+
+    get uniqueSizes() {
+      if (!this.product?.product_variants) return [];
+      const seen = new Set();
+      return this.product.product_variants.filter(v => {
+        if (seen.has(v.size)) return false;
+        seen.add(v.size);
+        return true;
+      });
+    }
+  }">
+
+    <!-- Loading skeleton -->
+    <div x-show="loading" class="flex items-center justify-center min-h-screen">
+      <div class="skeleton-shimmer" style="width:100%;height:400px"></div>
+    </div>
+
+    <!-- Product content -->
+    <div x-show="!loading && product" class="max-w-7xl mx-auto px-6 lg:px-16 py-12 lg:grid lg:grid-cols-2 lg:gap-16">
+
+      <!-- LEFT COLUMN — Gallery -->
+      <div>
+        <!-- Main Swiper -->
+        <div class="swiper swiper-main" style="aspect-ratio:3/4;">
+          <div class="swiper-wrapper">
+            <template x-for="(img, i) in (product?.product_images || [])" :key="img.id">
+              <div class="swiper-slide">
+                <img
+                  :src="img.url + '?w=1200&q=80'"
+                  :alt="product.name + ' — image ' + (i + 1) + ' of ' + product.product_images.length"
+                  width="800" height="1067"
+                  :loading="i === 0 ? 'eager' : 'lazy'"
+                  :fetchpriority="i === 0 ? 'high' : 'auto'"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Thumbnail Swiper -->
+        <div class="swiper swiper-thumbs mt-3">
+          <div class="swiper-wrapper">
+            <template x-for="(img, i) in (product?.product_images || [])" :key="'thumb-' + img.id">
+              <div class="swiper-slide" style="height:80px;">
+                <img
+                  :src="img.url + '?w=200&q=60'"
+                  :alt="'View image ' + (i + 1)"
+                  width="200" height="267"
+                  loading="lazy"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN — Product info -->
+      <div class="mt-8 lg:mt-0">
+
+        <!-- Name & Price -->
+        <h1
+          x-text="product?.name"
+          class="font-display text-charcoal mb-2 leading-tight"
+          style="font-size: clamp(22px, 3vw, 28px);"
+        ></h1>
+        <p
+          x-text="'$' + Number(product?.base_price).toFixed(2)"
+          class="text-[15px] font-semibold text-charcoal mb-6"
+        ></p>
+
+        <!-- Colour Selector -->
+        <div class="mb-6" x-show="uniqueColours.length > 0">
+          <p class="text-[11px] font-medium tracking-widest uppercase text-[#8A8A8A] mb-3">
+            Colour — <span x-text="selectedColour" class="text-charcoal normal-case tracking-normal"></span>
+          </p>
+          <div class="flex gap-3 flex-wrap" role="group" aria-label="Select colour">
+            <template x-for="v in uniqueColours" :key="v.colour">
+              <button
+                class="pdp-swatch"
+                :class="selectedColour === v.colour ? 'active' : ''"
+                :style="'background-color:' + v.colour_hex"
+                :aria-label="v.colour"
+                :aria-pressed="selectedColour === v.colour"
+                @click="selectColour(v.colour)"
+              ></button>
+            </template>
+          </div>
+        </div>
+
+        <!-- Size Selector -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-[11px] font-medium tracking-widest uppercase text-[#8A8A8A]">Size</p>
+            <button
+              class="size-guide-btn view-all text-[12px]"
+              @click="openSizeGuide()"
+              aria-label="Open size guide"
+            >Size Guide</button>
+          </div>
+          <div class="size-grid" role="group" aria-label="Select size">
+            <template x-for="v in uniqueSizes" :key="v.size">
+              <button
+                class="size-btn"
+                :class="selectedSize === v.size ? 'selected' : ''"
+                :aria-label="'Size ' + v.size"
+                :aria-pressed="selectedSize === v.size"
+                :disabled="v.stock_quantity === 0"
+                :aria-disabled="v.stock_quantity === 0"
+                @click="v.stock_quantity > 0 && (selectedSize = v.size)"
+                x-text="v.size"
+              ></button>
+            </template>
+          </div>
+        </div>
+
+        <!-- Main ATC Button -->
+        <button
+          class="atc-main w-full mt-4"
+          :disabled="!selectedSize"
+          :aria-disabled="!selectedSize"
+          :aria-label="selectedSize ? 'Add ' + product.name + ' to bag' : 'Select a size first'"
+          @click="addToBag()"
+        >
+          <span x-text="selectedSize ? 'Add to Bag' : 'Select a Size'"></span>
+        </button>
+
+        <!-- Fabric & Care Accordion -->
+        <div class="mt-10">
+          <!-- Materials accordion -->
+          <div class="accordion-item">
+            <button
+              class="accordion-trigger"
+              @click="accordionFabric = !accordionFabric"
+              :aria-expanded="accordionFabric"
+              aria-controls="accordion-fabric-body"
+            >
+              <span>Materials</span>
+              <span class="text-[#8A8A8A] text-lg" x-text="accordionFabric ? '−' : '+'"></span>
+            </button>
+            <div
+              id="accordion-fabric-body"
+              class="accordion-body"
+              x-show="accordionFabric"
+              x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0 -translate-y-2"
+              x-transition:enter-end="opacity-100 translate-y-0"
+              x-transition:leave="transition ease-in duration-150"
+              x-transition:leave-start="opacity-100 translate-y-0"
+              x-transition:leave-end="opacity-0 -translate-y-2"
+              role="region"
+              style="display:none;"
+              x-text="product?.fabric_details || 'Product details coming soon.'"
+            ></div>
+          </div>
+
+          <!-- Care Instructions accordion -->
+          <div class="accordion-item">
+            <button
+              class="accordion-trigger"
+              @click="accordionCare = !accordionCare"
+              :aria-expanded="accordionCare"
+              aria-controls="accordion-care-body"
+            >
+              <span>Care Instructions</span>
+              <span class="text-[#8A8A8A] text-lg" x-text="accordionCare ? '−' : '+'"></span>
+            </button>
+            <div
+              id="accordion-care-body"
+              class="accordion-body"
+              x-show="accordionCare"
+              x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0 -translate-y-2"
+              x-transition:enter-end="opacity-100 translate-y-0"
+              x-transition:leave="transition ease-in duration-150"
+              x-transition:leave-start="opacity-100 translate-y-0"
+              x-transition:leave-end="opacity-0 -translate-y-2"
+              role="region"
+              style="display:none;"
+              x-text="product?.care_instructions || 'Care instructions coming soon.'"
+            ></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- STICKY ATC BAR -->
+    <div
+      class="sticky-atc"
+      x-show="stickyVisible"
+      x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0 translate-y-full"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      x-transition:leave="transition ease-in duration-150"
+      x-transition:leave-start="opacity-100 translate-y-0"
+      x-transition:leave-end="opacity-0 translate-y-full"
+      style="display:none;"
+      :aria-hidden="!stickyVisible"
+    >
+      <div class="flex-1 min-w-0">
+        <p class="sticky-atc-name" x-text="product?.name"></p>
+        <p class="sticky-atc-meta" x-text="(selectedColour || '—') + ' · ' + (selectedSize || 'No size selected')"></p>
+      </div>
+      <span class="sticky-atc-price" x-text="'$' + Number(product?.base_price).toFixed(2)"></span>
+      <button
+        class="atc-main"
+        style="min-width:140px;"
+        :disabled="!selectedSize"
+        @click="addToBag()"
+        aria-label="Add to bag"
+      >Add to Bag</button>
+    </div>
+
+    <!-- SIZE GUIDE MODAL -->
+    <div
+      class="size-guide-overlay"
+      x-show="showSizeGuide"
+      x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="transition ease-in duration-150"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+      style="display:none;"
+      @click.self="closeSizeGuide()"
+      @keydown.window="trapFocus($event)"
+    >
+      <div
+        class="size-guide-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="size-guide-title"
+      >
+        <!-- Close button -->
+        <button
+          class="size-guide-close"
+          @click="closeSizeGuide()"
+          aria-label="Close size guide"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <!-- Title -->
+        <h2 id="size-guide-title" class="font-display text-charcoal mb-1" style="font-size:22px;">Size Guide</h2>
+        <p class="text-[13px] text-[#8A8A8A] mb-2">All measurements in centimetres (cm)</p>
+
+        <!-- Size table -->
+        <table class="size-table">
+          <thead>
+            <tr>
+              <th scope="col">Size</th>
+              <th scope="col">Bust</th>
+              <th scope="col">Waist</th>
+              <th scope="col">Hips</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>XS</td><td>82–85</td><td>62–65</td><td>88–91</td></tr>
+            <tr><td>S</td><td>86–89</td><td>66–69</td><td>92–95</td></tr>
+            <tr><td>M</td><td>90–93</td><td>70–73</td><td>96–99</td></tr>
+            <tr><td>L</td><td>94–97</td><td>74–77</td><td>100–103</td></tr>
+            <tr><td>XL</td><td>98–101</td><td>78–81</td><td>104–107</td></tr>
+          </tbody>
+        </table>
+
+        <!-- How to measure -->
+        <div class="mt-6">
+          <h3 class="font-display text-charcoal mb-3" style="font-size:16px;">How to Measure</h3>
+          <p class="text-[14px] text-[#8A8A8A] leading-relaxed">
+            Bust: measure around the fullest part of your chest. Waist: measure around your natural waistline. Hips: measure around the widest part of your hips.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
   <div id="footer-root"></div>
   <script src="/js/__env.js"></script>
   <script type="module" src="/js/supabase.js"></script>
+  <script type="module" src="/js/products.js"></script>
   <script type="module" src="/js/components.js"></script>
 </body>
 </html>
