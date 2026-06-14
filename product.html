@@ -27,6 +27,16 @@
     accordionFabric: false,
     accordionCare: false,
     _mainSwiper: null,
+    pairings: [],
+    relatedProducts: [],
+    reviews: [],
+    reviewsOffset: 0,
+    reviewsPageSize: 5,
+    reviewsTotal: 0,
+    allReviewsLoaded: false,
+    reviewsLoading: false,
+    averageRating: '0.0',
+    totalReviewCount: 0,
 
     async init() {
       const slug = new URLSearchParams(window.location.search).get('slug');
@@ -44,6 +54,76 @@
       });
 
       this.loading = false;
+
+      await Promise.all([
+        this.loadAggregateRating(),
+        this.loadPairings(),
+        this.loadRelated(),
+        this.loadReviews(),
+      ]);
+    },
+
+    async loadAggregateRating() {
+      const { data } = await window.supabase
+        .from('reviews')
+        .select('rating')
+        .eq('product_id', this.product.id);
+      const ratings = (data || []).map(r => r.rating);
+      this.totalReviewCount = ratings.length;
+      this.averageRating = ratings.length
+        ? (ratings.reduce((s, r) => s + r, 0) / ratings.length).toFixed(1)
+        : '0.0';
+    },
+
+    async loadPairings() {
+      const { data } = await window.supabase
+        .from('product_pairings')
+        .select('paired_product_id, display_order, products!product_pairings_paired_product_id_fkey(id, name, slug, base_price, product_images(url, alt_text, display_order, colour))')
+        .eq('product_id', this.product.id)
+        .order('display_order')
+        .limit(3);
+      this.pairings = (data || []).map(row => ({
+        id: row.paired_product_id,
+        name: row.products?.name,
+        slug: row.products?.slug,
+        base_price: row.products?.base_price,
+        image: row.products?.product_images?.[0]?.url,
+        image_alt: row.products?.product_images?.[0]?.alt_text || row.products?.name,
+      }));
+    },
+
+    async loadRelated() {
+      const { data } = await window.supabase
+        .from('products')
+        .select('id, name, slug, base_price, product_images(url, alt_text, display_order, colour), product_variants(colour, colour_hex)')
+        .eq('category_id', this.product.category_id)
+        .eq('is_active', true)
+        .neq('id', this.product.id)
+        .limit(4);
+      this.relatedProducts = (data || []).map(p => {
+        const seen = new Set();
+        const uniqueColours = (p.product_variants || []).filter(v => {
+          if (seen.has(v.colour)) return false;
+          seen.add(v.colour);
+          return true;
+        });
+        return { ...p, uniqueColours };
+      });
+    },
+
+    async loadReviews() {
+      this.reviewsLoading = true;
+      const { data, count } = await window.supabase
+        .from('reviews')
+        .select('id, reviewer_name, rating, review_text, fit_feedback, created_at', { count: 'exact' })
+        .eq('product_id', this.product.id)
+        .order('created_at', { ascending: false })
+        .range(this.reviewsOffset, this.reviewsOffset + this.reviewsPageSize - 1);
+      this.reviews = [...this.reviews, ...(data || [])];
+      this.reviewsOffset += this.reviewsPageSize;
+      if (count !== null) this.reviewsTotal = count;
+      this.allReviewsLoaded = this.reviews.length >= (this.reviewsTotal || this.totalReviewCount);
+      this.reviewsLoading = false;
     },
 
     initSwiper() {
@@ -326,6 +406,131 @@
 
       </div>
     </div>
+
+    <!-- COMPLETE THE LOOK -->
+    <section
+      class="max-w-7xl mx-auto px-6 lg:px-16 py-12 border-t border-sage/20"
+      x-show="pairings.length > 0"
+      style="display:none;"
+    >
+      <p class="section-label">Style It With</p>
+      <h2 class="font-display text-2xl text-charcoal mb-8">Complete the Look</h2>
+      <div class="look-grid">
+        <template x-for="pair in pairings" :key="pair.id">
+          <a :href="'/product.html?slug=' + pair.slug" class="look-card">
+            <div style="aspect-ratio:3/4;overflow:hidden;">
+              <img
+                :src="pair.image ? pair.image + '?w=600&q=80' : ''"
+                :alt="pair.image_alt"
+                width="600" height="800"
+                loading="lazy"
+                class="w-full h-full object-cover"
+              >
+            </div>
+            <div class="product-info" style="padding:16px;">
+              <p x-text="pair.name" class="product-name" style="font-size:15px;"></p>
+              <p x-text="'$' + Number(pair.base_price).toFixed(2)" class="product-price" style="margin-top:4px;"></p>
+            </div>
+          </a>
+        </template>
+      </div>
+    </section>
+
+    <!-- YOU MIGHT ALSO LOVE -->
+    <section
+      class="max-w-7xl mx-auto px-6 lg:px-16 py-12 border-t border-sage/20"
+      x-show="relatedProducts.length > 0"
+      style="display:none;"
+    >
+      <p class="section-label">Discover More</p>
+      <h2 class="font-display text-2xl text-charcoal mb-8">You Might Also Love</h2>
+      <div class="related-grid">
+        <template x-for="p in relatedProducts" :key="p.id">
+          <a :href="'/product.html?slug=' + p.slug" class="product-card">
+            <div class="product-img">
+              <img
+                :src="(p.product_images?.[0]?.url || '') + '?w=800&q=80'"
+                :alt="p.product_images?.[0]?.alt_text || p.name"
+                width="400" height="533"
+                loading="lazy"
+                class="w-full h-full object-cover object-top"
+              >
+              <button class="wishlist-btn" @click.prevent aria-label="Save to wishlist">♡</button>
+            </div>
+            <div class="product-info">
+              <h3 x-text="p.name" class="product-name"></h3>
+              <div class="product-price-row">
+                <span x-text="'$' + Number(p.base_price).toFixed(2)" class="product-price"></span>
+              </div>
+              <div class="product-swatches">
+                <template x-for="v in p.uniqueColours" :key="v.colour">
+                  <span class="swatch" :style="'background-color:' + v.colour_hex" :aria-label="v.colour"></span>
+                </template>
+              </div>
+            </div>
+          </a>
+        </template>
+      </div>
+    </section>
+
+    <!-- WHAT OUR COMMUNITY SAYS -->
+    <section class="max-w-7xl mx-auto px-6 lg:px-16 py-12 border-t border-sage/20">
+      <p class="section-label">Community</p>
+      <h2 class="font-display text-2xl text-charcoal mb-8">What Our Community Says</h2>
+
+      <!-- Aggregate rating -->
+      <div class="review-summary">
+        <div>
+          <p x-text="averageRating" class="review-rating-number"></p>
+        </div>
+        <div>
+          <div class="review-stars">
+            <template x-for="i in [1,2,3,4,5]" :key="i">
+              <span class="star" :class="i <= Math.round(Number(averageRating)) ? 'filled' : 'empty'">★</span>
+            </template>
+          </div>
+          <p x-text="totalReviewCount + ' Reviews'" class="review-count"></p>
+        </div>
+      </div>
+
+      <!-- Review list -->
+      <div>
+        <template x-for="r in reviews" :key="r.id">
+          <div class="review-card">
+            <div class="review-header">
+              <div>
+                <p x-text="r.reviewer_name" class="reviewer-name"></p>
+                <p x-text="new Date(r.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })" class="review-date"></p>
+              </div>
+              <div>
+                <div class="review-stars">
+                  <template x-for="i in [1,2,3,4,5]" :key="i">
+                    <span class="star" :class="i <= r.rating ? 'filled' : 'empty'">★</span>
+                  </template>
+                </div>
+                <span
+                  class="fit-badge"
+                  :class="r.fit_feedback === 'runs_small' ? 'runs-small' : r.fit_feedback === 'runs_large' ? 'runs-large' : 'true-to-size'"
+                  x-text="r.fit_feedback === 'runs_small' ? 'Runs Small' : r.fit_feedback === 'runs_large' ? 'Runs Large' : 'True to Size'"
+                ></span>
+              </div>
+            </div>
+            <p x-text="r.review_text" class="review-text"></p>
+          </div>
+        </template>
+      </div>
+
+      <!-- Loading indicator -->
+      <p x-show="reviewsLoading" class="text-center text-sm py-4" style="color:var(--text-muted);display:none;">Loading reviews…</p>
+
+      <!-- Load More -->
+      <button
+        class="reviews-load-more"
+        x-show="!allReviewsLoaded && !reviewsLoading"
+        @click="loadReviews()"
+        style="display:none;"
+      >Load More Reviews</button>
+    </section>
 
     <!-- STICKY ATC BAR -->
     <div

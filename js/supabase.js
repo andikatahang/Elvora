@@ -13,3 +13,8 @@ const stub = new Proxy({}, { get: () => stub, apply: noop });
 export const supabase = SUPABASE_URL && SUPABASE_ANON_KEY
   ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   : stub;
+
+// Expose to window so Alpine inline x-data methods (loadPairings, loadRelated,
+// loadReviews, loadAggregateRating) can call window.supabase directly.
+// Alpine x-data strings run in global scope — cannot use ES module exports.
+window.supabase = supabase;
