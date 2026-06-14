@@ -28,10 +28,33 @@ const navHTML = `
   x-data="{
     navOpen: false,
     scrolled: false,
+    searchOpen: false,
+    searchQuery: '',
+    suggestions: [],
+    _searchTimer: null,
     init() {
       window.addEventListener('scroll', () => {
         this.scrolled = window.scrollY > 80;
       }, { passive: true });
+    },
+    async onSearchInput() {
+      if (this.searchQuery.length < 2) { this.suggestions = []; return; }
+      clearTimeout(this._searchTimer);
+      this._searchTimer = setTimeout(async () => {
+        const { data } = await window.searchProducts(this.searchQuery);
+        this.suggestions = data || [];
+      }, 300);
+    },
+    goToSearch() {
+      if (this.searchQuery.trim()) {
+        window.location.href = '/shop.html?search=' + encodeURIComponent(this.searchQuery.trim());
+      }
+    },
+    goToProduct(slug) {
+      window.location.href = '/product.html?slug=' + slug;
+      this.searchOpen = false;
+      this.suggestions = [];
+      this.searchQuery = '';
     }
   }"
 >
@@ -58,11 +81,50 @@ const navHTML = `
     <!-- Nav actions -->
     <div class="flex items-center gap-3">
       <!-- Search -->
-      <button aria-label="Search" class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/>
-        </svg>
-      </button>
+      <div class="relative" @click.outside="searchOpen = false; suggestions = []">
+        <button
+          @click="searchOpen = !searchOpen; if (searchOpen) $nextTick(() => $refs.searchInput && $refs.searchInput.focus())"
+          aria-label="Search"
+          class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <!-- Expand search input + autosuggest -->
+        <div
+          x-show="searchOpen"
+          x-transition:enter="transition ease-out duration-200"
+          x-transition:enter-start="opacity-0 scale-95"
+          x-transition:enter-end="opacity-100 scale-100"
+          class="absolute right-0 top-full mt-2 w-72 z-[200]"
+          style="display:none;"
+        >
+          <input
+            x-ref="searchInput"
+            type="search"
+            x-model="searchQuery"
+            @input="onSearchInput()"
+            @keydown.enter.prevent="goToSearch()"
+            @keydown.escape="searchOpen = false; suggestions = []"
+            placeholder="Search styles..."
+            autocomplete="off"
+            aria-label="Search Elvora products"
+            class="w-full px-5 py-3 rounded-full border border-sage/30 bg-white text-charcoal text-sm outline-none shadow-md focus:border-sage"
+          >
+
+          <!-- Autosuggest results dropdown -->
+          <div x-show="suggestions.length > 0" style="display:none;" class="mt-2 bg-white rounded-2xl shadow-lg border border-sage/20 overflow-hidden">
+            <template x-for="s in suggestions" :key="s.slug">
+              <button @click="goToProduct(s.slug)" class="w-full text-left px-5 py-3 text-sm text-charcoal hover:bg-beige transition-colors" x-text="s.name"></button>
+            </template>
+          </div>
+
+          <!-- No-results row -->
+          <div x-show="suggestions.length === 0 && searchQuery.length >= 2" style="display:none;" class="mt-2 bg-white rounded-2xl shadow-lg border border-sage/20 px-5 py-3 text-sm text-text-muted">No styles found — try a shorter search.</div>
+        </div>
+      </div>
 
       <!-- User account -->
       <a href="/auth.html" aria-label="Your account" class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors">
