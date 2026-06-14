@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-06-10)
 ## Current Position
 
 Phase: 04 (auth-customer-account) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Executing Phase 04
-Last activity: 2026-06-15 -- Phase 04 Plan 01 (CSS Foundation) complete
+Last activity: 2026-06-15 -- Phase 04 Plan 02 (Auth Service + Nav Dropdown) complete
 
 Progress: [██████████] 100%
 
@@ -78,6 +78,9 @@ Recent decisions affecting current work:
 - Plan 04-01: Semua class Phase 4 ditambahkan di luar @layer components — konsisten dengan pola file baseline (form-group, wishlist-btn, dll.)
 - Plan 04-01: Breakpoint tablet 1023px dipilih sesuai UI-SPEC — auth split dan account sidebar kolaps di bawah 1024px
 - Plan 04-01: Tidak ada CSS custom property baru di Phase 4 — semua nilai referensi token :root yang sudah ada
+- Plan 04-02: Schema correction — user_profiles PK adalah 'id' (bukan 'user_id'); upsert dengan onConflict:'id'
+- Plan 04-02: window.elvoraSignOut (bukan window.signOut) untuk hindari konflik global naming
+- Plan 04-02: initAuth() dipanggil di kedua jalur alpine:init dan direct window.Alpine check
 
 ### Pending Todos
 
@@ -107,6 +110,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-15T17:22:27Z
-Stopped at: Plan 04-01 complete — next: 04-02-PLAN.md
-Resume file: .planning/phases/04-auth-customer-account/04-02-PLAN.md
+Last session: 2026-06-15T17:40:00Z
+Stopped at: Plan 04-02 complete — next: 04-03-PLAN.md
+Resume file: .planning/phases/04-auth-customer-account/04-03-PLAN.md
