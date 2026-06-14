@@ -4,7 +4,7 @@
 // Returns normalized { reply: "..." } so the frontend is provider-agnostic.
 
 const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1';
-const MODEL = 'minimaxai/minimax-m1';
+const MODEL = 'minimaxai/minimax-m3';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
