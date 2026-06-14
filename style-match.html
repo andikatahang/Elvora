@@ -266,15 +266,34 @@
           body: JSON.stringify({ messages: aiHistory }),
         });
 
-        const data = await res.json();
-        const reply = data.reply || 'Maaf, aku lagi ada gangguan. Coba lagi ya! 🌸';
+        let data;
+        try { data = await res.json(); } catch { data = {}; }
+
+        let reply;
+        if (data.reply) {
+          reply = data.reply;
+        } else if (res.status === 503) {
+          reply = 'AI advisor belum dikonfigurasi. Pastikan NVIDIA_API_KEY sudah di-set di Netlify. 🔧';
+        } else if (res.status === 404) {
+          reply = 'Endpoint /api/ai-advisor tidak ditemukan. Jalankan dengan "netlify dev" untuk test lokal. 🛠️';
+        } else if (!res.ok) {
+          reply = `Terjadi error (${res.status}). Coba lagi ya! 🌸`;
+        } else {
+          reply = 'Maaf, aku lagi ada gangguan. Coba lagi ya! 🌸';
+        }
 
         document.getElementById(typingId)?.remove();
         appendMsg(reply, 'ai');
         aiHistory.push({ role: 'assistant', content: reply });
-      } catch {
+      } catch (err) {
         document.getElementById(typingId)?.remove();
-        appendMsg('Aduh, koneksiku lagi bermasalah nih 😅 Coba lagi sebentar ya!', 'ai');
+        const isOffline = !navigator.onLine;
+        appendMsg(
+          isOffline
+            ? 'Kamu sedang offline nih 😅 Cek koneksi internet dulu ya!'
+            : 'Gagal konek ke server. Kalau test lokal, jalankan dulu dengan "netlify dev". 🛠️',
+          'ai'
+        );
       } finally {
         sendBtn.disabled = false;
         input.focus();

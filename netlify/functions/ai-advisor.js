@@ -3,8 +3,8 @@
 // NVIDIA NIM uses OpenAI-compatible chat/completions format.
 // Returns normalized { reply: "..." } so the frontend is provider-agnostic.
 
-const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1';
-const MODEL = 'minimax/minimax-m1';
+const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
+const MODEL = 'minimaxai/minimax-m3';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
