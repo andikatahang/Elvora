@@ -3,8 +3,8 @@
 // NVIDIA NIM uses OpenAI-compatible chat/completions format.
 // Returns normalized { reply: "..." } so the frontend is provider-agnostic.
 
-const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
-const MODEL = 'minimaxai/minimax-m3';
+const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1';
+const MODEL = 'minimaxai/minimax-m1';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -71,16 +71,18 @@ export default async (req) => {
       body: JSON.stringify(payload),
     });
 
-    const data = await upstream.json();
+    const text = await upstream.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = {}; }
 
     // Normalize to { reply } so the frontend stays provider-agnostic.
     const reply = data?.choices?.[0]?.message?.content
       ?? data?.error?.message
-      ?? 'Maaf, aku lagi ada gangguan. Coba lagi ya! 🌸';
+      ?? `Error dari NVIDIA (${upstream.status}): ${text.slice(0, 120)}`;
 
     return json({ reply }, upstream.ok ? 200 : upstream.status);
-  } catch {
-    return json({ error: 'Upstream error' }, 502);
+  } catch (err) {
+    return json({ error: 'Upstream error', detail: String(err) }, 502);
   }
 };
 
