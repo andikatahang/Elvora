@@ -8,7 +8,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 - [x] **Phase 1: Foundation** - Setup repository, Supabase schema (all tables + RLS), seed catalog (20+ products), storage buckets, deployment pipeline, keep-alive ping
 - [x] **Phase 2: Brand Shell + Homepage** - Quiet luxury Tailwind v4 design system, component library, full 8-section homepage, About page, Contact/FAQ page (completed 2026-06-12)
-- [ ] **Phase 3: Product Catalog** - PLP with filtering/search/sort, PDP with gallery, sticky ATC, size guide, fabric details, Complete the Look, recommendations, reviews
+- [x] **Phase 3: Product Catalog** - PLP with filtering/search/sort, PDP with gallery, sticky ATC, size guide, fabric details, Complete the Look, recommendations, reviews (completed 2026-06-14)
 - [ ] **Phase 4: Auth + Customer Account** - Signup/login/session persistence, wishlist, saved AI style preferences, account dashboard
 - [ ] **Phase 5: AI Style Match** - Gemini Vision photo upload → outfit recommendations → colour guidance → session persistence
 - [ ] **Phase 6: Cart + Checkout** - Mini cart drawer, full cart page, guest checkout, multi-step checkout, order creation with price snapshot
@@ -112,7 +112,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 **Wave 3** *(blocked on Wave 2 — plans run in parallel)*
 
 - [x] 03-04-PLAN.md — PDP core (product.html): Swiper gallery + thumbnails, colour swatch → gallery sync, size selector, sticky ATC (IntersectionObserver), size guide modal (focus trap), fabric accordion + PDP CSS classes
-- [ ] 03-05-PLAN.md — PDP social proof (product.html): Complete the Look pairings, related products grid, customer reviews with aggregate rating + fit badges + load-more
+- [x] 03-05-PLAN.md — PDP social proof (product.html): Complete the Look pairings, related products grid, customer reviews with aggregate rating + fit badges + load-more
 
 **UI hint**: yes
 
