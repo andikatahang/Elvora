@@ -765,3 +765,28 @@ create policy "user_uploads_admin_all"
 -- Storage buckets: 2 (product-images public, user-uploads private)
 -- is_admin() function: defined with SECURITY DEFINER, reads app_metadata only
 -- =============================================================================
+
+
+-- =============================================================================
+-- SECTION ADDED: contacts table
+-- Stores contact form submissions from the website.
+-- =============================================================================
+
+create table if not exists contacts (
+  id         uuid primary key default gen_random_uuid(),
+  name       text not null,
+  email      text not null,
+  subject    text,
+  message    text not null,
+  created_at timestamptz default now()
+);
+
+alter table contacts enable row level security;
+
+create policy "contacts_insert_public"
+  on contacts for insert
+  with check (true);
+
+create policy "contacts_admin_select"
+  on contacts for select
+  using (is_admin());
