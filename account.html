@@ -8,15 +8,320 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
+  <!-- Toastify for save success/error notifications -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"></script>
 </head>
 <body>
   <div id="nav-root"></div>
-  <main><!-- Phase 4 fills this --></main>
+
+  <main class="account-page">
+    <div
+      class="account-layout"
+      x-data="{
+        activeTab: 'profile',
+        loading: true,
+        _currentUser: null,
+
+        profile: { first_name: '', last_name: '', email: '' },
+        profileSaving: false,
+
+        wishlistItems: [],
+        wishlistLoading: false,
+
+        prefs: { activity: null, fit: null, aesthetic: null, colour: null },
+        prefsSaving: false,
+
+        setTab(tab) { this.activeTab = tab; location.hash = tab; },
+
+        async init() {
+          const { data: { user } } = await window.supabase.auth.getUser();
+          if (!user) { window.location.href = '/auth.html?tab=signin'; return; }
+          this._currentUser = user;
+          const hash = location.hash.replace('#', '');
+          if (['profile', 'wishlist', 'preferences'].includes(hash)) this.activeTab = hash;
+          this.loading = false;
+          await Promise.all([ this.loadProfile(user), this.loadWishlist(user) ]);
+        },
+
+        async loadProfile(user) {
+          const { data } = await window.supabase
+            .from('user_profiles')
+            .select('first_name, last_name, preferred_activity, fit_preference, style_aesthetic, colour_preference')
+            .eq('id', user.id)
+            .single();
+          if (data) {
+            this.profile = { first_name: data.first_name || '', last_name: data.last_name || '', email: user.email };
+            this.prefs = { activity: data.preferred_activity, fit: data.fit_preference, aesthetic: data.style_aesthetic, colour: data.colour_preference };
+          } else {
+            this.profile = { first_name: user.user_metadata?.first_name || '', last_name: user.user_metadata?.last_name || '', email: user.email };
+          }
+        },
+
+        async saveProfile() {
+          this.profileSaving = true;
+          const { error } = await window.supabase
+            .from('user_profiles')
+            .update({ first_name: this.profile.first_name, last_name: this.profile.last_name })
+            .eq('id', this._currentUser.id);
+          if (error) {
+            Toastify({ text: 'Couldn\'t save — try again', duration: 3000, gravity: 'bottom', position: 'right',
+              style: { background: 'var(--rose)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' } }).showToast();
+          } else {
+            Toastify({ text: 'Changes saved', duration: 2000, gravity: 'bottom', position: 'right',
+              style: { background: 'var(--sage)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' } }).showToast();
+          }
+          this.profileSaving = false;
+        },
+
+        async loadWishlist(user) {
+          this.wishlistLoading = true;
+          const { data } = await window.supabase
+            .from('wishlist_items')
+            .select('id, product_id, products(id, name, slug, base_price, product_images(url, alt_text, display_order))')
+            .eq('user_id', user.id);
+          this.wishlistItems = (data || []).map(row => {
+            const images = (row.products?.product_images || []).sort((a, b) => a.display_order - b.display_order);
+            return { wishlistId: row.id, id: row.products?.id, name: row.products?.name, slug: row.products?.slug, base_price: row.products?.base_price, image: images[0]?.url || '' };
+          });
+          this.wishlistLoading = false;
+        },
+
+        async removeFromWishlist(wishlistId, productId) {
+          const prev = [...this.wishlistItems];
+          this.wishlistItems = this.wishlistItems.filter(item => item.wishlistId !== wishlistId);
+          const { error } = await window.supabase
+            .from('wishlist_items')
+            .delete()
+            .eq('id', wishlistId);
+          if (error) {
+            this.wishlistItems = prev;
+            Toastify({ text: 'Couldn\'t remove item — try again', duration: 3000, gravity: 'bottom', position: 'right',
+              style: { background: 'var(--rose)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' } }).showToast();
+          }
+        },
+
+        async savePrefs() {
+          this.prefsSaving = true;
+          const { error } = await window.supabase
+            .from('user_profiles')
+            .update({ preferred_activity: this.prefs.activity, fit_preference: this.prefs.fit, style_aesthetic: this.prefs.aesthetic, colour_preference: this.prefs.colour })
+            .eq('id', this._currentUser.id);
+          if (error) {
+            Toastify({ text: 'Couldn\'t save — try again', duration: 3000, gravity: 'bottom', position: 'right',
+              style: { background: 'var(--rose)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' } }).showToast();
+          } else {
+            Toastify({ text: 'Preferences saved', duration: 2000, gravity: 'bottom', position: 'right',
+              style: { background: 'var(--sage)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' } }).showToast();
+          }
+          this.prefsSaving = false;
+        }
+      }"
+    >
+
+      <!-- ── SIDEBAR ─────────────────────────────────────────────────── -->
+      <aside class="account-sidebar">
+        <p class="account-user-name" x-text="profile.first_name + ' ' + profile.last_name"></p>
+        <p class="account-user-email" x-text="profile.email"></p>
+
+        <nav class="account-nav" role="navigation" aria-label="Account navigation">
+          <button
+            class="account-nav-item"
+            @click="setTab('profile')"
+            :class="{ 'active': activeTab === 'profile' }"
+            :aria-current="activeTab === 'profile' ? 'page' : false"
+          >Profile</button>
+
+          <button
+            class="account-nav-item"
+            @click="setTab('wishlist')"
+            :class="{ 'active': activeTab === 'wishlist' }"
+            :aria-current="activeTab === 'wishlist' ? 'page' : false"
+          >Wishlist</button>
+
+          <button
+            class="account-nav-item"
+            @click="setTab('preferences')"
+            :class="{ 'active': activeTab === 'preferences' }"
+            :aria-current="activeTab === 'preferences' ? 'page' : false"
+          >Style Preferences</button>
+        </nav>
+      </aside>
+
+      <!-- ── CONTENT AREA ──────────────────────────────────────────────── -->
+      <div class="account-content">
+
+        <!-- PROFILE SECTION -->
+        <section x-show="activeTab === 'profile'" class="account-section">
+          <h2 class="account-section-title">Your Profile</h2>
+          <p class="account-section-sub">Update your name and personal details</p>
+
+          <form class="profile-form" @submit.prevent="saveProfile()">
+            <div class="form-group">
+              <label class="form-label" for="profile-first-name">First Name</label>
+              <input
+                class="form-input"
+                type="text"
+                id="profile-first-name"
+                x-model="profile.first_name"
+                placeholder="Your first name"
+                autocomplete="given-name"
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profile-last-name">Last Name</label>
+              <input
+                class="form-input"
+                type="text"
+                id="profile-last-name"
+                x-model="profile.last_name"
+                placeholder="Your last name"
+                autocomplete="family-name"
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profile-email">Email Address</label>
+              <input
+                class="form-input"
+                type="email"
+                id="profile-email"
+                x-model="profile.email"
+                readonly
+                :disabled="true"
+                style="background:rgba(46,46,46,0.04);cursor:not-allowed;"
+                autocomplete="email"
+              >
+              <p class="profile-email-note">Email address cannot be changed</p>
+            </div>
+
+            <button
+              type="submit"
+              class="form-submit profile-save-btn"
+              @click.prevent="saveProfile()"
+              :disabled="profileSaving"
+              x-text="profileSaving ? 'Saving…' : 'Save Changes'"
+            ></button>
+          </form>
+        </section>
+
+        <!-- WISHLIST SECTION -->
+        <section x-show="activeTab === 'wishlist'" class="account-section" style="display:none;">
+          <h2 class="account-section-title">Your Wishlist</h2>
+          <p class="account-section-sub" x-show="wishlistItems.length > 0">
+            <span x-text="wishlistItems.length + ' saved items'"></span>
+          </p>
+
+          <!-- Empty state -->
+          <div class="shop-empty wishlist-empty" x-show="wishlistItems.length === 0 && !wishlistLoading">
+            <span class="wishlist-empty-icon">&#9825;</span>
+            <p style="font-size:16px;color:var(--charcoal);font-weight:400;">Your wishlist is waiting</p>
+            <p class="account-section-sub" style="margin-bottom:16px;">Save pieces you love as you explore the collection.</p>
+            <a href="/shop.html" class="btn-secondary wishlist-empty-cta">Explore the Collection</a>
+          </div>
+
+          <!-- Wishlist grid -->
+          <div class="wishlist-grid" x-show="wishlistItems.length > 0">
+            <template x-for="item in wishlistItems" :key="item.wishlistId">
+              <div class="product-card wishlist-card" style="position:relative;">
+                <div class="product-img">
+                  <img
+                    :src="(item.image || '') + '?w=600&q=80'"
+                    :alt="item.name"
+                    width="400"
+                    height="533"
+                    loading="lazy"
+                    class="w-full h-full object-cover object-top"
+                  >
+                  <button
+                    class="wishlist-remove-btn"
+                    @click.prevent="removeFromWishlist(item.wishlistId, item.id)"
+                    aria-label="Remove from wishlist"
+                  >&times;</button>
+                </div>
+                <div class="product-info">
+                  <h3 x-text="item.name" class="product-name"></h3>
+                  <span x-text="'$' + Number(item.base_price).toFixed(2)" class="product-price"></span>
+                </div>
+                <a :href="'/product.html?slug=' + item.slug" class="absolute inset-0 z-[1]" aria-label="View product"></a>
+              </div>
+            </template>
+          </div>
+        </section>
+
+        <!-- STYLE PREFERENCES SECTION -->
+        <section x-show="activeTab === 'preferences'" class="account-section" style="display:none;">
+          <h2 class="account-section-title">Style Preferences</h2>
+          <p class="account-section-sub">Tell us how you like to move and dress</p>
+
+          <form class="prefs-form" @submit.prevent="savePrefs()">
+
+            <!-- Preferred Activity -->
+            <div class="prefs-field">
+              <p class="prefs-field-label">Preferred Activity</p>
+              <div class="prefs-chips">
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.activity === 'all' }" @click="prefs.activity = prefs.activity === 'all' ? null : 'all'">All</button>
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.activity === 'padel' }" @click="prefs.activity = prefs.activity === 'padel' ? null : 'padel'">Padel</button>
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.activity === 'pilates' }" @click="prefs.activity = prefs.activity === 'pilates' ? null : 'pilates'">Pilates</button>
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.activity === 'tennis' }" @click="prefs.activity = prefs.activity === 'tennis' ? null : 'tennis'">Tennis</button>
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.activity === 'training' }" @click="prefs.activity = prefs.activity === 'training' ? null : 'training'">Training</button>
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.activity === 'running' }" @click="prefs.activity = prefs.activity === 'running' ? null : 'running'">Running</button>
+              </div>
+            </div>
+
+            <!-- Fit Preference -->
+            <div class="prefs-field">
+              <p class="prefs-field-label">Fit Preference</p>
+              <div class="prefs-chips">
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.fit === 'fitted' }" @click="prefs.fit = prefs.fit === 'fitted' ? null : 'fitted'">Fitted</button>
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.fit === 'relaxed' }" @click="prefs.fit = prefs.fit === 'relaxed' ? null : 'relaxed'">Relaxed</button>
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.fit === 'longline' }" @click="prefs.fit = prefs.fit === 'longline' ? null : 'longline'">Longline</button>
+              </div>
+            </div>
+
+            <!-- Style Aesthetic -->
+            <div class="prefs-field">
+              <p class="prefs-field-label">Style Aesthetic</p>
+              <div class="prefs-chips">
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.aesthetic === 'minimal' }" @click="prefs.aesthetic = prefs.aesthetic === 'minimal' ? null : 'minimal'">Minimal</button>
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.aesthetic === 'sporty' }" @click="prefs.aesthetic = prefs.aesthetic === 'sporty' ? null : 'sporty'">Sporty</button>
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.aesthetic === 'editorial' }" @click="prefs.aesthetic = prefs.aesthetic === 'editorial' ? null : 'editorial'">Editorial</button>
+              </div>
+            </div>
+
+            <!-- Colour Preference -->
+            <div class="prefs-field">
+              <p class="prefs-field-label">Colour Preference</p>
+              <div class="prefs-chips">
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.colour === 'neutral' }" @click="prefs.colour = prefs.colour === 'neutral' ? null : 'neutral'">Neutral</button>
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.colour === 'earth' }" @click="prefs.colour = prefs.colour === 'earth' ? null : 'earth'">Earth</button>
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.colour === 'sage' }" @click="prefs.colour = prefs.colour === 'sage' ? null : 'sage'">Sage</button>
+                <button type="button" class="prefs-chip" :class="{ 'selected': prefs.colour === 'monochrome' }" @click="prefs.colour = prefs.colour === 'monochrome' ? null : 'monochrome'">Monochrome</button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="form-submit prefs-save-btn"
+              @click.prevent="savePrefs()"
+              :disabled="prefsSaving"
+              x-text="prefsSaving ? 'Saving…' : 'Save Preferences'"
+            ></button>
+
+          </form>
+        </section>
+
+      </div><!-- /.account-content -->
+    </div><!-- /.account-layout -->
+  </main>
+
   <div id="footer-root"></div>
   <script src="/js/__env.js"></script>
   <script type="module" src="/js/supabase.js"></script>
   <script type="module" src="/js/cart.js"></script>
+  <script type="module" src="/js/auth.js"></script>
   <script type="module" src="/js/components.js"></script>
 </body>
 </html>
