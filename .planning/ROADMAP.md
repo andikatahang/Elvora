@@ -98,7 +98,22 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
   4. A visitor scrolling down a PDP sees the sticky Add to Cart bar appear after passing the main ATC button, reflecting the currently selected size and colour
   5. A visitor can see 2–3 "Complete the Look" product cards and at least 4 related products on every PDP, and can read seeded customer reviews with star ratings and fit feedback
 
-**Plans**: TBD
+**Plans**: 5 plans
+
+**Wave 1** *(data foundation — blocking)*
+
+- [ ] 03-01-PLAN.md — Data foundation: 002_product_pairings.sql migration + collection gap fill seed (Tennis/Training/Running), js/products.js full implementation + window exposure [HAS CHECKPOINT]
+
+**Wave 2** *(blocked on Wave 1 — plans run in parallel)*
+
+- [ ] 03-02-PLAN.md — PLP (shop.html): Supabase-backed product grid, activity tabs + sub-category pills, colour swatch hover, sort select, URL state sync, empty state, Toastify ATC stub + PLP CSS classes
+- [ ] 03-03-PLAN.md — Nav search (js/components.js): click-to-expand search input, debounced autosuggest dropdown, Enter → PLP, click → PDP
+
+**Wave 3** *(blocked on Wave 2 — plans run in parallel)*
+
+- [ ] 03-04-PLAN.md — PDP core (product.html): Swiper gallery + thumbnails, colour swatch → gallery sync, size selector, sticky ATC (IntersectionObserver), size guide modal (focus trap), fabric accordion + PDP CSS classes
+- [ ] 03-05-PLAN.md — PDP social proof (product.html): Complete the Look pairings, related products grid, customer reviews with aggregate rating + fit badges + load-more
+
 **UI hint**: yes
 
 ### Phase 4: Auth + Customer Account
@@ -175,7 +190,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 |-------|----------------|--------|-----------|
 | 1. Foundation | 9/9 | Complete   | 2026-06-11 |
 | 2. Brand Shell + Homepage | 4/4 | Complete   | 2026-06-12 |
-| 3. Product Catalog | 0/TBD | Not started | - |
+| 3. Product Catalog | 0/5 | Not started | - |
 | 4. Auth + Customer Account | 0/TBD | Not started | - |
 | 5. AI Style Match | 0/TBD | Not started | - |
 | 6. Cart + Checkout | 0/TBD | Not started | - |
