@@ -3,6 +3,7 @@
 // Side-effect module — exports nothing.
 
 import { supabase } from './supabase.js';
+import { getUser, onAuthChange } from './auth.js';
 
 // Expose supabase client globally so Alpine inline x-data strings can access it
 window.supabase = supabase;
@@ -16,10 +17,22 @@ function registerStores() {
   if (!Alpine.store('auth')) Alpine.store('auth', { user: null, loggedIn: false });
 }
 
+// Populate Alpine.store('auth') from live session and subscribe to changes.
+// Runs on every page since components.js is loaded everywhere.
+async function initAuth() {
+  const user = await getUser();
+  Alpine.store('auth').user = user;
+  Alpine.store('auth').loggedIn = !!user;
+  onAuthChange((user) => {
+    Alpine.store('auth').user = user;
+    Alpine.store('auth').loggedIn = !!user;
+  });
+}
+
 // alpine:init path: fires if Alpine hasn't initialized yet (e.g. script order changes)
-document.addEventListener('alpine:init', registerStores);
+document.addEventListener('alpine:init', () => { registerStores(); initAuth(); });
 // Direct path: Alpine has already initialized before this module ran
-if (window.Alpine) registerStores();
+if (window.Alpine) { registerStores(); initAuth(); }
 
 // ─── Nav HTML ────────────────────────────────────────────────────────────────
 
@@ -29,6 +42,7 @@ const navHTML = `
     navOpen: false,
     scrolled: false,
     searchOpen: false,
+    userDropOpen: false,
     searchQuery: '',
     suggestions: [],
     _searchTimer: null,
@@ -126,12 +140,33 @@ const navHTML = `
         </div>
       </div>
 
-      <!-- User account -->
-      <a href="/auth.html" aria-label="Your account" class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors">
+      <!-- User account — guest state (visible by default, hidden when logged in) -->
+      <a x-show="!$store.auth.loggedIn" href="/auth.html" aria-label="Your account" class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/>
         </svg>
       </a>
+
+      <!-- User account — logged-in state (hidden by default to prevent FOUC) -->
+      <div x-show="$store.auth.loggedIn" class="relative" @click.outside="userDropOpen = false" style="display:none;">
+        <button
+          @click="userDropOpen = !userDropOpen"
+          class="nav-user-trigger"
+          :aria-expanded="userDropOpen"
+          aria-label="Account menu"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/>
+          </svg>
+          <span class="nav-user-name" x-text="$store.auth.user?.user_metadata?.first_name || 'Account'"></span>
+        </button>
+        <div x-show="userDropOpen" class="nav-dropdown" style="display:none;">
+          <a href="/account.html" class="nav-dropdown-item">My Account</a>
+          <a href="/account.html#wishlist" class="nav-dropdown-item">Wishlist</a>
+          <div class="nav-dropdown-divider"></div>
+          <button @click="window.elvoraSignOut().then(() => { $store.auth.user = null; $store.auth.loggedIn = false; window.location.href='/index.html'; })" class="nav-dropdown-item danger">Sign Out</button>
+        </div>
+      </div>
 
       <!-- Cart bag -->
       <a href="/cart.html" aria-label="Shopping bag" class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors relative">
@@ -180,8 +215,14 @@ const navHTML = `
       <li><a href="/contact.html" class="text-white text-base tracking-widest uppercase hover:text-rose transition-colors no-underline">Contact</a></li>
     </ul>
     <div class="mt-8 flex items-center gap-4">
-      <a href="/auth.html" aria-label="Your account" class="w-11 h-11 flex items-center justify-center text-white hover:text-rose transition-colors">
+      <!-- Mobile — guest account link -->
+      <a x-show="!$store.auth.loggedIn" href="/auth.html" aria-label="Your account" class="w-11 h-11 flex items-center justify-center text-white hover:text-rose transition-colors">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg>
+      </a>
+      <!-- Mobile — logged-in account link (no dropdown, direct link) -->
+      <a x-show="$store.auth.loggedIn" href="/account.html" aria-label="My account" class="flex items-center gap-2 text-white hover:text-rose transition-colors" style="display:none;">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg>
+        <span class="text-sm tracking-widest uppercase" x-text="$store.auth.user?.user_metadata?.first_name || 'Account'"></span>
       </a>
       <a href="/cart.html" aria-label="Shopping bag" class="w-11 h-11 flex items-center justify-center text-white hover:text-rose transition-colors">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke-linecap="round"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0" stroke-linecap="round"/></svg>
