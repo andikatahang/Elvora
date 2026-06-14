@@ -1,33 +1,304 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Style Match — ELVORA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"></script>
+  <style>
+    .sm-hero {
+      background: linear-gradient(135deg, var(--lavender) 0%, #9B87CA 100%);
+      padding: 80px 64px 64px;
+      text-align: center;
+    }
+    .sm-hero-label {
+      font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(255,255,255,0.7); margin-bottom: 16px;
+    }
+    .sm-hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 5vw, 52px);
+      color: white; margin-bottom: 16px; line-height: 1.2;
+    }
+    .sm-hero-sub {
+      font-size: 15px; color: rgba(255,255,255,0.8);
+      max-width: 480px; margin: 0 auto; line-height: 1.7;
+    }
+    .sm-main {
+      background: var(--beige); padding: 64px;
+      display: flex; justify-content: center;
+    }
+    .sm-card {
+      background: white; border-radius: 24px;
+      padding: 40px; width: 100%; max-width: 640px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    }
+    .sm-card-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 24px; padding-bottom: 20px;
+      border-bottom: 1px solid rgba(168,191,163,0.2);
+    }
+    .sm-avatar-large {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--sage); display: flex; align-items: center;
+      justify-content: center; font-size: 22px; flex-shrink: 0;
+    }
+    .sm-card-title { font-size: 18px; font-weight: 600; color: var(--charcoal); }
+    .sm-card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Chat area */
+    .ai-chat-area {
+      background: #fafaf9; border-radius: 16px;
+      padding: 20px; min-height: 280px; max-height: 420px;
+      overflow-y: auto; margin-bottom: 16px;
+      display: flex; flex-direction: column; gap: 14px;
+      scroll-behavior: smooth;
+    }
+    .ai-msg { display: flex; gap: 10px; align-items: flex-start; }
+    .ai-msg.user { flex-direction: row-reverse; }
+    .ai-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--sage); display: flex; align-items: center;
+      justify-content: center; font-size: 14px; flex-shrink: 0;
+    }
+    .ai-msg.user .ai-avatar { background: var(--rose); }
+    .ai-bubble {
+      background: white; border: 1px solid rgba(168,191,163,0.25);
+      border-radius: 16px 16px 16px 4px;
+      padding: 12px 16px; font-size: 13.5px; line-height: 1.65;
+      color: var(--charcoal); max-width: 80%; white-space: pre-wrap;
+    }
+    .ai-msg.user .ai-bubble {
+      background: var(--charcoal); color: white;
+      border: none; border-radius: 16px 16px 4px 16px;
+    }
+    .ai-typing {
+      display: flex; gap: 5px; padding: 12px 16px;
+      background: white; border: 1px solid rgba(168,191,163,0.25);
+      border-radius: 16px; width: fit-content;
+    }
+    .ai-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--sage); animation: dot-bounce 1.2s infinite;
+    }
+    .ai-dot:nth-child(2) { animation-delay: 0.2s; }
+    .ai-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dot-bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+      30% { transform: translateY(-7px); opacity: 1; }
+    }
+
+    /* Quick prompts */
+    .ai-quick-btns {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+    }
+    .ai-quick {
+      background: white; border: 1px solid rgba(168,191,163,0.5);
+      border-radius: 20px; padding: 7px 14px;
+      font-size: 11.5px; letter-spacing: 0.3px;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Poppins', sans-serif; color: var(--charcoal);
+    }
+    .ai-quick:hover { background: var(--sage); color: white; border-color: var(--sage); }
+
+    /* Input row */
+    .ai-input-row { display: flex; gap: 10px; }
+    .ai-input {
+      flex: 1; border: 1.5px solid rgba(168,191,163,0.4);
+      border-radius: 50px; padding: 12px 20px;
+      font-size: 13.5px; font-family: 'Poppins', sans-serif;
+      outline: none; background: white; color: var(--charcoal);
+      transition: border-color 0.2s;
+    }
+    .ai-input:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(168,191,163,0.15); }
+    .ai-send {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: var(--charcoal); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; transition: background 0.2s; flex-shrink: 0; color: white;
+    }
+    .ai-send:hover { background: var(--sage); }
+    .ai-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Tips section */
+    .sm-tips {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px; margin-top: 48px;
+    }
+    .sm-tip {
+      background: white; border-radius: 16px;
+      padding: 24px 20px; text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .sm-tip-icon { font-size: 28px; margin-bottom: 10px; }
+    .sm-tip-title { font-size: 13px; font-weight: 600; color: var(--charcoal); margin-bottom: 6px; }
+    .sm-tip-desc { font-size: 11.5px; color: var(--text-muted); line-height: 1.6; }
+
+    @media (max-width: 768px) {
+      .sm-hero { padding: 60px 24px 48px; }
+      .sm-main { padding: 32px 16px; }
+      .sm-card { padding: 24px 20px; }
+    }
+  </style>
 </head>
 <body>
   <div id="nav-root"></div>
+
   <main>
-    <div class="about-hero" style="background:linear-gradient(135deg,var(--lavender) 0%,#9B87CA 100%);">
-      <div>
-        <p class="section-label" style="color:rgba(255,255,255,0.7);">AI-Powered</p>
-        <h1 class="about-hero-title">Find Your <em>Perfect</em><br>Style Match</h1>
-        <p class="about-hero-sub">Upload a photo and let our AI recommend outfits tailored to your look. Launching soon.</p>
+    <!-- Hero -->
+    <section class="sm-hero">
+      <p class="sm-hero-label">AI-Powered</p>
+      <h1 class="sm-hero-title">Meet <em>Elvy</em>, Your Style Advisor</h1>
+      <p class="sm-hero-sub">Ceritakan aktivitasmu, ukuran, atau gaya yang kamu suka — Elvy akan merekomendasikan outfit ELVORA yang paling pas buat kamu.</p>
+    </section>
+
+    <!-- Chat -->
+    <section class="sm-main">
+      <div style="width:100%;max-width:640px;">
+        <div class="sm-card">
+          <div class="sm-card-header">
+            <div class="sm-avatar-large">🌸</div>
+            <div>
+              <div class="sm-card-title">Elvy — AI Style Advisor</div>
+              <div class="sm-card-sub">Powered by NVIDIA NIM · MiniMax-M1</div>
+            </div>
+          </div>
+
+          <!-- Quick prompt chips -->
+          <div class="ai-quick-btns" id="quickBtns">
+            <button class="ai-quick" onclick="sendQuick('Aku suka padel, rekomendasiin outfit yang stylish dong!')">🎾 Outfit padel</button>
+            <button class="ai-quick" onclick="sendQuick('Mau cari set pilates yang nyaman dan aesthetic, ada rekomendasi?')">🧘 Set pilates</button>
+            <button class="ai-quick" onclick="sendQuick('Aku ukuran M, tinggi 160 cm, mau gym. Outfit apa yang cocok?')">💪 Gym outfit size M</button>
+            <button class="ai-quick" onclick="sendQuick('Ada koleksi terbaru apa di ELVORA sekarang?')">✨ Koleksi terbaru</button>
+          </div>
+
+          <!-- Chat messages -->
+          <div class="ai-chat-area" id="aiChat">
+            <div class="ai-msg">
+              <div class="ai-avatar">🌸</div>
+              <div class="ai-bubble">Haii! Aku Elvy, style advisor kamu di ELVORA 💚 Cerita dong, lagi nyari outfit buat aktivitas apa? Aku bantu cariin yang paling pas!</div>
+            </div>
+          </div>
+
+          <!-- Input -->
+          <div class="ai-input-row">
+            <input class="ai-input" id="aiInput"
+              placeholder="Tulis pertanyaan atau cerita aktivitasmu..."
+              onkeydown="if(event.key==='Enter' && !event.shiftKey) { event.preventDefault(); sendAI(); }">
+            <button class="ai-send" id="aiSendBtn" onclick="sendAI()" title="Kirim">➤</button>
+          </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="sm-tips">
+          <div class="sm-tip">
+            <div class="sm-tip-icon">🎯</div>
+            <div class="sm-tip-title">Spesifik Aktivitas</div>
+            <div class="sm-tip-desc">Sebutkan aktivitasmu — padel, pilates, gym, yoga, lari, atau tennis.</div>
+          </div>
+          <div class="sm-tip">
+            <div class="sm-tip-icon">📐</div>
+            <div class="sm-tip-title">Ukuran & Postur</div>
+            <div class="sm-tip-desc">Bagikan tinggi badan dan ukuran pilihanmu agar rekomendasi makin akurat.</div>
+          </div>
+          <div class="sm-tip">
+            <div class="sm-tip-icon">🎨</div>
+            <div class="sm-tip-title">Style Preference</div>
+            <div class="sm-tip-desc">Suka warna netral, bold, atau pastel? Kasih tau Elvy style-mu!</div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div style="background:var(--beige);text-align:center;padding:100px 64px;">
-      <p style="font-size:15px;color:var(--text-muted);font-weight:300;max-width:420px;margin:0 auto 40px;line-height:1.8;">Our AI Style Match feature is in development. It will analyse your photo and recommend Elvora pieces curated for your proportions and style.</p>
-      <a href="/index.html" class="btn-secondary">Back to Home</a>
-    </div>
+    </section>
   </main>
+
   <div id="footer-root"></div>
+
   <script src="/js/__env.js"></script>
   <script type="module" src="/js/supabase.js"></script>
+  <script type="module" src="/js/cart.js"></script>
+  <script type="module" src="/js/cart.js"></script>
   <script type="module" src="/js/components.js"></script>
+  <script>
+    let aiHistory = [];
+    let aiTypingId = null;
+
+    function sendQuick(text) {
+      document.getElementById('quickBtns').style.display = 'none';
+      document.getElementById('aiInput').value = text;
+      sendAI();
+    }
+
+    async function sendAI() {
+      const input = document.getElementById('aiInput');
+      const sendBtn = document.getElementById('aiSendBtn');
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      input.value = '';
+      sendBtn.disabled = true;
+
+      appendMsg(msg, 'user');
+      aiHistory.push({ role: 'user', content: msg });
+
+      // Typing indicator
+      const typingId = 'typing-' + Date.now();
+      aiTypingId = typingId;
+      const chat = document.getElementById('aiChat');
+      chat.insertAdjacentHTML('beforeend', `
+        <div class="ai-msg" id="${typingId}">
+          <div class="ai-avatar">🌸</div>
+          <div class="ai-typing">
+            <div class="ai-dot"></div>
+            <div class="ai-dot"></div>
+            <div class="ai-dot"></div>
+          </div>
+        </div>`);
+      chat.scrollTop = chat.scrollHeight;
+
+      try {
+        const res = await fetch('/api/ai-advisor', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: aiHistory }),
+        });
+
+        const data = await res.json();
+        const reply = data.reply || 'Maaf, aku lagi ada gangguan. Coba lagi ya! 🌸';
+
+        document.getElementById(typingId)?.remove();
+        appendMsg(reply, 'ai');
+        aiHistory.push({ role: 'assistant', content: reply });
+      } catch {
+        document.getElementById(typingId)?.remove();
+        appendMsg('Aduh, koneksiku lagi bermasalah nih 😅 Coba lagi sebentar ya!', 'ai');
+      } finally {
+        sendBtn.disabled = false;
+        input.focus();
+      }
+    }
+
+    function appendMsg(text, role) {
+      const chat = document.getElementById('aiChat');
+      const isUser = role === 'user';
+      chat.insertAdjacentHTML('beforeend', `
+        <div class="ai-msg ${isUser ? 'user' : ''}">
+          <div class="ai-avatar">${isUser ? '👤' : '🌸'}</div>
+          <div class="ai-bubble">${escapeHtml(text)}</div>
+        </div>`);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
 </body>
 </html>

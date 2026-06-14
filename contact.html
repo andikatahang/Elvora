@@ -31,18 +31,26 @@
         showToast: false,
         loading: false,
         _toastTimer: null,
-        submitForm() {
+        async submitForm() {
           if (!this.name || !this.email || !this.message) return;
           this.loading = true;
-          setTimeout(() => {
-            this.loading = false;
+          try {
+            const { error } = await window.supabase
+              .from('contacts')
+              .insert({ name: this.name, email: this.email, message: this.message });
+            if (error) throw error;
             this.name = '';
             this.email = '';
             this.message = '';
             this.showToast = true;
             clearTimeout(this._toastTimer);
             this._toastTimer = setTimeout(() => { this.showToast = false; }, 4000);
-          }, 800);
+          } catch (err) {
+            console.error('Contact form error:', err);
+            alert('Terjadi kesalahan. Silakan coba lagi.');
+          } finally {
+            this.loading = false;
+          }
         }
       }"
     >
@@ -126,6 +134,7 @@
   <div id="footer-root"></div>
   <script src="/js/__env.js"></script>
   <script type="module" src="/js/supabase.js"></script>
+  <script type="module" src="/js/cart.js"></script>
   <script type="module" src="/js/components.js"></script>
 </body>
 </html>
