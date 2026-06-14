@@ -498,6 +498,101 @@ body {
   outline: 2px solid var(--charcoal); outline-offset: 3px;
 }
 
+/* ─── Product Detail Page ──────────────────────────────────────────────────── */
+
+/* Swiper gallery */
+.swiper-main { border-radius: 16px; overflow: hidden; }
+.swiper-thumbs { margin-top: 12px; }
+.swiper-thumbs .swiper-slide {
+  border-radius: 10px; overflow: hidden; cursor: pointer;
+  opacity: 0.5; transition: opacity 0.2s;
+}
+.swiper-thumbs .swiper-slide-thumb-active { opacity: 1; }
+
+/* Sticky ATC bar */
+.sticky-atc {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
+  background: white; border-top: 1px solid rgba(168,191,163,0.3);
+  padding: 16px 24px; display: flex; align-items: center; gap: 16px;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.06); height: 64px;
+}
+.sticky-atc-name {
+  font-family: var(--font-display);
+  font-size: 14px; font-weight: 600; color: var(--charcoal); flex: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sticky-atc-meta { font-size: 12px; color: var(--text-muted); }
+.sticky-atc-price { font-size: 14px; font-weight: 600; color: var(--charcoal); }
+
+/* Size guide modal */
+.size-guide-overlay {
+  position: fixed; inset: 0; background: rgba(46,46,46,0.5);
+  z-index: 200; display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.size-guide-modal {
+  background: white; border-radius: 24px; padding: 40px;
+  max-width: 560px; width: 90%; max-height: 80vh; overflow-y: auto;
+  position: relative;
+}
+.size-guide-close {
+  position: absolute; top: 20px; right: 20px;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--beige); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--charcoal); transition: background 0.2s;
+}
+.size-guide-close:hover { background: var(--rose-light); }
+
+/* Size chart table */
+.size-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
+.size-table th {
+  padding: 10px 14px; background: var(--beige); text-align: center;
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 500;
+}
+.size-table td {
+  padding: 10px 14px; border-bottom: 1px solid rgba(168,191,163,0.2); text-align: center;
+}
+
+/* Accordion */
+.accordion-item { border-top: 1px solid rgba(46,46,46,0.1); }
+.accordion-trigger {
+  display: flex; justify-content: space-between; align-items: center;
+  width: 100%; padding: 20px 0;
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font-body); font-size: 13px; letter-spacing: 2px;
+  text-transform: uppercase; font-weight: 500; color: var(--charcoal);
+}
+.accordion-body {
+  padding: 0 0 24px; font-size: 14px; line-height: 1.8; color: var(--text-muted);
+}
+
+/* Size / colour selector */
+.size-grid { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+.size-btn {
+  padding: 8px 16px; border-radius: 8px;
+  border: 1.5px solid rgba(46,46,46,0.15);
+  font-size: 12px; font-weight: 500; cursor: pointer;
+  background: white; color: var(--charcoal); transition: all 0.2s;
+  font-family: var(--font-body);
+}
+.size-btn:hover { border-color: var(--charcoal); }
+.size-btn.selected { background: var(--charcoal); color: white; border-color: var(--charcoal); }
+.size-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ATC main button */
+.atc-main {
+  background: var(--charcoal); color: white;
+  padding: 0 36px; border: none; border-radius: 50px;
+  font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  font-weight: 500; cursor: pointer; transition: all 0.3s;
+  font-family: var(--font-body); height: 56px;
+  display: flex; align-items: center; justify-content: center;
+}
+.atc-main:hover:not(:disabled) { background: var(--rose); }
+.atc-main:disabled { opacity: 0.7; cursor: not-allowed; }
+
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 .shop-hero { background: var(--sage-light); padding: 140px 64px 60px; text-align: center; }
