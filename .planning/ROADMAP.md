@@ -111,7 +111,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 **Wave 3** *(blocked on Wave 2 — plans run in parallel)*
 
-- [ ] 03-04-PLAN.md — PDP core (product.html): Swiper gallery + thumbnails, colour swatch → gallery sync, size selector, sticky ATC (IntersectionObserver), size guide modal (focus trap), fabric accordion + PDP CSS classes
+- [x] 03-04-PLAN.md — PDP core (product.html): Swiper gallery + thumbnails, colour swatch → gallery sync, size selector, sticky ATC (IntersectionObserver), size guide modal (focus trap), fabric accordion + PDP CSS classes
 - [ ] 03-05-PLAN.md — PDP social proof (product.html): Complete the Look pairings, related products grid, customer reviews with aggregate rating + fit badges + load-more
 
 **UI hint**: yes
@@ -190,7 +190,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 |-------|----------------|--------|-----------|
 | 1. Foundation | 9/9 | Complete   | 2026-06-11 |
 | 2. Brand Shell + Homepage | 4/4 | Complete   | 2026-06-12 |
-| 3. Product Catalog | 3/5 | In Progress|  |
+| 3. Product Catalog | 4/5 | In Progress|  |
 | 4. Auth + Customer Account | 0/TBD | Not started | - |
 | 5. AI Style Match | 0/TBD | Not started | - |
 | 6. Cart + Checkout | 0/TBD | Not started | - |
