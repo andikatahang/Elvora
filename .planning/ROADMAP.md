@@ -106,8 +106,8 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 **Wave 2** *(blocked on Wave 1 — plans run in parallel)*
 
-- [ ] 03-02-PLAN.md — PLP (shop.html): Supabase-backed product grid, activity tabs + sub-category pills, colour swatch hover, sort select, URL state sync, empty state, Toastify ATC stub + PLP CSS classes
-- [ ] 03-03-PLAN.md — Nav search (js/components.js): click-to-expand search input, debounced autosuggest dropdown, Enter → PLP, click → PDP
+- [x] 03-02-PLAN.md — PLP (shop.html): Supabase-backed product grid, activity tabs + sub-category pills, colour swatch hover, sort select, URL state sync, empty state, Toastify ATC stub + PLP CSS classes
+- [x] 03-03-PLAN.md — Nav search (js/components.js): click-to-expand search input, debounced autosuggest dropdown, Enter → PLP, click → PDP
 
 **Wave 3** *(blocked on Wave 2 — plans run in parallel)*
 
@@ -190,7 +190,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 |-------|----------------|--------|-----------|
 | 1. Foundation | 9/9 | Complete   | 2026-06-11 |
 | 2. Brand Shell + Homepage | 4/4 | Complete   | 2026-06-12 |
-| 3. Product Catalog | 1/5 | In Progress|  |
+| 3. Product Catalog | 3/5 | In Progress|  |
 | 4. Auth + Customer Account | 0/TBD | Not started | - |
 | 5. AI Style Match | 0/TBD | Not started | - |
 | 6. Cart + Checkout | 0/TBD | Not started | - |
