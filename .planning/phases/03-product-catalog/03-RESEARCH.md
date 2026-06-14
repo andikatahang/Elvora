@@ -792,23 +792,25 @@ Toastify({
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Tennis and Training top-level collection slugs**
    - What we know: Seed has no `padel-tennis` or `training` top-level collection; sub-category collections exist (love-match, power-mood, etc.)
    - What's unclear: Which specific products (by slug) should be assigned to Tennis, Training, and Running sub-collections in the Phase 3 seed patch?
-   - Recommendation: Planner reviews product descriptions in seed.sql and makes assignments based on activity context (skirts → tennis/padel, leggings + bras → gym/running, long sleeves → running)
+   - Recommendation: Planner reviews product descriptions in seed.sql and makes assignments based on activity context (skirts -> tennis/padel, leggings + bras -> gym/running, long sleeves -> running)
+   - **RESOLVED in Plan 03-01 Task 2:** `002_collection_assignments.sql` adds explicit `collection_products` rows assigning Tennis products (P10-P12 skirts + P18 shorts + P19 skirt -> love-match, ace-energy, court-girl), Training products (P01-P05 leggings + P06-P09 bras + P16 jacket -> power-mood, built-different, hot-girl-lift), and Running products (P05, P09, P15 -> run-era, pace-mode, runners-high). Activity slugs are multi-slug unions handled by `getProductIdsForActivity()` in `js/products.js`.
 
 2. **Swiper lazy loading vs. Alpine x-bind:src**
    - What we know: Swiper has built-in `lazy: true` which uses `swiper-lazy` class on `<img>`. Alpine may want to bind `:src` dynamically. These can conflict.
    - What's unclear: Whether to use Swiper's native lazy or Alpine-driven src binding for gallery images
    - Recommendation: Use Swiper's native lazy loading (`lazy: { loadPrevNext: true }`) for all slides beyond the first. The first slide uses `fetchpriority="high"` and no lazy attribute.
+   - **RESOLVED in Plan 03-04 Task 1:** Swiper's native `lazy: { loadPrevNext: true }` is used. The first slide image is rendered with `fetchpriority="high"` and no lazy attribute; all subsequent slides use the `swiper-lazy` class pattern. No Alpine `:src` binding on gallery images -- Swiper owns the src after `$nextTick` initialization.
 
 3. **Sub-category pill counts**
    - What we know: Sub-pills appear for all 15 sub-categories under their respective activity tabs
-   - What's unclear: Whether to show a count badge (e.g., "Matcha Babe (3)") on each pill — not specified in CONTEXT.md
+   - What's unclear: Whether to show a count badge (e.g., "Matcha Babe (3)") on each pill -- not specified in CONTEXT.md
    - Recommendation: Omit counts in Phase 3 MVP; pills show name only
-
+   - **RESOLVED in Plan 03-02 Task 2:** Pills display name only (no count badge). This matches the locked decisions (CONTEXT.md has no count badge requirement) and keeps the PLP UI uncluttered at assessment scale.
 ---
 
 ## Environment Availability
