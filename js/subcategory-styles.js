@@ -111,12 +111,15 @@ export const SUBCATEGORY_STYLES = [
     lookbookImage: null,
   },
 
-  // ── GYM ────────────────────────────────────────────────────────────────────
+  // ── TRAINING ───────────────────────────────────────────────────────────────
+  // Note: category is 'training' here to match the PLP filter key.
+  // The original subcategory-styles.js used 'gym' — updated to 'training'
+  // to align with ACTIVITY_TOP_SLUGS key in products.js.
 
   {
     slug: 'power-mood',
     name: 'Power Mood',
-    category: 'gym',
+    category: 'training',
     tones: ['charcoal', 'black', 'muted earth tones'],
     aesthetic: 'strong, sleek, premium performance',
     direction: 'elevated training wear',
@@ -126,7 +129,7 @@ export const SUBCATEGORY_STYLES = [
   {
     slug: 'built-different',
     name: 'Built Different',
-    category: 'gym',
+    category: 'training',
     tones: ['monochrome neutrals', 'deep charcoal', 'cream contrast'],
     aesthetic: 'bold, modern, disciplined',
     direction: 'high-performance luxury gym wear',
@@ -136,7 +139,7 @@ export const SUBCATEGORY_STYLES = [
   {
     slug: 'hot-girl-lift',
     name: 'Hot Girl Lift',
-    category: 'gym',
+    category: 'training',
     tones: ['soft neutrals', 'warm beige', 'muted sage accents'],
     aesthetic: 'confident, fashion-forward gym aesthetic',
     direction: 'premium feminine strength',
@@ -188,5 +191,8 @@ export function getSubcategoryBySlug(slug) {
 export function getSubcategoriesByActivity(category) {
   return SUBCATEGORY_STYLES.filter(s => s.category === category);
 }
+
+// Expose to window for Alpine x-data access.
+window.SUBCATEGORY_STYLES = SUBCATEGORY_STYLES;
 
 export default SUBCATEGORY_STYLES;

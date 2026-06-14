@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
+  <!-- Toastify for ATC stub notifications (Pitfall 6 prevention) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"></script>
 </head>
 <body>
@@ -15,20 +18,83 @@
 
   <main
     x-data="{
-      activeFilter: 'all',
-      products: [
-        { id:1, name:'Serenity Legging', sub:'Leggings', category:'leggings', price:'Rp 450.000', badge:'best seller', badgeClass:'', bgClass:'product-img-bg-1', img:'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=400&q=80', stars:4.9, reviews:248 },
-        { id:2, name:'Flow Crop Top', sub:'Tops', category:'tops', price:'Rp 280.000', badge:'new', badgeClass:'new', bgClass:'product-img-bg-2', img:'https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=400&q=80', stars:4.8, reviews:156 },
-        { id:3, name:'Grace Jacket', sub:'Jackets', category:'jackets', price:'Rp 650.000', badge:'', badgeClass:'', bgClass:'product-img-bg-3', img:'https://images.unsplash.com/photo-1617952236317-0bd127407984?w=400&q=80', stars:4.7, reviews:89 },
-        { id:4, name:'Aura Sport Hijab', sub:'Sport Hijab', category:'hijab', price:'Rp 185.000', badge:'trending', badgeClass:'trending', bgClass:'product-img-bg-4', img:'https://images.unsplash.com/photo-1590650516494-0c8e4a4dd67e?w=400&q=80', stars:4.9, reviews:312 },
-        { id:5, name:'Power Run Legging', sub:'Leggings', category:'leggings', price:'Rp 520.000', badge:'new', badgeClass:'new', bgClass:'product-img-bg-1', img:'https://images.unsplash.com/photo-1594381898411-846e7d193883?w=400&q=80', stars:4.8, reviews:178 },
-        { id:6, name:'Calm Yoga Top', sub:'Tops', category:'tops', price:'Rp 310.000', badge:'', badgeClass:'', bgClass:'product-img-bg-2', img:'https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=400&q=80', stars:4.6, reviews:94 },
-        { id:7, name:'Swift Zip Jacket', sub:'Jackets', category:'jackets', price:'Rp 720.000', badge:'best seller', badgeClass:'', bgClass:'product-img-bg-3', img:'https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=400&q=80', stars:4.8, reviews:201 },
-        { id:8, name:'Cloud Socks 3-Pack', sub:'Socks', category:'socks', price:'Rp 120.000', badge:'new', badgeClass:'new', bgClass:'product-img-bg-4', img:'https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?w=400&q=80', stars:4.9, reviews:445 },
-        { id:9, name:'Bloom Hijab Set', sub:'Sport Hijab', category:'hijab', price:'Rp 210.000', badge:'', badgeClass:'', bgClass:'product-img-bg-1', img:'https://images.unsplash.com/photo-1551489186-cf8726f514f8?w=400&q=80', stars:4.7, reviews:167 },
-      ],
-      get filtered() {
-        return this.activeFilter === 'all' ? this.products : this.products.filter(p => p.category === this.activeFilter);
+      products: [],
+      loading: true,
+      category: 'all',
+      sub: null,
+      sort: 'new-arrivals',
+      search: '',
+
+      get subCategoriesForActivity() {
+        if (!window.SUBCATEGORY_STYLES || this.category === 'all') return [];
+        return window.SUBCATEGORY_STYLES.filter(sc => sc.category === this.category);
+      },
+
+      async init() {
+        const params = new URLSearchParams(window.location.search);
+        this.category = params.get('category') || 'all';
+        this.sub      = params.get('sub') || null;
+        this.sort     = params.get('sort') || 'new-arrivals';
+        this.search   = params.get('search') || '';
+        await this.fetchProducts();
+      },
+
+      async fetchProducts() {
+        this.loading = true;
+        try {
+          const result = await window.getProducts({
+            category: this.category,
+            sub: this.sub,
+            sort: this.sort,
+            search: this.search
+          });
+          const raw = result.data || [];
+          this.products = raw.map(p => {
+            const images   = (p.product_images || []).sort((a, b) => a.display_order - b.display_order);
+            const variants = p.product_variants || [];
+
+            const firstUrl    = images.length > 0 ? images[0].url : '';
+            const firstColour = variants.length > 0 ? variants[0].colour : '';
+
+            const seen = new Set();
+            const uniqueColours = [];
+            for (const v of variants) {
+              if (!seen.has(v.colour)) {
+                seen.add(v.colour);
+                const variantImage = images.find(img => img.colour === v.colour);
+                uniqueColours.push({
+                  colour:     v.colour,
+                  colour_hex: v.colour_hex,
+                  image:      variantImage ? variantImage.url : firstUrl,
+                });
+              }
+            }
+
+            return {
+              ...p,
+              activeImage:   firstUrl,
+              defaultImage:  firstUrl,
+              activeColour:  firstColour,
+              defaultColour: firstColour,
+              uniqueColours,
+            };
+          });
+        } catch (err) {
+          console.error('fetchProducts error:', err);
+          this.products = [];
+        }
+        this.loading = false;
+        this.syncURL();
+      },
+
+      syncURL() {
+        const params = new URLSearchParams();
+        if (this.category && this.category !== 'all') params.set('category', this.category);
+        if (this.sub) params.set('sub', this.sub);
+        if (this.sort && this.sort !== 'new-arrivals') params.set('sort', this.sort);
+        if (this.search) params.set('search', this.search);
+        const qs = params.toString();
+        history.replaceState(null, '', qs ? '?' + qs : window.location.pathname);
       }
     }"
   >
@@ -37,70 +103,190 @@
     <div class="shop-hero">
       <p class="section-label">The Collection</p>
       <h1 class="shop-hero-title">Welcome to Elvora</h1>
-      <p class="shop-hero-sub">101 styles · Free shipping above Rp 500K</p>
+      <p class="shop-hero-sub">
+        <span x-text="products.length + ' styles · Free shipping above Rp 500K'"></span>
+      </p>
     </div>
 
     <!-- ═══ Shop Body ════════════════════════════════════════════════════════ -->
     <div class="shop-body">
 
-      <!-- Toolbar -->
+      <!-- Toolbar: activity tabs + sort select -->
       <div class="shop-toolbar">
         <div class="filter-pills">
-          <button class="filter-pill" :class="activeFilter === 'all' && 'active'" @click="activeFilter = 'all'">All</button>
-          <button class="filter-pill" :class="activeFilter === 'leggings' && 'active'" @click="activeFilter = 'leggings'">Leggings</button>
-          <button class="filter-pill" :class="activeFilter === 'tops' && 'active'" @click="activeFilter = 'tops'">Tops</button>
-          <button class="filter-pill" :class="activeFilter === 'jackets' && 'active'" @click="activeFilter = 'jackets'">Jackets</button>
-          <button class="filter-pill" :class="activeFilter === 'hijab' && 'active'" @click="activeFilter = 'hijab'">Sport Hijab</button>
-          <button class="filter-pill" :class="activeFilter === 'socks' && 'active'" @click="activeFilter = 'socks'">Socks</button>
+          <button
+            class="filter-pill"
+            :class="category === 'all' && 'active'"
+            :aria-pressed="category === 'all'"
+            @click="category='all'; sub=null; fetchProducts()"
+            type="button"
+          >All</button>
+          <button
+            class="filter-pill"
+            :class="category === 'padel' && 'active'"
+            :aria-pressed="category === 'padel'"
+            @click="category='padel'; sub=null; fetchProducts()"
+            type="button"
+          >Padel</button>
+          <button
+            class="filter-pill"
+            :class="category === 'pilates' && 'active'"
+            :aria-pressed="category === 'pilates'"
+            @click="category='pilates'; sub=null; fetchProducts()"
+            type="button"
+          >Pilates</button>
+          <button
+            class="filter-pill"
+            :class="category === 'tennis' && 'active'"
+            :aria-pressed="category === 'tennis'"
+            @click="category='tennis'; sub=null; fetchProducts()"
+            type="button"
+          >Tennis</button>
+          <button
+            class="filter-pill"
+            :class="category === 'training' && 'active'"
+            :aria-pressed="category === 'training'"
+            @click="category='training'; sub=null; fetchProducts()"
+            type="button"
+          >Training</button>
+          <button
+            class="filter-pill"
+            :class="category === 'running' && 'active'"
+            :aria-pressed="category === 'running'"
+            @click="category='running'; sub=null; fetchProducts()"
+            type="button"
+          >Running</button>
         </div>
+
         <div class="shop-sort">
           <span>Sort by</span>
-          <select class="sort-select">
-            <option>Newest</option>
-            <option>Best Selling</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
+          <select class="sort-select" x-model="sort" @change="fetchProducts()">
+            <option value="new-arrivals">New Arrivals</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="best-sellers">Best Sellers</option>
           </select>
         </div>
       </div>
 
-      <!-- Product Grid -->
-      <div class="shop-grid">
-        <template x-for="p in filtered" :key="p.id">
-          <a :href="'/product.html?id=' + p.id" class="product-card">
+      <!-- Sub-category pills — shown below activity tabs when category !== 'all' -->
+      <div x-show="category !== 'all'" class="subcategory-pills" style="display:none;">
+        <template x-for="sc in subCategoriesForActivity" :key="sc.slug">
+          <button
+            class="subcategory-pill"
+            type="button"
+            :class="sub === sc.slug && 'active'"
+            :aria-pressed="sub === sc.slug"
+            @click="sub = (sub === sc.slug ? null : sc.slug); fetchProducts()"
+            x-text="sc.name"
+          ></button>
+        </template>
+      </div>
+
+      <!-- Skeleton loading grid — shown while fetching -->
+      <div class="shop-grid" x-show="loading" style="display:none;">
+        <template x-for="n in 6" :key="n">
+          <div class="product-card skeleton-shimmer" style="min-height: 400px;"></div>
+        </template>
+      </div>
+
+      <!-- Product grid — Supabase-backed -->
+      <div class="shop-grid" x-show="!loading && products.length > 0" style="display:none;">
+        <template x-for="(p, index) in products" :key="p.id">
+          <a :href="'/product.html?slug=' + p.slug" class="product-card">
             <div class="product-img">
-              <div
-                class="product-img-bg"
-                :class="p.bgClass"
-                :style="p.img ? 'background-image:url(' + p.img + ');background-size:cover;background-position:center top;width:100%;height:100%;' : 'width:100%;height:100%;'"
-              ></div>
-              <span x-show="p.badge" x-text="p.badge" class="product-badge" :class="p.badgeClass"></span>
-              <button class="wishlist-btn" @click.prevent aria-label="Save to wishlist">♡</button>
+              <img
+                :src="(p.activeImage || '') + '?w=800&q=80'"
+                :alt="p.name"
+                width="400"
+                height="533"
+                :loading="index < 4 ? 'eager' : 'lazy'"
+                class="w-full h-full object-cover object-top"
+                style="transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);"
+              >
+              <button
+                class="wishlist-btn"
+                type="button"
+                @click.prevent
+                aria-label="Save to wishlist"
+              >♡</button>
             </div>
             <div class="product-info">
-              <p x-text="p.sub" class="product-sub"></p>
               <h3 x-text="p.name" class="product-name"></h3>
               <div class="product-price-row">
-                <span x-text="p.price" class="product-price"></span>
-                <div class="product-stars">
-                  <span class="star">★</span>
-                  <span x-text="p.stars"></span>
-                  <span class="star-count" x-text="'(' + p.reviews + ')'"></span>
-                </div>
+                <span x-text="'$' + Number(p.base_price).toFixed(2)" class="product-price"></span>
               </div>
-              <button class="add-cart-btn" @click.prevent>Add to Bag</button>
+              <!-- Colour swatches — up to 4 visible -->
+              <div class="product-swatches">
+                <template x-for="v in p.uniqueColours.slice(0, 4)" :key="v.colour">
+                  <button
+                    class="swatch"
+                    type="button"
+                    :style="'background-color:' + v.colour_hex + '; outline: ' + (p.activeColour === v.colour ? '1.5px solid var(--charcoal)' : 'none') + '; outline-offset: 2px;'"
+                    :aria-label="v.colour"
+                    :aria-pressed="p.activeColour === v.colour"
+                    @mouseenter="p.activeColour = v.colour; p.activeImage = v.image"
+                    @mouseleave="p.activeColour = p.defaultColour; p.activeImage = p.defaultImage"
+                    @click.prevent="p.activeColour = v.colour; p.activeImage = v.image"
+                  ></button>
+                </template>
+              </div>
+              <!-- Add to Bag (stub — Phase 6 implements cart logic) -->
+              <button
+                class="add-cart-btn"
+                type="button"
+                @click.prevent="
+                  Alpine.store('cart').add({ productId: p.id, name: p.name, slug: p.slug, price: p.base_price });
+                  if(window.Toastify) Toastify({
+                    text: 'Added to Bag',
+                    duration: 2500,
+                    gravity: 'bottom',
+                    position: 'right',
+                    style: {
+                      background: 'var(--charcoal)',
+                      color: '#ffffff',
+                      borderRadius: '50px',
+                      fontSize: '12px',
+                      letterSpacing: '2px'
+                    }
+                  }).showToast()
+                "
+              >Add to Bag</button>
             </div>
           </a>
         </template>
       </div>
 
-    </div>
+      <!-- Empty state — shown when Supabase returns 0 products -->
+      <div class="shop-empty" x-show="!loading && products.length === 0" style="display:none;">
+        <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: 400; color: var(--charcoal); margin-bottom: 12px;">Nothing here yet.</h2>
+        <p style="font-size: 14px; color: var(--text-muted); line-height: 1.8; margin-bottom: 28px; max-width: 360px;">
+          We couldn't find any styles matching your filters. Try a different activity or browse the full collection.
+        </p>
+        <button
+          class="btn-secondary"
+          type="button"
+          @click="category='all'; sub=null; fetchProducts()"
+        >Browse All Styles</button>
+      </div>
+
+    </div><!-- end .shop-body -->
 
   </main>
 
   <div id="footer-root"></div>
+
+  <!-- Script loading order (per PATTERNS.md):
+       1. __env.js  — plain script (env vars)
+       2. supabase.js — ES module (Supabase client)
+       3. products.js — ES module (exposes getProducts etc. to window)
+       4. subcategory-styles.js — ES module (exposes SUBCATEGORY_STYLES to window)
+       5. components.js — ES module (nav/footer + Alpine stores)
+  -->
   <script src="/js/__env.js"></script>
   <script type="module" src="/js/supabase.js"></script>
+  <script type="module" src="/js/products.js"></script>
+  <script type="module" src="/js/subcategory-styles.js"></script>
   <script type="module" src="/js/components.js"></script>
 </body>
 </html>

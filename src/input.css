@@ -434,6 +434,72 @@ body {
 .value-text { font-size: 14px; line-height: 1.8; color: var(--text-muted); font-weight: 300; }
 
 /* ─── Shop Page ───────────────────────────────────────────────────────────── */
+
+/* ─── Shop Page — Phase 3 additions ──────────────────────────────────────── */
+
+/* Sub-category pills row */
+.subcategory-pills {
+  display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto;
+  padding-bottom: 8px; margin-bottom: 24px;
+  scrollbar-width: none;
+}
+.subcategory-pills::-webkit-scrollbar { display: none; }
+.subcategory-pill,
+.sub-pill {
+  padding: 6px 16px; border-radius: 50px;
+  border: 1px solid rgba(168,191,163,0.5);
+  font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  background: transparent; font-family: var(--font-body);
+  color: var(--text-muted); white-space: nowrap; flex-shrink: 0;
+}
+.subcategory-pill.active,
+.sub-pill.active { background: var(--sage); color: white; border-color: var(--sage); }
+.subcategory-pill:hover:not(.active),
+.sub-pill:hover:not(.active) { border-color: var(--rose); color: var(--rose); }
+
+/* Empty state */
+.shop-empty {
+  min-height: 240px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: var(--white); border-radius: 16px; padding: 40px;
+  text-align: center; margin-top: 24px;
+}
+
+/* Load more / pagination */
+.load-more-btn {
+  display: block; margin: 48px auto 0;
+  padding: 14px 40px; border: 1.5px solid rgba(46,46,46,0.2); border-radius: 50px;
+  font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  font-weight: 500; cursor: pointer; transition: all 0.2s;
+  background: transparent; font-family: var(--font-body); color: var(--charcoal);
+}
+.load-more-btn:hover { border-color: var(--charcoal); background: var(--charcoal); color: white; }
+
+/* Skeleton shimmer loading animation */
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton-shimmer {
+  background: linear-gradient(90deg, var(--white) 25%, var(--beige) 50%, var(--white) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  pointer-events: none;
+}
+
+/* PDP colour swatch */
+.pdp-swatch {
+  width: 24px; height: 24px; border-radius: 50%;
+  border: 1px solid rgba(46,46,46,0.15); cursor: pointer;
+  transition: transform 0.2s; flex-shrink: 0;
+}
+.pdp-swatch:hover { transform: scale(1.1); }
+.pdp-swatch.active {
+  outline: 2px solid var(--charcoal); outline-offset: 3px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+
 .shop-hero { background: var(--sage-light); padding: 140px 64px 60px; text-align: center; }
 .shop-hero-title {
   font-family: var(--font-display);
