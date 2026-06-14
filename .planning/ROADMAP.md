@@ -102,7 +102,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 **Wave 1** *(data foundation — blocking)*
 
-- [ ] 03-01-PLAN.md — Data foundation: 002_product_pairings.sql migration + collection gap fill seed (Tennis/Training/Running), js/products.js full implementation + window exposure [HAS CHECKPOINT]
+- [x] 03-01-PLAN.md — Data foundation: 002_product_pairings.sql migration + collection gap fill seed (Tennis/Training/Running), js/products.js full implementation + window exposure [HAS CHECKPOINT]
 
 **Wave 2** *(blocked on Wave 1 — plans run in parallel)*
 
@@ -190,7 +190,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 |-------|----------------|--------|-----------|
 | 1. Foundation | 9/9 | Complete   | 2026-06-11 |
 | 2. Brand Shell + Homepage | 4/4 | Complete   | 2026-06-12 |
-| 3. Product Catalog | 0/5 | Not started | - |
+| 3. Product Catalog | 1/5 | In Progress|  |
 | 4. Auth + Customer Account | 0/TBD | Not started | - |
 | 5. AI Style Match | 0/TBD | Not started | - |
 | 6. Cart + Checkout | 0/TBD | Not started | - |
