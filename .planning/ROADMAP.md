@@ -9,7 +9,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 - [x] **Phase 1: Foundation** - Setup repository, Supabase schema (all tables + RLS), seed catalog (20+ products), storage buckets, deployment pipeline, keep-alive ping
 - [x] **Phase 2: Brand Shell + Homepage** - Quiet luxury Tailwind v4 design system, component library, full 8-section homepage, About page, Contact/FAQ page (completed 2026-06-12)
 - [x] **Phase 3: Product Catalog** - PLP with filtering/search/sort, PDP with gallery, sticky ATC, size guide, fabric details, Complete the Look, recommendations, reviews (completed 2026-06-14)
-- [ ] **Phase 4: Auth + Customer Account** - Signup/login/session persistence, wishlist, saved AI style preferences, account dashboard
+- [x] **Phase 4: Auth + Customer Account** - Signup/login/session persistence, wishlist, saved AI style preferences, account dashboard (completed 2026-06-15)
 - [ ] **Phase 5: AI Style Match** - Gemini Vision photo upload → outfit recommendations → colour guidance → session persistence
 - [ ] **Phase 6: Cart + Checkout** - Mini cart drawer, full cart page, guest checkout, multi-step checkout, order creation with price snapshot
 - [ ] **Phase 7: Admin Panel** - Protected admin routes, product CRUD + image upload, category/collection management, homepage content, testimonials, order read view
@@ -143,7 +143,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 **Wave 3** *(blocked on Wave 2)*
 
-- [ ] 04-05-PLAN.md — Wishlist heart toggle: shop.html + product.html hearts wired to wishlist_items (optimistic UI, guest redirect, error revert)
+- [x] 04-05-PLAN.md — Wishlist heart toggle: shop.html + product.html hearts wired to wishlist_items (optimistic UI, guest redirect, error revert)
 
 **UI hint**: yes
 
@@ -206,7 +206,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 | 1. Foundation | 9/9 | Complete   | 2026-06-11 |
 | 2. Brand Shell + Homepage | 4/4 | Complete   | 2026-06-12 |
 | 3. Product Catalog | 5/5 | Complete   | 2026-06-14 |
-| 4. Auth + Customer Account | 4/5 | In Progress | - |
+| 4. Auth + Customer Account | 5/5 | Complete   | 2026-06-15 |
 | 5. AI Style Match | 0/TBD | Not started | - |
 | 6. Cart + Checkout | 0/TBD | Not started | - |
 | 7. Admin Panel | 0/TBD | Not started | - |

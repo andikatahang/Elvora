@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-06-10)
 ## Current Position
 
 Phase: 04 (auth-customer-account) — EXECUTING
-Plan: 5 of 5
-Status: Executing Phase 04
-Last activity: 2026-06-15 -- Phase 04 Plan 04 (account.html dashboard — Profile, Wishlist, Style Preferences) complete
+Plan: 5 of 5 (COMPLETE)
+Status: Phase 04 Complete — ready for Phase 05
+Last activity: 2026-06-15 -- Phase 04 Plan 05 (wishlist toggle shop.html + product.html) complete
 
 Progress: [██████████] 100%
 
@@ -88,6 +88,8 @@ Recent decisions affecting current work:
 - Plan 04-04: user_profiles pakai .eq('id', user.id); wishlist_items pakai .eq('user_id', user.id) — dua tabel, dua kolom berbeda
 - Plan 04-04: Fallback loadProfile dari user.user_metadata jika baris user_profiles belum ada (user baru)
 - Plan 04-04: Migration file bernama 003 (bukan 002) karena 002 sudah dipakai Phase 03
+- Plan 04-05: Alpine Set reactivity — gunakan new Set([...set]) bukan .add()/.delete() langsung agar Alpine mendeteksi perubahan referensi
+- Plan 04-05: wishlist button PDP ditambah sebagai full-width button dengan label teks di bawah ATC; related products wishlist button di product.html juga difungsikan
 
 ### Pending Todos
 
@@ -117,6 +119,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-15T17:41:00Z
-Stopped at: Plan 04-04 complete — next: 04-05-PLAN.md
-Resume file: .planning/phases/04-auth-customer-account/04-05-PLAN.md
+Last session: 2026-06-15T17:46:00Z
+Stopped at: Plan 04-05 complete — Phase 04 selesai; next: Phase 05 AI Style Match
+Resume file: .planning/phases/05-ai-style-match/ (plans TBD)
