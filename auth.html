@@ -8,15 +8,253 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"></script>
 </head>
 <body>
   <div id="nav-root"></div>
-  <main><!-- Phase 4 fills this --></main>
+
+  <main>
+    <div class="auth-page">
+
+      <!-- LEFT PANEL — Editorial brand image -->
+      <aside class="auth-panel-left" role="presentation"
+        style="background-image: url('https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1200&q=80');">
+        <div class="auth-panel-overlay"></div>
+        <div class="auth-panel-content">
+          <p class="auth-wordmark">ELVORA</p>
+          <p class="auth-tagline">MOVE BEAUTIFULLY</p>
+        </div>
+      </aside>
+
+      <!-- RIGHT PANEL — Tabbed Sign In / Create Account form -->
+      <div class="auth-panel-right">
+        <div class="auth-form-wrap"
+          x-data="{
+            tab: 'signin',
+            loading: false,
+            error: '',
+            siEmail: '', siPassword: '',
+            suFirst: '', suLast: '', suEmail: '', suPassword: '', suConfirm: '',
+
+            async init() {
+              const tab = new URLSearchParams(location.search).get('tab');
+              if (tab === 'signup') this.tab = 'signup';
+              const { data: { user } } = await window.supabase.auth.getUser();
+              if (user) window.location.href = '/account.html';
+            },
+
+            async handleSignIn() {
+              this.loading = true; this.error = '';
+              try {
+                await window.signIn(this.siEmail, this.siPassword);
+                window.location.href = '/account.html';
+              } catch (e) {
+                this.error = 'Incorrect email or password. Please try again.';
+              } finally { this.loading = false; }
+            },
+
+            async handleSignUp() {
+              this.error = '';
+              if (this.suPassword.length < 8) { this.error = 'Password must be at least 8 characters.'; return; }
+              if (this.suPassword !== this.suConfirm) { this.error = 'Passwords do not match.'; return; }
+              this.loading = true;
+              try {
+                await window.signUp(this.suEmail, this.suPassword, this.suFirst, this.suLast);
+                Toastify({
+                  text: 'Welcome to Elvora, ' + this.suFirst + '!',
+                  duration: 2000,
+                  gravity: 'bottom',
+                  position: 'right',
+                  style: { background: 'var(--sage)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' }
+                }).showToast();
+                setTimeout(() => { window.location.href = '/account.html'; }, 2000);
+              } catch (e) {
+                this.error = e.message?.includes('already registered') || e.message?.includes('already exists')
+                  ? 'An account with this email already exists.'
+                  : (e.message || 'Something went wrong. Please try again.');
+              } finally { this.loading = false; }
+            }
+          }">
+
+          <!-- TAB ROW -->
+          <div class="auth-tabs" role="tablist">
+            <button
+              class="auth-tab"
+              role="tab"
+              :aria-selected="tab === 'signin'"
+              aria-controls="panel-signin"
+              :class="tab === 'signin' ? 'active' : ''"
+              @click="tab = 'signin'; error = ''"
+              type="button">Sign In</button>
+            <button
+              class="auth-tab"
+              role="tab"
+              :aria-selected="tab === 'signup'"
+              aria-controls="panel-signup"
+              :class="tab === 'signup' ? 'active' : ''"
+              @click="tab = 'signup'; error = ''"
+              type="button">Create Account</button>
+          </div>
+
+          <!-- SIGN IN FORM PANEL -->
+          <div x-show="tab === 'signin'"
+            x-transition:enter="transition-opacity duration-150"
+            role="tabpanel"
+            id="panel-signin">
+
+            <h1 class="auth-form-title">Welcome Back</h1>
+            <p class="auth-form-sub">Sign in to your Elvora account</p>
+
+            <div class="form-group">
+              <label class="form-label" for="si-email">Email Address</label>
+              <input
+                class="form-input"
+                type="email"
+                id="si-email"
+                x-model="siEmail"
+                placeholder="your@email.com"
+                required
+                style="font-size:16px;">
+            </div>
+
+            <div class="form-group">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <label class="form-label" for="si-password" style="margin-bottom:0;">Password</label>
+                <a class="auth-forgot"
+                  href="https://elvorastudio.supabase.co"
+                  target="_blank"
+                  rel="noopener"
+                  style="float:none;">Forgot password?</a>
+              </div>
+              <input
+                class="form-input"
+                type="password"
+                id="si-password"
+                x-model="siPassword"
+                placeholder="••••••••"
+                required
+                style="font-size:16px;">
+            </div>
+
+            <p x-show="error && tab === 'signin'"
+              x-text="error"
+              role="alert"
+              style="color:var(--rose);font-size:14px;margin-top:8px;display:none;margin-bottom:12px;"></p>
+
+            <button
+              class="form-submit"
+              @click.prevent="handleSignIn()"
+              :disabled="loading"
+              x-text="loading ? 'Signing In…' : 'Sign In'"
+              type="button"></button>
+
+            <p class="auth-switch-link">New to Elvora?
+              <a @click.prevent="tab = 'signup'; error = ''" href="#">Create account</a>
+            </p>
+          </div>
+
+          <!-- CREATE ACCOUNT FORM PANEL -->
+          <div x-show="tab === 'signup'"
+            x-transition:enter="transition-opacity duration-150"
+            role="tabpanel"
+            id="panel-signup"
+            style="display:none;">
+
+            <h1 class="auth-form-title">Join Elvora</h1>
+            <p class="auth-form-sub">Create your account to get started</p>
+
+            <div class="auth-name-row">
+              <div class="form-group">
+                <label class="form-label" for="su-first">First Name</label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="su-first"
+                  x-model="suFirst"
+                  placeholder="Your first name"
+                  required
+                  style="font-size:16px;">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="su-last">Last Name</label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="su-last"
+                  x-model="suLast"
+                  placeholder="Your last name"
+                  required
+                  style="font-size:16px;">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="su-email">Email Address</label>
+              <input
+                class="form-input"
+                type="email"
+                id="su-email"
+                x-model="suEmail"
+                placeholder="your@email.com"
+                required
+                style="font-size:16px;">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="su-pw">Password</label>
+              <input
+                class="form-input"
+                type="password"
+                id="su-pw"
+                x-model="suPassword"
+                placeholder="Min. 8 characters"
+                required
+                style="font-size:16px;">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="su-confirm">Confirm Password</label>
+              <input
+                class="form-input"
+                type="password"
+                id="su-confirm"
+                x-model="suConfirm"
+                placeholder="Re-enter password"
+                required
+                style="font-size:16px;"
+                @blur="if(suConfirm && suConfirm !== suPassword) error = 'Passwords do not match.'; else if(error === 'Passwords do not match.') error = '';">
+            </div>
+
+            <p x-show="error && tab === 'signup'"
+              x-text="error"
+              role="alert"
+              style="color:var(--rose);font-size:14px;margin-top:8px;display:none;margin-bottom:12px;"></p>
+
+            <button
+              class="form-submit"
+              @click.prevent="handleSignUp()"
+              :disabled="loading"
+              x-text="loading ? 'Creating Account…' : 'Create Account'"
+              type="button"></button>
+
+            <p class="auth-switch-link">Already have an account?
+              <a @click.prevent="tab = 'signin'; error = ''" href="#">Sign in</a>
+            </p>
+          </div>
+
+        </div><!-- /.auth-form-wrap -->
+      </div><!-- /.auth-panel-right -->
+
+    </div><!-- /.auth-page -->
+  </main>
+
   <div id="footer-root"></div>
   <script src="/js/__env.js"></script>
   <script type="module" src="/js/supabase.js"></script>
   <script type="module" src="/js/cart.js"></script>
   <script type="module" src="/js/components.js"></script>
+  <script type="module" src="/js/auth.js"></script>
 </body>
 </html>
