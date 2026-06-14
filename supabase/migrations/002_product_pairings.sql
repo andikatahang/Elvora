@@ -37,6 +37,33 @@ create policy "product_pairings_admin_write"
 
 
 -- =============================================================================
+-- SECTION B.0: Ensure all sub-collections exist
+-- The seed.sql second INSERT block (b...010 to b...021) may not have been
+-- applied to the live database. Insert them here with ON CONFLICT DO NOTHING
+-- so this migration is safe to run regardless of current database state.
+-- =============================================================================
+
+INSERT INTO collections (id, name, slug, description, is_featured, display_order) VALUES
+  -- PADEL sub-collections
+  ('b1000000-0000-0000-0000-000000000010', 'Matcha Babe',     'matcha-babe',     'Elevated padel-club looks in sage, ivory and warm cream — sporty luxury',      false, 10),
+  ('b1000000-0000-0000-0000-000000000011', 'Court Crush',     'court-crush',     'Confident courtwear in charcoal, ivory and soft neutrals with feminine edge',  false, 11),
+  ('b1000000-0000-0000-0000-000000000012', 'Rally Ready',     'rally-ready',     'Performance-neutral padel kit in stone, black and muted green tones',          false, 12),
+  -- PILATES sub-collections
+  ('b1000000-0000-0000-0000-000000000013', 'Soft Flow',       'soft-flow',       'Graceful studio luxury in warm neutrals, ivory, soft sage and stone',           false, 13),
+  ('b1000000-0000-0000-0000-000000000014', 'Main Character',  'main-character',  'Luxury pilates muse — elegant monochrome in charcoal, cream and earth tones',  false, 14),
+  ('b1000000-0000-0000-0000-000000000015', 'Studio Muse',     'studio-muse',     'Minimalist quiet luxury — premium studio uniform in soft beige and neutrals',   false, 15),
+  -- TENNIS sub-collections
+  ('b1000000-0000-0000-0000-000000000016', 'Love Match',      'love-match',      'Romantic luxury tennis in ivory, soft green and clean whites',                  false, 16),
+  ('b1000000-0000-0000-0000-000000000017', 'Ace Energy',      'ace-energy',      'Modern performance-luxury tennis in contrast neutrals, charcoal and white',    false, 17),
+  ('b1000000-0000-0000-0000-000000000018', 'Court Girl',      'court-girl',      'Luxury tennis lifestyle — feminine neutrals, ivory, soft cream and muted sage', false, 18),
+  -- TRAINING (GYM) sub-collections
+  ('b1000000-0000-0000-0000-000000000019', 'Power Mood',      'power-mood',      'Elevated training wear in charcoal, black and muted earth tones',               false, 19),
+  ('b1000000-0000-0000-0000-000000000020', 'Built Different', 'built-different', 'High-performance luxury gym wear — monochrome neutrals and deep charcoal',     false, 20),
+  ('b1000000-0000-0000-0000-000000000021', 'Hot Girl Lift',   'hot-girl-lift',   'Premium feminine strength in soft neutrals, warm beige and muted sage',        false, 21)
+ON CONFLICT (slug) DO NOTHING;
+
+
+-- =============================================================================
 -- SECTION B: collection_products gap fill
 -- Tennis, Training (Gym), and Running sub-collections had zero product assignments.
 -- This block adds activity-appropriate products to each sub-collection.
