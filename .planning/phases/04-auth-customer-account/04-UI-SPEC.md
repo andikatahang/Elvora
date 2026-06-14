@@ -24,7 +24,7 @@ created: 2026-06-14
 | Component library | none — bespoke component layer via `@layer components` | src/input.css |
 | Icon library | Unicode emoji / inline SVG — consistent with Phase 2–3 patterns | components.js, product.html |
 | Display font | Playfair Display — serif, 700 weight, italic variant | src/input.css `--font-display` |
-| Body font | Poppins — sans-serif, 400 + 600 weights | src/input.css `--font-body` |
+| Body font | Poppins — sans-serif, 400 weight only (heading contrast handled by Playfair Display 700) | src/input.css `--font-body` |
 
 **shadcn gate result:** Not applicable. Tech stack is Alpine.js + Tailwind v4 (no React/Next.js/Vite). Custom token layer in `src/input.css` is the design system. No `components.json` expected or needed.
 
@@ -37,11 +37,11 @@ Declared values (multiples of 4 only). All Phase 4 layout must use these values:
 | Token | Value | Phase 4 Usage |
 |-------|-------|---------------|
 | xs | 4px | Icon gaps, swatch spacing, chip gaps |
-| sm | 8px | Chip internal padding (top/bottom), form field gap |
+| sm | 8px | Chip internal padding (top/bottom), form field gap, nav dropdown item padding (top/bottom), wishlist remove btn top/right offset |
 | md | 16px | Form group vertical gap, card internal padding, sidebar item gap |
-| lg | 24px | Panel section gap, sidebar width padding |
+| lg | 24px | Panel section gap, sidebar width padding, wishlist grid gap, mobile sidebar nav item padding (horizontal), prefs-chip horizontal padding |
 | xl | 32px | Dashboard section vertical rhythm |
-| 2xl | 48px | Page top padding, auth form vertical centering buffer |
+| 2xl | 48px | Page top padding, auth form vertical centering buffer, account section card internal padding |
 | 3xl | 64px | Auth page left panel horizontal padding |
 
 Exceptions:
@@ -53,20 +53,25 @@ Exceptions:
 
 ## Typography
 
-All sizes are exact px. No approximate ranges.
+All sizes are exact px. No approximate ranges. Scale is exactly 4 sizes — no size outside this table is permitted.
 
 | Role | Family | Size | Weight | Line Height | Usage |
 |------|--------|------|--------|-------------|-------|
-| Body | Poppins | 14px | 400 | 1.8 | Form field values, account text, review text, wishlist description |
-| Label | Poppins | 11px | 500 | 1.4 | Form labels (ALL CAPS, letter-spacing: 2px), sidebar nav items, chip pill text, section eyebrow |
-| Heading | Playfair Display | 22px | 700 | 1.2 | Account section headings ("Profile", "Your Wishlist", "Style Preferences") |
-| Display | Playfair Display | 36px | 700 | 1.1 | Auth page wordmark overlay ("ELVORA"), auth page section title ("Welcome Back") |
+| Body | Poppins | 14px | 400 | 1.8 | Form field values, account text, review text, wishlist description, forgot password link, profile email note, account user email display, error messages below form fields, auth switch link text, account section subtitle, nav dropdown items, nav user name |
+| Label | Poppins | 11px | 400 | 1.4 | Form labels (ALL CAPS, letter-spacing: 2px), sidebar nav items, chip pill text, section eyebrow, auth tab labels, auth page tagline |
+| Heading | Playfair Display | 22px | 700 | 1.2 | Account section headings ("Profile", "Your Wishlist", "Style Preferences"), account user name display, auth form titles ("Welcome Back", "Join Elvora") |
+| Display | Playfair Display | 36px | 700 | 1.1 | Auth page wordmark overlay ("ELVORA") |
+
+**Collapse rules (checker reference):**
+- Former 12px (`.auth-forgot`, `.profile-email-note`, `.account-user-email`, error messages) → **14px body**
+- Former 13px (`.auth-switch-link`, `.account-section-sub`, `.nav-dropdown-item`, `.nav-user-name`) → **14px body**
+- Former 20px (`.account-user-name`) → **22px heading**
+- Former 28px (`.auth-form-title`) → **22px heading**
 
 Additional type rules carried from prior phases:
 - Form inputs: 14px Poppins 400 — **never below 16px on mobile** (prevents iOS Safari auto-zoom; use `font-size: 16px` on `<input>` elements on mobile breakpoint)
-- Auth tab labels ("Sign In" / "Create Account"): 11px Poppins 500, letter-spacing: 2px, ALL CAPS
-- Error messages below form fields: 12px Poppins 400, color `--rose`
-- Sidebar active tab indicator text: 11px Poppins 500, color `--charcoal`
+- Error messages: 14px Poppins 400, color `--rose` (merged from 12px per collapse rule above)
+- Sidebar active tab indicator text: 11px Poppins 400, color `--charcoal`
 
 ---
 
@@ -81,11 +86,13 @@ All values are exact hex codes from `src/input.css`. Phase 4 adds no new colors.
 | Accent (10%) | `--sage` | `#A8BFA3` | Reserved — chip pill selected fill, sidebar active tab left-border, form input `:focus` border, "Save" button hover state |
 | Accent secondary | `--rose` | `#D8A7A7` | Reserved — wishlist heart icon filled state, error message text, form validation error border, btn-primary `:hover` background, auth tagline italic emphasis |
 | Destructive | `--charcoal` | `#2E2E2E` | "Remove from Wishlist" button — charcoal text, no fill, no separate destructive red. Confirmation via inline text toggle only (no modal for wishlist remove). |
+| Surface tint | `--rose-light` | `#F5E8E8` | Active background of `.account-nav-item.active` and size guide close button hover — confirmed in src/input.css `:root` |
 | Muted text | `--text-muted` | `#8A8A8A` | Secondary text, form hints, wishlist card sub-labels, empty state body copy |
 
 **Accent reserved-for list (exhaustive — never use sage or rose outside these):**
 - `--sage`: chip selected fill, sidebar active tab left-border (2px solid), focus ring on form inputs
-- `--rose`: heart icon filled (wishlisted), form field error state border + error text, btn hover fills, auth italic wordmark overlay
+- `--rose`: heart icon filled (wishlisted), form field error state border + error text, btn hover fills, auth italic wordmark overlay, Sign Out nav item text
+- `--rose-light`: active background of `.account-nav-item.active` sidebar items only
 
 **60/30/10 split assignment:**
 - 60% `--beige`: page backgrounds (auth right panel, account dashboard background, form surfaces)
@@ -109,15 +116,15 @@ These are the new Phase 4 components. Each maps to a CSS class to add to `src/in
 .auth-panel-right       — background: --beige; display: flex; align-items: center; justify-content: center; padding: 48px
 .auth-form-wrap         — max-width: 400px; width: 100%
 .auth-tabs              — display: flex; gap: 0; border-bottom: 1px solid rgba(46,46,46,0.1); margin-bottom: 32px
-.auth-tab               — Poppins 11px 500 ALL CAPS letter-spacing: 2px; padding: 12px 0; border-bottom: 2px solid transparent; cursor: pointer; color: --text-muted; transition: all 0.2s
+.auth-tab               — Poppins 11px 400 ALL CAPS letter-spacing: 2px; padding: 8px 0; border-bottom: 2px solid transparent; cursor: pointer; color: --text-muted; transition: all 0.2s
 .auth-tab.active        — color: --charcoal; border-bottom-color: --charcoal
-.auth-form-title        — Playfair Display 28px 700; color: --charcoal; margin-bottom: 8px
+.auth-form-title        — Playfair Display 22px 700; color: --charcoal; margin-bottom: 8px
 .auth-form-sub          — Poppins 14px 400 1.6; color: --text-muted; margin-bottom: 32px
 .auth-name-row          — display: grid; grid-template-columns: 1fr 1fr; gap: 16px (for first/last name fields)
 .auth-submit            — reuse .form-submit from src/input.css (charcoal fill, 50px border-radius, full width)
-.auth-switch-link       — Poppins 13px; color: --text-muted; text-align: center; margin-top: 24px
-.auth-switch-link a     — color: --charcoal; font-weight: 600; text-decoration: underline; text-underline-offset: 3px
-.auth-forgot            — Poppins 12px; color: --text-muted; text-decoration: underline; float: right; margin-bottom: 8px
+.auth-switch-link       — Poppins 14px; color: --text-muted; text-align: center; margin-top: 24px
+.auth-switch-link a     — color: --charcoal; font-weight: 400; text-decoration: underline; text-underline-offset: 3px
+.auth-forgot            — Poppins 14px; color: --text-muted; text-decoration: underline; float: right; margin-bottom: 8px
 ```
 
 ### account.html — Dashboard Layout
@@ -126,32 +133,32 @@ These are the new Phase 4 components. Each maps to a CSS class to add to `src/in
 .account-page           — background: --beige; min-height: calc(100vh - 80px); padding-top: 80px
 .account-layout         — display: grid; grid-template-columns: 240px 1fr; gap: 48px; max-width: 1200px; margin: 0 auto; padding: 48px 64px 100px
 .account-sidebar        — background: white; border-radius: 20px; padding: 32px 24px; align-self: start; position: sticky; top: 104px
-.account-user-name      — Playfair Display 20px 700; color: --charcoal; margin-bottom: 4px
-.account-user-email     — Poppins 12px 400; color: --text-muted; margin-bottom: 32px
+.account-user-name      — Playfair Display 22px 700; color: --charcoal; margin-bottom: 4px
+.account-user-email     — Poppins 14px 400; color: --text-muted; margin-bottom: 32px
 .account-nav            — display: flex; flex-direction: column; gap: 4px
-.account-nav-item       — Poppins 11px 500 ALL CAPS letter-spacing: 2px; padding: 12px 16px; border-radius: 10px; cursor: pointer; color: --text-muted; border-left: 2px solid transparent; transition: all 0.2s; background: none; border-top/right/bottom: none
+.account-nav-item       — Poppins 11px 400 ALL CAPS letter-spacing: 2px; padding: 8px 16px; border-radius: 10px; cursor: pointer; color: --text-muted; border-left: 2px solid transparent; transition: all 0.2s; background: none; border-top/right/bottom: none
 .account-nav-item.active — color: --charcoal; border-left-color: --rose; background: --rose-light
 .account-nav-item:hover — color: --charcoal; background: --beige
 .account-content        — min-height: 400px
-.account-section        — background: white; border-radius: 20px; padding: 40px; margin-bottom: 24px
+.account-section        — background: white; border-radius: 20px; padding: 48px; margin-bottom: 24px
 .account-section-title  — Playfair Display 22px 700; color: --charcoal; margin-bottom: 8px
-.account-section-sub    — Poppins 13px 400; color: --text-muted; margin-bottom: 32px
+.account-section-sub    — Poppins 14px 400; color: --text-muted; margin-bottom: 32px
 ```
 
 ### Profile Section
 
 ```
 .profile-form           — max-width: 480px (form fields reuse .form-group, .form-label, .form-input from src/input.css)
-.profile-email-note     — Poppins 12px; color: --text-muted; font-style: italic; margin-top: 4px (below email read-only field)
+.profile-email-note     — Poppins 14px; color: --text-muted; font-style: italic; margin-top: 4px (below email read-only field)
 .profile-save-btn       — reuse .form-submit; max-width: 200px (not full width in profile section)
 ```
 
 ### Wishlist Section
 
 ```
-.wishlist-grid          — display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px (collapses to 2-col at tablet, 1-col at mobile)
+.wishlist-grid          — display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px (collapses to 2-col at tablet, 1-col at mobile)
 .wishlist-card          — reuse .product-card; position: relative (for remove button)
-.wishlist-remove-btn    — position: absolute; top: 12px; right: 12px; z-index: 3; width: 32px; height: 32px; border-radius: 50%; background: white; border: 1px solid rgba(46,46,46,0.15); cursor: pointer; font-size: 14px; color: --text-muted; transition: all 0.2s
+.wishlist-remove-btn    — position: absolute; top: 8px; right: 8px; z-index: 3; width: 32px; height: 32px; border-radius: 50%; background: white; border: 1px solid rgba(46,46,46,0.15); cursor: pointer; font-size: 14px; color: --text-muted; transition: all 0.2s
 .wishlist-remove-btn:hover — background: --rose; color: white; border-color: --rose
 .wishlist-empty         — reuse .shop-empty; min-height: 280px; flex-direction: column; gap: 16px
 .wishlist-empty-icon    — font-size: 48px; color: rgba(168,191,163,0.4); display: block
@@ -162,10 +169,10 @@ These are the new Phase 4 components. Each maps to a CSS class to add to `src/in
 
 ```
 .prefs-form             — display: flex; flex-direction: column; gap: 32px
-.prefs-field            — display: flex; flex-direction: column; gap: 12px
-.prefs-field-label      — Poppins 11px 500 ALL CAPS letter-spacing: 2px; color: --text-muted
+.prefs-field            — display: flex; flex-direction: column; gap: 8px
+.prefs-field-label      — Poppins 11px 400 ALL CAPS letter-spacing: 2px; color: --text-muted
 .prefs-chips            — display: flex; gap: 8px; flex-wrap: wrap
-.prefs-chip             — padding: 8px 20px; border-radius: 50px; border: 1.5px solid rgba(168,191,163,0.5); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; background: transparent; font-family: --font-body; color: --charcoal
+.prefs-chip             — padding: 8px 24px; border-radius: 50px; border: 1.5px solid rgba(168,191,163,0.5); font-size: 14px; font-weight: 400; cursor: pointer; transition: all 0.2s; background: transparent; font-family: --font-body; color: --charcoal
 .prefs-chip.selected    — background: --sage; color: white; border-color: --sage
 .prefs-chip:hover:not(.selected) — border-color: --charcoal; color: --charcoal
 .prefs-save-btn         — reuse .form-submit; max-width: 240px; margin-top: 8px
@@ -182,11 +189,11 @@ These are the new Phase 4 components. Each maps to a CSS class to add to `src/in
 ### Nav Logged-In Dropdown
 
 ```
-.nav-user-trigger       — display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 12px; border-radius: 8px; transition: background 0.2s
+.nav-user-trigger       — display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: background 0.2s
 .nav-user-trigger:hover — background: rgba(46,46,46,0.06)
-.nav-user-name          — Poppins 13px 500; color: --charcoal; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap
+.nav-user-name          — Poppins 14px 400; color: --charcoal; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap
 .nav-dropdown           — position: absolute; top: calc(100% + 8px); right: 0; background: white; border-radius: 16px; padding: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); min-width: 180px; z-index: 100
-.nav-dropdown-item      — display: block; padding: 10px 16px; border-radius: 10px; Poppins 13px 400; color: --charcoal; text-decoration: none; transition: background 0.2s; cursor: pointer; border: none; width: 100%; text-align: left; background: none
+.nav-dropdown-item      — display: block; padding: 8px 16px; border-radius: 10px; Poppins 14px 400; color: --charcoal; text-decoration: none; transition: background 0.2s; cursor: pointer; border: none; width: 100%; text-align: left; background: none
 .nav-dropdown-item:hover — background: --beige
 .nav-dropdown-divider   — height: 1px; background: rgba(46,46,46,0.08); margin: 4px 8px
 .nav-dropdown-item.danger — color: --rose (Sign Out item only)
@@ -249,29 +256,29 @@ These are the new Phase 4 components. Each maps to a CSS class to add to `src/in
 | Auth page tagline (left panel) | "Move Beautifully" | Overlaid on editorial image in Poppins 11px ALL CAPS letter-spacing: 4px |
 | Sign In tab label | "Sign In" | 11px ALL CAPS |
 | Create Account tab label | "Create Account" | 11px ALL CAPS |
-| Sign In form title | "Welcome Back" | Playfair Display 28px |
+| Sign In form title | "Welcome Back" | Playfair Display 22px heading |
 | Sign In form subtitle | "Sign in to your Elvora account" | 14px Poppins muted |
-| Sign Up form title | "Join Elvora" | Playfair Display 28px |
+| Sign Up form title | "Join Elvora" | Playfair Display 22px heading |
 | Sign Up form subtitle | "Create your account to get started" | 14px Poppins muted |
 | Primary CTA — Sign In | "Sign In" | .form-submit button |
 | Primary CTA — Create Account | "Create Account" | .form-submit button |
 | Success toast — registration | "Welcome to Elvora, [first_name]!" | Toastify, sage background (#A8BFA3), 2s |
-| Forgot password link | "Forgot password?" | 12px muted, right-aligned above password field |
-| Already have account (sign-up panel) | "Already have an account? Sign in" | 13px muted, "Sign in" is underlined link |
-| New to Elvora (sign-in panel) | "New to Elvora? Create account" | 13px muted, "Create account" is underlined link |
-| Nav dropdown — My Account | "My Account" | 13px Poppins |
-| Nav dropdown — Wishlist | "Wishlist" | 13px Poppins |
-| Nav dropdown — Sign Out | "Sign Out" | 13px Poppins, color: --rose |
-| Account page title | "My Account" | `<h1>` Playfair Display 28px (visually hidden or in page header) |
+| Forgot password link | "Forgot password?" | 14px muted, right-aligned above password field |
+| Already have account (sign-up panel) | "Already have an account? Sign in" | 14px muted, "Sign in" is underlined link |
+| New to Elvora (sign-in panel) | "New to Elvora? Create account" | 14px muted, "Create account" is underlined link |
+| Nav dropdown — My Account | "My Account" | 14px Poppins |
+| Nav dropdown — Wishlist | "Wishlist" | 14px Poppins |
+| Nav dropdown — Sign Out | "Sign Out" | 14px Poppins, color: --rose |
+| Account page title | "My Account" | `<h1>` Playfair Display 22px heading (visually hidden or in page header) |
 | Sidebar — Profile tab | "Profile" | 11px ALL CAPS Poppins |
 | Sidebar — Wishlist tab | "Wishlist" | 11px ALL CAPS Poppins |
 | Sidebar — Style Preferences tab | "Style Preferences" | 11px ALL CAPS Poppins |
 | Profile section title | "Your Profile" | Playfair Display 22px |
-| Profile section subtitle | "Update your name and personal details" | 13px muted |
+| Profile section subtitle | "Update your name and personal details" | 14px muted |
 | Profile save button | "Save Changes" | .form-submit |
 | Profile save success toast | "Changes saved" | Toastify sage, 2s |
 | Preferences section title | "Style Preferences" | Playfair Display 22px |
-| Preferences section subtitle | "Tell us how you like to move and dress" | 13px muted |
+| Preferences section subtitle | "Tell us how you like to move and dress" | 14px muted |
 | Prefs field label — Activity | "Preferred Activity" | 11px ALL CAPS |
 | Prefs field label — Fit | "Fit Preference" | 11px ALL CAPS |
 | Prefs field label — Aesthetic | "Style Aesthetic" | 11px ALL CAPS |
@@ -279,17 +286,17 @@ These are the new Phase 4 components. Each maps to a CSS class to add to `src/in
 | Prefs save button | "Save Preferences" | .form-submit |
 | Prefs save success toast | "Preferences saved" | Toastify sage, 2s |
 | Wishlist section title | "Your Wishlist" | Playfair Display 22px |
-| Wishlist section subtitle (populated) | "[N] saved items" | 13px muted (dynamic count) |
-| Wishlist empty state heading | "Your wishlist is waiting" | Poppins 16px 500 charcoal |
+| Wishlist section subtitle (populated) | "[N] saved items" | 14px muted (dynamic count) |
+| Wishlist empty state heading | "Your wishlist is waiting" | Poppins 16px 400 charcoal |
 | Wishlist empty state body | "Save pieces you love as you explore the collection." | 14px muted, line-height 1.8 |
 | Wishlist empty state CTA | "Explore the Collection" | .btn-secondary → links to shop.html |
 | Wishlist remove button label | "×" (times character) | aria-label="Remove from wishlist" |
 | Wishlist guest toast | "Sign in to save items to your wishlist" | Toastify charcoal background, 3s, clickable |
 | Wishlist error toast | "Couldn't save item — try again" | Toastify rose (#D8A7A7), 3s |
-| Error — invalid credentials | "Incorrect email or password. Please try again." | Inline below form, 13px rose |
-| Error — duplicate email | "An account with this email already exists." | Inline below email field, 13px rose |
-| Error — password too short | "Password must be at least 8 characters." | Inline below password field, 13px rose |
-| Error — passwords don't match | "Passwords do not match." | Inline below confirm password field, 13px rose |
+| Error — invalid credentials | "Incorrect email or password. Please try again." | Inline below form, 14px rose |
+| Error — duplicate email | "An account with this email already exists." | Inline below email field, 14px rose |
+| Error — password too short | "Password must be at least 8 characters." | Inline below password field, 14px rose |
+| Error — passwords don't match | "Passwords do not match." | Inline below confirm password field, 14px rose |
 | Loading state — Sign In button | "Signing In…" | Button disabled, same style |
 | Loading state — Create Account button | "Creating Account…" | Button disabled, same style |
 | Loading state — Save Changes | "Saving…" | Button disabled |
@@ -350,7 +357,7 @@ All fields single-select. All fields optional (can save with null values). Chips
 
 **Mobile sidebar treatment:**
 - Sidebar `account-nav` transforms to a horizontally scrollable tab row: `display: flex; flex-direction: row; overflow-x: auto; border-bottom: 1px solid rgba(46,46,46,0.1); padding-bottom: 0`
-- Each `account-nav-item` in mobile: `border-left: none; border-bottom: 2px solid transparent; padding: 12px 20px; white-space: nowrap`
+- Each `account-nav-item` in mobile: `border-left: none; border-bottom: 2px solid transparent; padding: 8px 24px; white-space: nowrap`
 - Active item in mobile: `border-bottom-color: var(--rose); background: transparent`
 
 ---
