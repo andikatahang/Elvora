@@ -134,11 +134,11 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 **Wave 1** *(no dependencies — run in parallel)*
 
 - [x] 04-01-PLAN.md — Phase 4 CSS: all auth + account + wishlist + preferences + nav dropdown component classes added to src/input.css
-- [ ] 04-02-PLAN.md — Auth service + nav state: js/auth.js 5 functions implemented + js/components.js extended with initAuth() + logged-in nav dropdown
+- [x] 04-02-PLAN.md — Auth service + nav state: js/auth.js 5 functions implemented + js/components.js extended with initAuth() + logged-in nav dropdown
 
 **Wave 2** *(blocked on Wave 1 — plans run in parallel)*
 
-- [ ] 04-03-PLAN.md — auth.html: editorial split layout + tab toggle (sign in / create account) + Supabase auth wiring
+- [x] 04-03-PLAN.md — auth.html: editorial split layout + tab toggle (sign in / create account) + Supabase auth wiring
 - [ ] 04-04-PLAN.md — account.html: sidebar dashboard + Profile section + Style Preferences chip selectors + Wishlist section (with remove)
 
 **Wave 3** *(blocked on Wave 2)*
@@ -206,7 +206,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 | 1. Foundation | 9/9 | Complete   | 2026-06-11 |
 | 2. Brand Shell + Homepage | 4/4 | Complete   | 2026-06-12 |
 | 3. Product Catalog | 5/5 | Complete   | 2026-06-14 |
-| 4. Auth + Customer Account | 1/5 | In Progress | - |
+| 4. Auth + Customer Account | 3/5 | In Progress | - |
 | 5. AI Style Match | 0/TBD | Not started | - |
 | 6. Cart + Checkout | 0/TBD | Not started | - |
 | 7. Admin Panel | 0/TBD | Not started | - |

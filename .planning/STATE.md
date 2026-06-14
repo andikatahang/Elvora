@@ -10,8 +10,8 @@ progress:
   total_phases: 7
   completed_phases: 3
   total_plans: 23
-  completed_plans: 18
-  percent: 43
+  completed_plans: 19
+  percent: 46
 ---
 
 # Project State
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-06-10)
 ## Current Position
 
 Phase: 04 (auth-customer-account) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 Status: Executing Phase 04
-Last activity: 2026-06-15 -- Phase 04 Plan 02 (Auth Service + Nav Dropdown) complete
+Last activity: 2026-06-15 -- Phase 04 Plan 03 (auth.html editorial split layout + form) complete
 
 Progress: [██████████] 100%
 
@@ -81,6 +81,9 @@ Recent decisions affecting current work:
 - Plan 04-02: Schema correction — user_profiles PK adalah 'id' (bukan 'user_id'); upsert dengan onConflict:'id'
 - Plan 04-02: window.elvoraSignOut (bukan window.signOut) untuk hindari konflik global naming
 - Plan 04-02: initAuth() dipanggil di kedua jalur alpine:init dan direct window.Alpine check
+- Plan 04-03: x-data ditempatkan pada .auth-form-wrap (inner wrapper) bukan <main> — scoping Alpine state lebih ketat
+- Plan 04-03: Toastify CDN ditambahkan ke auth.html head (sama dengan product.html); js/auth.js diimport di module script block
+- Plan 04-03: Error sign-in selalu generic "Incorrect email or password" — tidak mengungkap email-not-found vs wrong-password (T-04-03-01)
 
 ### Pending Todos
 
@@ -110,6 +113,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-15T17:40:00Z
-Stopped at: Plan 04-02 complete — next: 04-03-PLAN.md
-Resume file: .planning/phases/04-auth-customer-account/04-03-PLAN.md
+Last session: 2026-06-15T17:30:00Z
+Stopped at: Plan 04-03 complete — next: 04-04-PLAN.md
+Resume file: .planning/phases/04-auth-customer-account/04-04-PLAN.md
