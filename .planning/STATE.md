@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-06-10)
 ## Current Position
 
 Phase: 04 (auth-customer-account) — EXECUTING
-Plan: 4 of 5
+Plan: 5 of 5
 Status: Executing Phase 04
-Last activity: 2026-06-15 -- Phase 04 Plan 03 (auth.html editorial split layout + form) complete
+Last activity: 2026-06-15 -- Phase 04 Plan 04 (account.html dashboard — Profile, Wishlist, Style Preferences) complete
 
 Progress: [██████████] 100%
 
@@ -84,6 +84,10 @@ Recent decisions affecting current work:
 - Plan 04-03: x-data ditempatkan pada .auth-form-wrap (inner wrapper) bukan <main> — scoping Alpine state lebih ketat
 - Plan 04-03: Toastify CDN ditambahkan ke auth.html head (sama dengan product.html); js/auth.js diimport di module script block
 - Plan 04-03: Error sign-in selalu generic "Incorrect email or password" — tidak mengungkap email-not-found vs wrong-password (T-04-03-01)
+- Plan 04-04: Tidak ada id="profile/wishlist/preferences" pada panel section — mencegah browser scroll-to-anchor (RESEARCH Pitfall 4)
+- Plan 04-04: user_profiles pakai .eq('id', user.id); wishlist_items pakai .eq('user_id', user.id) — dua tabel, dua kolom berbeda
+- Plan 04-04: Fallback loadProfile dari user.user_metadata jika baris user_profiles belum ada (user baru)
+- Plan 04-04: Migration file bernama 003 (bukan 002) karena 002 sudah dipakai Phase 03
 
 ### Pending Todos
 
@@ -113,6 +117,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-15T17:30:00Z
-Stopped at: Plan 04-03 complete — next: 04-04-PLAN.md
-Resume file: .planning/phases/04-auth-customer-account/04-04-PLAN.md
+Last session: 2026-06-15T17:41:00Z
+Stopped at: Plan 04-04 complete — next: 04-05-PLAN.md
+Resume file: .planning/phases/04-auth-customer-account/04-05-PLAN.md
