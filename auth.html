@@ -71,7 +71,7 @@
                   position: 'right',
                   style: { background: 'var(--sage)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' }
                 }).showToast();
-                setTimeout(() => { window.location.href = '/account.html'; }, 2000);
+                setTimeout(() => { window.location.href = '/index.html'; }, 2000);
               } catch (e) {
                 this.error = e.message?.includes('already registered') || e.message?.includes('already exists')
                   ? 'An account with this username already exists.'

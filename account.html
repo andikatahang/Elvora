@@ -27,6 +27,8 @@
         profile: { first_name: '', last_name: '', username: '' },
         profileSaving: false,
 
+        pwNew: '', pwConfirm: '', pwError: '', pwSaving: false,
+
         wishlistItems: [],
         wishlistLoading: false,
 
@@ -38,6 +40,14 @@
         async init() {
           const { data: { user } } = await window.supabase.auth.getUser();
           if (!user) { window.location.href = '/auth.html?tab=signin'; return; }
+
+          // New Google OAuth user without username → complete profile setup first
+          if (user.app_metadata?.provider === 'google') {
+            const { data: prof } = await window.supabase
+              .from('user_profiles').select('username').eq('id', user.id).single();
+            if (!prof?.username) { window.location.href = '/setup-profile.html'; return; }
+          }
+
           this._currentUser = user;
           const hash = location.hash.replace('#', '');
           if (['profile', 'wishlist', 'preferences'].includes(hash)) this.activeTab = hash;
@@ -65,6 +75,24 @@
               { onConflict: 'id' }
             );
           }
+        },
+
+        async changePassword() {
+          this.pwError = '';
+          if (!this.pwNew) { this.pwError = 'Enter a new password.'; return; }
+          if (this.pwNew.length < 8) { this.pwError = 'Password must be at least 8 characters.'; return; }
+          if (this.pwNew !== this.pwConfirm) { this.pwError = 'Passwords do not match.'; return; }
+          this.pwSaving = true;
+          const { error } = await window.supabase.auth.updateUser({ password: this.pwNew });
+          if (error) {
+            Toastify({ text: 'Couldn\'t update password — try again', duration: 3000, gravity: 'bottom', position: 'right',
+              style: { background: 'var(--rose)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' } }).showToast();
+          } else {
+            this.pwNew = ''; this.pwConfirm = '';
+            Toastify({ text: 'Password updated', duration: 2000, gravity: 'bottom', position: 'right',
+              style: { background: 'var(--sage)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' } }).showToast();
+          }
+          this.pwSaving = false;
         },
 
         async saveProfile() {
@@ -213,6 +241,29 @@
               x-text="profileSaving ? 'Saving…' : 'Save Changes'"
             ></button>
           </form>
+
+          <!-- Change Password -->
+          <div style="margin-top:32px;padding-top:28px;border-top:1px solid #e8e0d5;">
+            <h3 style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--charcoal);margin-bottom:4px;">Change Password</h3>
+            <p class="account-section-sub" style="margin-bottom:20px;">Set a new password for your account</p>
+
+            <div class="form-group">
+              <label class="form-label" for="pw-new">New Password</label>
+              <input class="form-input" type="password" id="pw-new" x-model="pwNew" placeholder="Min. 8 characters" autocomplete="new-password">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pw-confirm">Confirm New Password</label>
+              <input class="form-input" type="password" id="pw-confirm" x-model="pwConfirm" placeholder="Re-enter new password" autocomplete="new-password">
+            </div>
+
+            <p x-show="pwError" x-text="pwError" role="alert"
+              style="color:var(--rose);font-size:14px;margin-bottom:12px;display:none;"></p>
+
+            <button type="button" class="form-submit profile-save-btn"
+              @click.prevent="changePassword()"
+              :disabled="pwSaving"
+              x-text="pwSaving ? 'Updating…' : 'Update Password'"></button>
+          </div>
         </section>
 
         <!-- WISHLIST SECTION -->
