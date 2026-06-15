@@ -55,7 +55,15 @@
             this.profile = { first_name: data.first_name || '', last_name: data.last_name || '', username: data.username || user.user_metadata?.username || '' };
             this.prefs = { activity: data.preferred_activity, fit: data.fit_preference, aesthetic: data.style_aesthetic, colour: data.colour_preference };
           } else {
-            this.profile = { first_name: user.user_metadata?.first_name || '', last_name: user.user_metadata?.last_name || '', username: user.user_metadata?.username || '' };
+            const meta = user.user_metadata || {};
+            const firstName = meta.given_name || meta.name?.split(' ')[0] || '';
+            const lastName = meta.family_name || meta.name?.split(' ').slice(1).join(' ') || '';
+            this.profile = { first_name: firstName, last_name: lastName, username: meta.username || '' };
+            // Persist profile row for OAuth users (Google first login)
+            await window.supabase.from('user_profiles').upsert(
+              { id: user.id, first_name: firstName, last_name: lastName },
+              { onConflict: 'id' }
+            );
           }
         },
 

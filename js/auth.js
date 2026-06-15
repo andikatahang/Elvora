@@ -39,6 +39,15 @@ export async function signIn(username, password) {
   return data;
 }
 
+export async function signInWithGoogle() {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: `${window.location.origin}/account.html` },
+  });
+  if (error) throw error;
+  return data;
+}
+
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
@@ -59,4 +68,5 @@ export function onAuthChange(callback) {
 // Expose on window so Alpine inline x-data expressions can call these.
 window.signIn = signIn;
 window.signUp = signUp;
+window.signInWithGoogle = signInWithGoogle;
 window.elvoraSignOut = signOut;
