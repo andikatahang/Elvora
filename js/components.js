@@ -336,3 +336,8 @@ document.querySelectorAll('[data-page]').forEach(link => {
   const isActive = isHome || href === currentPath;
   if (isActive) link.classList.add('text-rose');
 });
+
+// Signal that all ES modules have run and window.getProducts / window.supabase are ready.
+// Alpine's defer CDN script runs before modules, so pages with inline x-data that call
+// window.getProducts must wait for this event before fetching data.
+window.dispatchEvent(new CustomEvent('elvora:ready'));

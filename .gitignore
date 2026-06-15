@@ -6,3 +6,6 @@ css/style.css
 js/__env.js
 .DS_Store
 *.log
+
+# Local Netlify folder
+.netlify
