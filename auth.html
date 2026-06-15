@@ -35,8 +35,8 @@
             tab: 'signin',
             loading: false,
             error: '',
-            siEmail: '', siPassword: '',
-            suFirst: '', suLast: '', suEmail: '', suPassword: '', suConfirm: '',
+            siUsername: '', siPassword: '',
+            suFirst: '', suLast: '', suUsername: '', suPassword: '', suConfirm: '',
 
             async init() {
               const tab = new URLSearchParams(location.search).get('tab');
@@ -48,20 +48,22 @@
             async handleSignIn() {
               this.loading = true; this.error = '';
               try {
-                await window.signIn(this.siEmail, this.siPassword);
+                await window.signIn(this.siUsername, this.siPassword);
                 window.location.href = '/account.html';
               } catch (e) {
-                this.error = 'Incorrect email or password. Please try again.';
+                this.error = 'Incorrect username or password. Please try again.';
               } finally { this.loading = false; }
             },
 
             async handleSignUp() {
               this.error = '';
+              if (!this.suUsername.trim()) { this.error = 'Username is required.'; return; }
+              if (!/^[a-zA-Z0-9_]+$/.test(this.suUsername)) { this.error = 'Username may only contain letters, numbers, and underscores.'; return; }
               if (this.suPassword.length < 8) { this.error = 'Password must be at least 8 characters.'; return; }
               if (this.suPassword !== this.suConfirm) { this.error = 'Passwords do not match.'; return; }
               this.loading = true;
               try {
-                await window.signUp(this.suEmail, this.suPassword, this.suFirst, this.suLast);
+                await window.signUp(this.suUsername, this.suPassword, this.suFirst, this.suLast);
                 Toastify({
                   text: 'Welcome to Elvora, ' + this.suFirst + '!',
                   duration: 2000,
@@ -72,7 +74,7 @@
                 setTimeout(() => { window.location.href = '/account.html'; }, 2000);
               } catch (e) {
                 this.error = e.message?.includes('already registered') || e.message?.includes('already exists')
-                  ? 'An account with this email already exists.'
+                  ? 'An account with this username already exists.'
                   : (e.message || 'Something went wrong. Please try again.');
               } finally { this.loading = false; }
             }
@@ -108,14 +110,15 @@
             <p class="auth-form-sub">Sign in to your Elvora account</p>
 
             <div class="form-group">
-              <label class="form-label" for="si-email">Email Address</label>
+              <label class="form-label" for="si-username">Username</label>
               <input
                 class="form-input"
-                type="email"
-                id="si-email"
-                x-model="siEmail"
-                placeholder="your@email.com"
+                type="text"
+                id="si-username"
+                x-model="siUsername"
+                placeholder="your_username"
                 required
+                autocomplete="username"
                 style="font-size:16px;">
             </div>
 
@@ -191,14 +194,15 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="su-email">Email Address</label>
+              <label class="form-label" for="su-username">Username</label>
               <input
                 class="form-input"
-                type="email"
-                id="su-email"
-                x-model="suEmail"
-                placeholder="your@email.com"
+                type="text"
+                id="su-username"
+                x-model="suUsername"
+                placeholder="letters, numbers, underscores"
                 required
+                autocomplete="username"
                 style="font-size:16px;">
             </div>
 

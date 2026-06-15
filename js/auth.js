@@ -1,23 +1,27 @@
 // js/auth.js
-// Authentication service functions — Phase 4 implementation.
+// Authentication service functions — username-based auth.
+// Supabase Auth requires email internally; we generate "{username}@elvora.local"
+// transparently so users only ever interact with their chosen username.
 import { supabase } from './supabase.js';
 
-export async function signUp(email, password, firstName, lastName) {
+function toSyntheticEmail(username) {
+  return `${username.toLowerCase().trim()}@elvora.local`;
+}
+
+export async function signUp(username, password, firstName, lastName) {
+  const email = toSyntheticEmail(username);
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { first_name: firstName, last_name: lastName } },
+    options: { data: { first_name: firstName, last_name: lastName, username } },
   });
   if (error) throw error;
 
-  // Upsert into user_profiles after signup.
-  // NOTE: PK column is 'id' (not 'user_id') — schema correction from critical research.
-  // Catch separately: auth succeeded even if profile upsert fails.
   if (data.user) {
     const { error: profileError } = await supabase
       .from('user_profiles')
       .upsert(
-        { id: data.user.id, first_name: firstName, last_name: lastName, email },
+        { id: data.user.id, first_name: firstName, last_name: lastName, username },
         { onConflict: 'id' }
       );
     if (profileError) {
@@ -28,7 +32,8 @@ export async function signUp(email, password, firstName, lastName) {
   return data;
 }
 
-export async function signIn(email, password) {
+export async function signIn(username, password) {
+  const email = toSyntheticEmail(username);
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
   return data;
@@ -52,7 +57,6 @@ export function onAuthChange(callback) {
 }
 
 // Expose on window so Alpine inline x-data expressions can call these.
-// Alpine x-data strings run in global scope — cannot use ES module imports.
 window.signIn = signIn;
 window.signUp = signUp;
-window.elvoraSignOut = signOut; // Use elvoraSignOut to avoid global naming conflicts (RESEARCH Finding 11)
+window.elvoraSignOut = signOut;
