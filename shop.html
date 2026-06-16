@@ -286,7 +286,7 @@
                 class="add-cart-btn"
                 type="button"
                 @click.prevent="
-                  Alpine.store('cart').add({ productId: p.id, name: p.name, slug: p.slug, price: p.base_price });
+                  Alpine.store('cart').add({ productId: p.id, name: p.name, slug: p.slug, price: p.base_price, image: p.activeImage || '', colour: p.activeColour || '' });
                   Alpine.store('cart').openDrawer()
                 "
               >Add to Bag</button>
