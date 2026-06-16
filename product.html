@@ -232,19 +232,7 @@
         size: this.selectedSize,
         price: this.product.base_price,
       });
-      Toastify({
-        text: 'Added to Bag',
-        duration: 2500,
-        gravity: 'bottom',
-        position: 'right',
-        style: {
-          background: 'var(--charcoal)',
-          color: '#ffffff',
-          borderRadius: '50px',
-          fontSize: '12px',
-          letterSpacing: '2px',
-        },
-      }).showToast();
+      Alpine.store('cart').openDrawer();
     },
 
     selectColour(colour) {
