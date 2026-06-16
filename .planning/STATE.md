@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Plan 06-04 complete (2026-06-16)
-last_updated: "2026-06-16T16:24:00.000Z"
+stopped_at: Plan 06-05 complete — checkout 4-step state machine selesai (2026-06-16)
+last_updated: "2026-06-16T16:32:32Z"
 last_activity: 2026-06-16
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 32
-  completed_plans: 30
-  percent: 75
+  completed_plans: 31
+  percent: 97
 ---
 
 # Project State
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-06-10)
 ## Current Position
 
 Phase: 6
-Plan: 04 complete, next: 05
+Plan: 05 complete — Phase 06 SELESAI
 Status: Executing Phase 06
 Last activity: 2026-06-16
 
@@ -94,6 +94,9 @@ Recent decisions affecting current work:
 - Plan 06-03: Cart drawer diinject ke document.body bukan navRoot agar position:fixed tidak di-clip backdrop-filter nav
 - Plan 06-03: Nav cart icon diubah dari a-tag ke button+openDrawer() - drawer menggantikan navigasi langsung ke cart page
 - Plan 06-03: Toastify Added to Bag dihapus dari product.html dan shop.html; diganti openDrawer()
+- Plan 06-05: window.checkoutData() pattern (bukan inline x-data) untuk hindari single-quote escaping complexity
+- Plan 06-05: Guest email TIDAK di-prefill di init() — synthetic @elvora.local dari auth.js tidak boleh masuk guest_email
+- Plan 06-05: user_id=null EKSPLISIT (bukan undefined/omit) untuk guest orders sesuai RLS requirement
 
 ### Pending Todos
 
@@ -127,5 +130,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-06-16T16:24:00.000Z
-Stopped at: Plan 06-04 complete — cart.html penuh diimplementasi
-Resume file: .planning/phases/06-cart-checkout/ (next: 06-05)
+Stopped at: Plan 06-05 complete — Phase 06 cart-checkout SELESAI
+Resume file: .planning/phases/07-style-match/ (Phase 07 berikutnya)
