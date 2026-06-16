@@ -1,49 +1,63 @@
 {
-  "version": "1.0",
-  "timestamp": "2026-06-14T13:00:00.000Z",
-  "phase": "ad-hoc",
-  "phase_name": "frontend-split-and-backend-wiring",
-  "phase_dir": null,
-  "plan": null,
-  "task": null,
-  "total_tasks": null,
-  "status": "paused",
-  "completed_tasks": [
-    {"id": 1, "name": "Audit existing multi-page structure (discovered project already split into separate pages)", "status": "done"},
-    {"id": 2, "name": "Create netlify/functions/ai-advisor.js — NVIDIA NIM proxy (minimax/minimax-m1), keeps key server-side", "status": "done"},
-    {"id": 3, "name": "Implement js/cart.js — localStorage + Alpine.store, replaces TODO stubs", "status": "done"},
-    {"id": 4, "name": "Update netlify.toml — added functions dir, /api/* redirect, esbuild bundler", "status": "done"},
-    {"id": 5, "name": "Append contacts table to supabase/migrations/001_schema.sql", "status": "done"},
-    {"id": 6, "name": "Extract assets/logo.png from base64 in elvora_updated-3.html", "status": "done"},
-    {"id": 12, "name": "Implement style-match.html — full AI chat UI calling /api/ai-advisor, response via data.reply", "status": "done"}
+  "handoff_version": "1.0",
+  "created_at": "2026-06-16T15:42:14.324Z",
+  "project": "Elvora",
+  "milestone": "v1.0",
+
+  "current_position": {
+    "phase": 6,
+    "phase_name": "Cart + Checkout",
+    "plan": null,
+    "status": "not_started",
+    "last_completed_phase": 5,
+    "last_completed_phase_name": "AI Style Match"
+  },
+
+  "session_summary": {
+    "what_was_done": [
+      "Executed Phase 05 (AI Style Match) — plans 05-03, 05-04, 05-05",
+      "Fixed 3 inline gaps: empty CATALOG_CONTEXT, CORS single-origin, missing response_mime_type",
+      "Switched AI provider from Gemini Vision to NVIDIA NIM (minimax/minimax-m3)",
+      "Edge function: OpenAI-compatible endpoint, base64 photo inline delivery, JSON fence stripping",
+      "Created supabase/migrations/005_style_sessions.sql (ai_style_sessions table + RLS)",
+      "Created AI-USAGE.md (assessment documentation)",
+      "ROADMAP.md and STATE.md updated — Phase 05 marked complete"
+    ],
+    "last_commit": "02f084e",
+    "last_commit_message": "feat(style-match): ganti Gemini ke NVIDIA NIM minimax/minimax-m3"
+  },
+
+  "pending_human_actions": [
+    {
+      "id": "apply-migration-005",
+      "priority": "HIGH",
+      "action": "Apply supabase/migrations/005_style_sessions.sql in Supabase Dashboard → SQL Editor",
+      "why": "ai_style_sessions table does not exist in production until this migration is applied; Style Match session persistence will fail with 42P01 error",
+      "file": "supabase/migrations/005_style_sessions.sql"
+    },
+    {
+      "id": "set-nvidia-api-key",
+      "priority": "HIGH",
+      "action": "Set NVIDIA_API_KEY in Netlify Environment Variables (Site settings → Environment variables)",
+      "why": "Without this secret, style-match Edge Function falls back to mock response — AI call never reaches NVIDIA NIM",
+      "replaces": "GEMINI_API_KEY (no longer used — can be removed)"
+    }
   ],
-  "remaining_tasks": [
-    {"id": 7, "name": "Fill js/__env.js with real Supabase URL + anon key (HUMAN ACTION)", "status": "not_started"},
-    {"id": 8, "name": "Run 001_schema.sql in Supabase SQL Editor (HUMAN ACTION)", "status": "not_started"},
-    {"id": 9, "name": "Run seed.sql in Supabase SQL Editor (HUMAN ACTION)", "status": "not_started"},
-    {"id": 10, "name": "Update contact.html form to call supabase.from('contacts').insert() instead of setTimeout stub", "status": "not_started"},
-    {"id": 11, "name": "Add <script type=module src=/js/cart.js> to all HTML pages (before components.js)", "status": "not_started"},
-    {"id": 13, "name": "Add NVIDIA_API_KEY to Netlify environment variables (HUMAN ACTION)", "status": "not_started"},
-    {"id": 14, "name": "Deploy to Netlify and verify all pages", "status": "not_started"}
-  ],
-  "blockers": [
-    {"description": "js/__env.js has empty credentials — Supabase features use fallback/stub data", "type": "human_action", "workaround": "Pages still browsable with static fallback"},
-    {"description": "NVIDIA_API_KEY not set in Netlify env — AI advisor returns 503", "type": "human_action", "workaround": "Rest of site functional; AI chat shows graceful error"}
-  ],
-  "human_actions_pending": [
-    {"action": "Add Supabase credentials to js/__env.js", "context": "Supabase Dashboard → Settings → API → Project URL + anon public key", "blocking": true},
-    {"action": "Run supabase/migrations/001_schema.sql in Supabase SQL Editor", "context": "Creates all tables including contacts added this session", "blocking": true},
-    {"action": "Run supabase/seed.sql to populate catalog", "context": "22 products, 9 collections, testimonials", "blocking": false},
-    {"action": "Add NVIDIA_API_KEY to Netlify environment variables", "context": "netlify/functions/ai-advisor.js uses process.env.NVIDIA_API_KEY; model: minimax/minimax-m1 via NVIDIA NIM", "blocking": false}
-  ],
-  "decisions": [
-    {"decision": "Multi-page structure was already complete from prior GSD phases — no re-splitting needed", "rationale": "index/shop/about/contact/lookbook.html all existed with Alpine+Supabase", "phase": "ad-hoc"},
-    {"decision": "Cart via localStorage + Alpine.store (guest-only, no Supabase for now)", "rationale": "Assessment scope; simpler; works without auth", "phase": "ad-hoc"},
-    {"decision": "AI proxy via netlify/functions/ai-advisor.js — switched from Anthropic to NVIDIA NIM", "rationale": "User requested NVIDIA API key with MiniMax-M1 model; NVIDIA NIM is OpenAI-compatible; proxy returns normalized { reply } to frontend", "phase": "ad-hoc"},
-    {"decision": "style-match.html — replaced placeholder with full AI chat page", "rationale": "User link to /style-match.html existed; needed full implementation; uses /api/ai-advisor not direct API call", "phase": "ad-hoc"},
-    {"decision": "elvora_updated-3.html is superseded — real app is the separate HTML files", "rationale": "File was prior prototype; new architecture is the canonical source", "phase": "ad-hoc"}
-  ],
-  "uncommitted_files": ["js/cart.js", "netlify.toml", "supabase/migrations/001_schema.sql", "netlify/functions/ai-advisor.js", "assets/logo.png", "style-match.html"],
-  "next_action": "HUMAN: Fill js/__env.js with Supabase credentials. Run schema + seed SQL. Add NVIDIA_API_KEY to Netlify env. Then: Task 10 (contact.html Supabase insert) and Task 11 (add cart.js to all pages).",
-  "context_notes": "AI advisor function switched from Anthropic claude-haiku to NVIDIA NIM minimax/minimax-m1 (user request). Function normalizes response to { reply } — frontend reads data.reply. style-match.html implemented as full AI chat page. Remaining blocking tasks are all credential/deployment steps."
+
+  "next_phase": {
+    "phase": 6,
+    "name": "Cart + Checkout",
+    "goal": "A visitor — guest or authenticated — can add products to the cart, review and adjust the order, complete a multi-step checkout, and receive an order confirmation with a persisted order record",
+    "depends_on": "Phase 5 (complete)",
+    "plans_status": "TBD — run /gsd-plan-phase 6 to generate plans before executing",
+    "key_complexity": [
+      "Guest-to-auth cart merge (localStorage → Supabase on login)",
+      "Order creation state machine with price snapshot",
+      "Mini cart drawer Alpine.js component",
+      "Multi-step checkout flow (Shipping → Review → Payment placeholder → Confirmation)"
+    ]
+  },
+
+  "resume_command": "/gsd-execute-phase 6",
+  "plan_command_if_needed": "/gsd-plan-phase 6"
 }
