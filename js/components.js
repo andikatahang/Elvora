@@ -70,6 +70,7 @@ const navHTML = `
     },
     async onSearchInput() {
       if (this.searchQuery.length < 2) { this.suggestions = []; return; }
+      if (typeof window.searchProducts !== 'function') return;
       clearTimeout(this._searchTimer);
       this._searchTimer = setTimeout(async () => {
         const { data } = await window.searchProducts(this.searchQuery);
