@@ -224,13 +224,20 @@
 
     addToBag() {
       if (!this.selectedSize) { alert('Please select a size'); return; }
+      const variant = (this.product.product_variants || []).find(
+        v => v.colour === this.selectedColour && v.size === this.selectedSize
+      );
+      const images = [...(this.product.product_images || [])].sort((a, b) => a.display_order - b.display_order);
+      const image = images[0]?.url || '';
       Alpine.store('cart').add({
         productId: this.product.id,
+        variantId: variant?.id || null,
         name: this.product.name,
         slug: this.product.slug,
         colour: this.selectedColour,
         size: this.selectedSize,
         price: this.product.base_price,
+        image,
       });
       Alpine.store('cart').openDrawer();
     },
