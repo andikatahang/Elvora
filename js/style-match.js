@@ -64,8 +64,54 @@ export async function resizeImageToBase64(file) {
 // ─── Core Functions ──────────────────────────────────────────────────────────
 
 /**
+ * Upload a resized image blob to the user-uploads Supabase Storage bucket.
+ * Path uses user ID prefix for RLS scoping (T-05-03-01).
+ *
+ * @param {string} userId - The authenticated user's UUID.
+ * @param {string} base64DataUri - Canvas-resized image as base64 data URI.
+ * @returns {Promise<{ storagePath: string, signedUrl: string }>}
+ */
+async function uploadPhotoToStorage(userId, base64DataUri) {
+  // Convert base64 data URI to Blob for storage upload
+  const match = base64DataUri.match(/^data:(.+);base64,(.+)$/);
+  if (!match) throw new Error('Invalid base64 data URI format');
+
+  const mimeType = match[1];
+  const base64Data = match[2];
+  const byteChars = atob(base64Data);
+  const byteArr = new Uint8Array(byteChars.length);
+  for (let i = 0; i < byteChars.length; i++) {
+    byteArr[i] = byteChars.charCodeAt(i);
+  }
+  const blob = new Blob([byteArr], { type: mimeType });
+
+  const ext = mimeType === 'image/png' ? 'png' : 'jpg';
+  const storagePath = `${userId}/${Date.now()}.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from('user-uploads')
+    .upload(storagePath, blob, { contentType: mimeType, upsert: false });
+
+  if (uploadError) {
+    throw new Error(`Photo upload failed: ${uploadError.message}`);
+  }
+
+  // Generate a 60-second signed URL for the uploaded photo
+  const { data: signedData, error: signErr } = await supabase.storage
+    .from('user-uploads')
+    .createSignedUrl(storagePath, 60);
+
+  if (signErr || !signedData?.signedUrl) {
+    throw new Error(`Failed to generate signed URL: ${signErr?.message ?? 'unknown error'}`);
+  }
+
+  return { storagePath, signedUrl: signedData.signedUrl };
+}
+
+/**
  * Submit a Style Match request to the Edge Function.
- * Photo is resized client-side to ≤800px before sending (D-04).
+ * Photo is resized client-side to ≤800px, uploaded to user-uploads bucket,
+ * and sent as base64 to the Edge Function via supabase.functions.invoke.
  * Results are saved to ai_style_sessions for authenticated users (D-06).
  *
  * @param {File|null} photoFile - The user's uploaded photo (or null to skip vision).
@@ -73,18 +119,33 @@ export async function resizeImageToBase64(file) {
  * @returns {Promise<{ recommendations: object[], colour_guidance: string }>}
  */
 export async function submitStyleMatch(photoFile, preferences) {
-  // Get current session JWT for the Authorization header
+  // Get current session for auth context
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {
     throw new Error('You must be signed in to use Style Match.');
   }
 
-  // Resize photo to base64 if provided (D-04 canvas resize)
+  const userId = session.user.id;
+
+  // Resize photo client-side (D-04 canvas resize, 800px max long edge)
   let photoUrl = null;
   if (photoFile) {
     try {
-      photoUrl = await resizeImageToBase64(photoFile);
+      const base64DataUri = await resizeImageToBase64(photoFile);
+
+      // Upload resized photo to user-uploads bucket (D-05 expiry policy)
+      try {
+        const { signedUrl } = await uploadPhotoToStorage(userId, base64DataUri);
+        // Send signed URL to edge function — edge function fetches the image
+        // Falls back to base64 if upload fails (non-fatal path below)
+        photoUrl = signedUrl;
+      } catch (uploadErr) {
+        console.error('Storage upload failed, sending base64 directly:', uploadErr);
+        // Non-fatal fallback: send base64 data URI directly to edge function
+        // Edge function already handles both URL and base64 formats
+        photoUrl = base64DataUri;
+      }
     } catch (resizeErr) {
       console.error('Photo resize failed, proceeding without photo:', resizeErr);
       // Non-fatal — proceed without photo (AI will rely on preferences only)
@@ -101,24 +162,16 @@ export async function submitStyleMatch(photoFile, preferences) {
     },
   };
 
-  const response = await fetch(STYLE_MATCH_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${session.access_token}`,
-      'apikey': window.__ENV?.SUPABASE_ANON_KEY ?? import.meta.env?.VITE_SUPABASE_ANON_KEY ?? '',
-    },
-    body: JSON.stringify(payload),
+  // Call edge function via supabase.functions.invoke (handles JWT automatically)
+  const { data, error } = await supabase.functions.invoke('style-match', {
+    body: payload,
   });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(
-      errorData.error ?? `Style Match request failed (${response.status})`
-    );
+  if (error) {
+    throw new Error(error.message ?? 'Style Match request failed');
   }
 
-  return await response.json();
+  return data;
 }
 
 /**
@@ -177,3 +230,10 @@ export async function deleteSession(sessionId) {
     throw new Error('Could not delete session. Please try again.');
   }
 }
+
+// ─── Window Exposure for Alpine.js ──────────────────────────────────────────
+// Alpine.js x-data inline functions run in global scope and cannot import
+// ES modules directly. Expose key functions via window for Alpine to consume.
+window.submitStyleMatch = submitStyleMatch;
+window.getSessions = getSessions;
+window.deleteSession = deleteSession;
