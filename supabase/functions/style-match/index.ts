@@ -139,15 +139,38 @@ return a fallback using the bestseller category rather than an error.
     const parts: GeminiPart[] = [{ text: CATALOG_CONTEXT }];
 
     if (body.photo_url) {
-      // photo_url is a base64 data URI (e.g. data:image/jpeg;base64,...)
-      const match = body.photo_url.match(/^data:(.+);base64,(.+)$/);
-      if (match) {
+      // photo_url can be a base64 data URI (data:image/jpeg;base64,...) or an https:// signed URL
+      const base64Match = body.photo_url.match(/^data:(.+);base64,(.+)$/);
+      if (base64Match) {
+        // Already a base64 data URI — use inline_data directly
         parts.push({
           inline_data: {
-            mime_type: match[1],
-            data: match[2],
+            mime_type: base64Match[1],
+            data: base64Match[2],
           },
         });
+      } else if (body.photo_url.startsWith("https://")) {
+        // Signed URL from Supabase Storage — fetch and convert to base64 for Gemini
+        try {
+          const imgResponse = await fetch(body.photo_url);
+          if (imgResponse.ok) {
+            const imgBuffer = await imgResponse.arrayBuffer();
+            const contentType = imgResponse.headers.get("content-type") ?? "image/jpeg";
+            const base64 = btoa(
+              String.fromCharCode(...new Uint8Array(imgBuffer))
+            );
+            parts.push({
+              inline_data: {
+                mime_type: contentType.split(";")[0],
+                data: base64,
+              },
+            });
+          } else {
+            console.warn("Failed to fetch photo from signed URL:", imgResponse.status);
+          }
+        } catch (fetchErr) {
+          console.warn("Error fetching photo from URL, proceeding without image:", fetchErr);
+        }
       }
     }
 
