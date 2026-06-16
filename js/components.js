@@ -4,6 +4,7 @@
 
 import { supabase } from './supabase.js';
 import { getUser, onAuthChange } from './auth.js';
+import { mergeGuestCartToSupabase, loadCartFromSupabase, loadFromStorage } from './cart.js';
 
 // Expose supabase client globally so Alpine inline x-data strings can access it
 window.supabase = supabase;
@@ -23,9 +24,25 @@ async function initAuth() {
   const user = await getUser();
   Alpine.store('auth').user = user;
   Alpine.store('auth').loggedIn = !!user;
-  onAuthChange((user) => {
+
+  if (user) {
+    loadCartFromSupabase(user.id).catch(err => console.warn('[cart] initial load failed:', err));
+  }
+
+  onAuthChange(async (user, event) => {
     Alpine.store('auth').user = user;
     Alpine.store('auth').loggedIn = !!user;
+
+    if (user && event === 'SIGNED_IN') {
+      try { await mergeGuestCartToSupabase(user); } catch (err) { console.warn('[cart] merge failed:', err); }
+    } else if (user && event === 'INITIAL_SESSION') {
+      try { await loadCartFromSupabase(user.id); } catch (err) { console.warn('[cart] load failed:', err); }
+    } else if (!user) {
+      const localItems = loadFromStorage();
+      if (window.Alpine && Alpine.store('cart')) {
+        Alpine.store('cart').items = localItems;
+      }
+    }
   });
 }
 
