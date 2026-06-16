@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: context exhaustion at 77% (2026-06-16)
-last_updated: "2026-06-16T16:16:01.681Z"
+stopped_at: Plan 06-04 complete (2026-06-16)
+last_updated: "2026-06-16T16:24:00.000Z"
 last_activity: 2026-06-16
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 32
-  completed_plans: 28
-  percent: 71
+  completed_plans: 30
+  percent: 75
 ---
 
 # Project State
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-10)
 
 **Core value:** A shopper lands on Elvora, uploads a photo, and within moments receives a curated outfit recommendation that feels personally chosen for her — drawing her naturally into a premium catalog she wants to explore.
-**Current focus:** Phase 05 — ai-style-match
+**Current focus:** Phase 06 — cart-checkout
 
 ## Current Position
 
 Phase: 6
-Plan: Not started
-Status: Executing Phase 05
+Plan: 04 complete, next: 05
+Status: Executing Phase 06
 Last activity: 2026-06-16
 
 Progress: [██████████] 100%
@@ -91,6 +91,9 @@ Recent decisions affecting current work:
 - Plan 04-04: Migration file bernama 003 (bukan 002) karena 002 sudah dipakai Phase 03
 - Plan 04-05: Alpine Set reactivity — gunakan new Set([...set]) bukan .add()/.delete() langsung agar Alpine mendeteksi perubahan referensi
 - Plan 04-05: wishlist button PDP ditambah sebagai full-width button dengan label teks di bawah ATC; related products wishlist button di product.html juga difungsikan
+- Plan 06-03: Cart drawer diinject ke document.body bukan navRoot agar position:fixed tidak di-clip backdrop-filter nav
+- Plan 06-03: Nav cart icon diubah dari a-tag ke button+openDrawer() - drawer menggantikan navigasi langsung ke cart page
+- Plan 06-03: Toastify Added to Bag dihapus dari product.html dan shop.html; diganti openDrawer()
 
 ### Pending Todos
 
@@ -123,6 +126,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-16T16:16:01.677Z
-Stopped at: context exhaustion at 77% (2026-06-16)
-Resume file: .planning/phases/05-ai-style-match/ (plans TBD)
+Last session: 2026-06-16T16:24:00.000Z
+Stopped at: Plan 06-04 complete — cart.html penuh diimplementasi
+Resume file: .planning/phases/06-cart-checkout/ (next: 06-05)

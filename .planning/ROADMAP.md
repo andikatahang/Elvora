@@ -209,5 +209,5 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 | 3. Product Catalog | 5/5 | Complete   | 2026-06-14 |
 | 4. Auth + Customer Account | 5/5 | Complete   | 2026-06-14 |
 | 5. AI Style Match | 5/4 | Complete    | 2026-06-16 |
-| 6. Cart + Checkout | 0/5 | Planned | - |
+| 6. Cart + Checkout | 4/5 | In Progress | - |
 | 7. Admin Panel | 0/TBD | Not started | - |
