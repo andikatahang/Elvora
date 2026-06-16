@@ -287,19 +287,7 @@
                 type="button"
                 @click.prevent="
                   Alpine.store('cart').add({ productId: p.id, name: p.name, slug: p.slug, price: p.base_price });
-                  if(window.Toastify) Toastify({
-                    text: 'Added to Bag',
-                    duration: 2500,
-                    gravity: 'bottom',
-                    position: 'right',
-                    style: {
-                      background: 'var(--charcoal)',
-                      color: '#ffffff',
-                      borderRadius: '50px',
-                      fontSize: '12px',
-                      letterSpacing: '2px'
-                    }
-                  }).showToast()
+                  Alpine.store('cart').openDrawer()
                 "
               >Add to Bag</button>
             </div>
