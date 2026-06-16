@@ -12,7 +12,136 @@
 </head>
 <body>
   <div id="nav-root"></div>
-  <main><!-- Phase 6 fills this --></main>
+  <main x-data class="cart-page" id="cart-main">
+  <div class="cart-page-inner">
+    <h1 class="cart-page-heading">Your Bag
+      <span
+        x-show="$store.cart.count > 0"
+        x-text="'(' + $store.cart.count + ' item' + ($store.cart.count !== 1 ? 's' : '') + ')'"
+        style="font-size:16px;font-weight:400;color:var(--text-muted);font-family:var(--font-body);margin-left:12px;display:none;"
+      ></span>
+    </h1>
+
+    <!-- Empty state — shown when cart has no items -->
+    <div
+      x-show="$store.cart.items.length === 0"
+      class="cart-empty"
+      style="display:none;"
+    >
+      <svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" class="cart-empty-icon" aria-hidden="true">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke-linecap="round"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 01-8 0" stroke-linecap="round"/>
+      </svg>
+      <p style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--charcoal);">Your bag is empty</p>
+      <p style="font-size:14px;color:var(--text-muted);max-width:320px;line-height:1.8;">
+        Discover our premium activewear collection and find pieces made for your movement.
+      </p>
+      <a href="/shop.html" class="btn-primary" style="margin-top:8px;">Shop Now</a>
+    </div>
+
+    <!-- Cart grid — shown when items exist -->
+    <div
+      x-show="$store.cart.items.length > 0"
+      class="cart-layout"
+      style="display:none;"
+    >
+      <!-- Left column: items list -->
+      <div>
+        <div style="border-top: 1.5px solid rgba(168,191,163,0.3);">
+          <template x-for="item in $store.cart.items" :key="item.key">
+            <div class="cart-item-row">
+              <!-- Product image -->
+              <div>
+                <template x-if="item.image">
+                  <img
+                    :src="item.image"
+                    :alt="item.name"
+                    class="cart-item-image"
+                    loading="lazy"
+                  >
+                </template>
+                <template x-if="!item.image">
+                  <div class="cart-item-image" style="background:var(--sage-light);"></div>
+                </template>
+              </div>
+
+              <!-- Item details + stepper -->
+              <div class="cart-item-details">
+                <p class="cart-item-name" x-text="item.name"></p>
+                <p class="cart-item-variant" x-text="[item.colour, item.size].filter(Boolean).join(' / ')"></p>
+
+                <!-- Qty stepper -->
+                <div class="cart-qty-stepper" style="margin-top:12px;">
+                  <button
+                    @click="$store.cart.setQty(item.key, item.qty - 1)"
+                    class="cart-qty-btn"
+                    :aria-label="'Decrease quantity of ' + item.name"
+                  >−</button>
+                  <span class="cart-qty-display" x-text="item.qty"></span>
+                  <button
+                    @click="$store.cart.setQty(item.key, item.qty + 1)"
+                    class="cart-qty-btn"
+                    :aria-label="'Increase quantity of ' + item.name"
+                  >+</button>
+                </div>
+
+                <button
+                  @click="$store.cart.remove(item.key)"
+                  class="cart-item-remove"
+                  :aria-label="'Remove ' + item.name + ' from bag'"
+                >Remove</button>
+              </div>
+
+              <!-- Right: line total -->
+              <div class="cart-item-right">
+                <p class="cart-item-line-total"
+                  x-text="'Rp ' + (item.price * item.qty).toLocaleString('id-ID')"
+                ></p>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <!-- Continue shopping link -->
+        <div style="margin-top:32px;">
+          <a href="/shop.html" class="view-all" style="font-size:12px;">&#8592; Continue Shopping</a>
+        </div>
+      </div>
+
+      <!-- Right column: order summary -->
+      <aside>
+        <div class="order-summary" aria-label="Order summary">
+          <h2 class="order-summary-title">Order Summary</h2>
+
+          <div class="order-summary-row">
+            <span>Subtotal</span>
+            <span x-text="$store.cart.totalFormatted"></span>
+          </div>
+
+          <div class="order-summary-row">
+            <span>Shipping</span>
+            <span style="color:var(--sage);font-size:12px;letter-spacing:1px;text-transform:uppercase;">Free</span>
+          </div>
+
+          <div class="order-summary-row total">
+            <span>Total</span>
+            <span x-text="$store.cart.totalFormatted"></span>
+          </div>
+
+          <p class="order-summary-shipping-note" style="margin:16px 0 20px;">Free shipping on all orders</p>
+
+          <a
+            href="/checkout.html"
+            class="btn-primary"
+            style="width:100%;text-align:center;box-sizing:border-box;display:block;"
+            aria-label="Proceed to checkout"
+          >Proceed to Checkout</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
   <div id="footer-root"></div>
   <script src="/js/__env.js"></script>
   <script type="module" src="/js/supabase.js"></script>
