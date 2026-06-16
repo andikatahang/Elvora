@@ -1340,3 +1340,7 @@ body {
   .checkout-form-row { grid-template-columns: 1fr; }
   .cart-drawer { width: 100vw; }
 }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
