@@ -345,6 +345,28 @@
     }
     .sm-auth-register:hover { border-color: var(--sage); color: var(--sage); }
 
+    /* ── Spinner ── */
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── x-transition utility classes (inline fallback for Tailwind CDN-less build) ── */
+    .opacity-0 { opacity: 0; }
+    .opacity-100 { opacity: 1; }
+    .translate-y-2 { transform: translateY(8px); }
+    .translate-y-4 { transform: translateY(16px); }
+    .translate-y-0 { transform: translateY(0); }
+    .scale-95 { transform: scale(0.95); }
+    .scale-100 { transform: scale(1); }
+    .transition { transition-property: all; }
+    .ease-out { transition-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+    .ease-in { transition-timing-function: cubic-bezier(0.4, 0, 1, 1); }
+    .duration-200 { transition-duration: 200ms; }
+    .duration-300 { transition-duration: 300ms; }
+    .duration-400 { transition-duration: 400ms; }
+    .duration-500 { transition-duration: 500ms; }
+
     /* ── Responsive ── */
     @media (max-width: 768px) {
       .sm-hero { padding: 60px 24px 48px; }
@@ -377,7 +399,10 @@
 
         <!-- AUTH GATE: user not logged in -->
         <template x-if="!isLoggedIn && !authChecking">
-          <div class="sm-auth-gate">
+          <div class="sm-auth-gate"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0">
             <div class="sm-auth-icon">🔒</div>
             <h2 class="sm-auth-title">Login untuk Style Match</h2>
             <p class="sm-auth-desc">
@@ -539,10 +564,20 @@
                   <button
                     class="sm-cta"
                     style="margin-top:0;flex:1;"
-                    :disabled="preferences.activity.length === 0"
+                    :disabled="preferences.activity.length === 0 || loading"
                     @click="findMatch()">
-                    <span x-show="!loading">✨ Temukan Style Match-ku</span>
-                    <span x-show="loading">Menganalisis...</span>
+                    <template x-if="!loading">
+                      <span>✨ Temukan Style Match-ku</span>
+                    </template>
+                    <template x-if="loading">
+                      <span style="display:flex;align-items:center;gap:8px;">
+                        <svg style="width:16px;height:16px;animation:spin 0.8s linear infinite;" viewBox="0 0 24 24" fill="none">
+                          <circle style="opacity:0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                          <path style="opacity:0.85;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                        Menganalisis...
+                      </span>
+                    </template>
                   </button>
                 </div>
               </div>
@@ -552,7 +587,13 @@
 
         <!-- LOADING state -->
         <template x-if="loading">
-          <div class="sm-loading-card">
+          <div class="sm-loading-card"
+            x-transition:enter="transition ease-out duration-400"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95">
             <div class="sm-loading-pulse">🌸</div>
             <h2 class="sm-loading-title">Elvy sedang menganalisis...</h2>
             <p class="sm-loading-msg" x-text="loadingMsg"></p>
@@ -566,7 +607,10 @@
 
         <!-- ERROR state -->
         <template x-if="error && !loading">
-          <div class="sm-error-card">
+          <div class="sm-error-card"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0">
             <div class="sm-error-icon">😔</div>
             <h2 class="sm-error-title">Terjadi Kesalahan</h2>
             <p class="sm-error-msg" x-text="errorMsg"></p>
@@ -576,7 +620,10 @@
 
         <!-- RESULTS -->
         <template x-if="results && !loading && !error">
-          <div>
+          <div
+            x-transition:enter="transition ease-out duration-500"
+            x-transition:enter-start="opacity-0 translate-y-4"
+            x-transition:enter-end="opacity-100 translate-y-0">
             <div class="sm-results-header">
               <p class="sm-results-eyebrow">Style Report dari Elvy</p>
               <h2 class="sm-results-title">Outfit Pilihanmu</h2>
@@ -679,10 +726,10 @@
   <script>
     // ── Loading messages for UX during AI processing ──
     const LOADING_MSGS = [
-      'Menganalisis coloring dan proporsi kamu...',
-      'Mengkurasi pilihan dari koleksi ELVORA...',
-      'Menyusun stylist notes personal...',
-      'Hampir selesai — memfinalisasi rekomendasimu...',
+      'Memindai palet warna dan undertone kamu...',
+      'Menyeleksi perpaduan warna yang harmonis...',
+      'Menyusun catatan personal dari Elvy...',
+      'Hampir selesai — memfinalisasi look untukmu...',
     ];
 
     function styleMatchApp() {
