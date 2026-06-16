@@ -453,7 +453,7 @@
         this.errorMsg = '';
 
         try {
-          const user = Alpine.store('auth')?.user;
+          const { data: { user } } = await window.supabase.auth.getUser();
           const cartItems = Alpine.store('cart').items;
           const subtotal = Alpine.store('cart').total;
 
