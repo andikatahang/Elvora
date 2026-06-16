@@ -72,7 +72,6 @@ function initCartStore() {
 }
 
 export async function mergeGuestCartToSupabase(user) {
-  const { supabase } = await import('./supabase.js');
   const localItems = loadFromStorage();
 
   if (!localItems.length) {
@@ -115,8 +114,6 @@ export async function mergeGuestCartToSupabase(user) {
 }
 
 export async function loadCartFromSupabase(userId) {
-  const { supabase } = await import('./supabase.js');
-
   const { data: rows, error } = await supabase
     .from('cart_items')
     .select(`

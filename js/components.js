@@ -14,7 +14,6 @@ window.supabase = supabase;
 // load after deferred scripts, so the event has already fired by the time
 // this module runs. We register stores directly via Alpine.store() instead.
 function registerStores() {
-  if (!Alpine.store('cart')) Alpine.store('cart', { count: 0, items: [] });
   if (!Alpine.store('auth')) Alpine.store('auth', { user: null, loggedIn: false });
 }
 
