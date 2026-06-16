@@ -178,7 +178,19 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
   3. An authenticated user's cart persists in Supabase across sessions; a guest cart stored in localStorage is merged into the authenticated cart upon login
   4. On checkout confirmation, an order record exists in the Supabase `orders` table with snapshotted `unit_price`, `product_name`, and `variant_label` on each order item — the cart is cleared
 
-**Plans**: TBD
+**Plans**: 5 plans executed
+
+**Wave 1** *(CSS + store foundation)*
+
+- [x] 06-01-PLAN.md — Cart CSS: .cart-drawer, .cart-drawer-*, .cart-qty-* classes in src/input.css
+- [x] 06-02-PLAN.md — Cart JS store: Alpine.store('cart') full implementation, cartDrawerOpen/openDrawer/closeDrawer, Supabase sync
+
+**Wave 2** *(UI injection + wiring)*
+
+- [x] 06-03-PLAN.md — Mini cart drawer: cartDrawerHTML injected via components.js, nav icons wired, product+shop addToBag openDrawer
+- [x] 06-04-PLAN.md — Cart page (cart.html): full cart page with item list, qty steppers, subtotal, proceed to checkout
+- [ ] 06-05-PLAN.md — Checkout (checkout.html): multi-step form, order creation, confirmation
+
 **UI hint**: yes
 
 ### Phase 7: Admin Panel
