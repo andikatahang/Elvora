@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: context exhaustion at 75% (2026-06-14)
-last_updated: "2026-06-14T17:19:42.785Z"
-last_activity: 2026-06-14 -- Phase 04 execution started
+stopped_at: "Plan 04-05 complete — Phase 04 selesai; next: Phase 05 AI Style Match"
+last_updated: "2026-06-16T14:20:52.187Z"
+last_activity: 2026-06-16 -- Phase 05 execution started
 progress:
   total_phases: 7
-  completed_phases: 3
-  total_plans: 23
-  completed_plans: 19
-  percent: 46
+  completed_phases: 4
+  total_plans: 27
+  completed_plans: 25
+  percent: 57
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-10)
 
 **Core value:** A shopper lands on Elvora, uploads a photo, and within moments receives a curated outfit recommendation that feels personally chosen for her — drawing her naturally into a premium catalog she wants to explore.
-**Current focus:** Phase 04 — auth-customer-account
+**Current focus:** Phase 05 — ai-style-match
 
 ## Current Position
 
-Phase: 04 (auth-customer-account) — EXECUTING
-Plan: 5 of 5 (COMPLETE)
-Status: Phase 04 Complete — ready for Phase 05
-Last activity: 2026-06-15 -- Phase 04 Plan 05 (wishlist toggle shop.html + product.html) complete
+Phase: 05 (ai-style-match) — EXECUTING
+Plan: 1 of 4
+Status: Executing Phase 05
+Last activity: 2026-06-16 -- Phase 05 execution started
 
 Progress: [██████████] 100%
 
@@ -101,6 +101,9 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 260613-vot | Update Running category sub-categories to Run Era, Pace Mode, Runner's High in UI filters nav and lookbook | 2026-06-13 | cd3cea6 | [260613-vot-update-running-category-sub-categories-t](.planning/quick/260613-vot-update-running-category-sub-categories-t/) |
 | 260613-w3e | Add 15 lookbook sub-categories with styling config (seed.sql IDs 10-21, SUBCATEGORY_STYLES module, lookbook gallery labels) | 2026-06-13 | 96e69bc | [260613-w3e-add-15-lookbook-sub-categories-with-styl](.planning/quick/260613-w3e-add-15-lookbook-sub-categories-with-styl/) |
+| 260615-reau | Ganti auth email ke username; fix simpan profil ke Supabase; migration 004 tambah kolom username | 2026-06-15 | 9b3bab7 | [260615-replace-email-auth-with-username](.planning/quick/260615-replace-email-auth-with-username/) |
+| 260615-goau | Tambah Google OAuth di form login dan registrasi; auto-upsert profil dari Google metadata | 2026-06-15 | a3c40ce | [260615-google-oauth](.planning/quick/260615-google-oauth/) |
+| 260615-prfl | Post-register redirect ke home; setup-profile.html untuk Google OAuth; ubah password di profil | 2026-06-15 | 721a4f7 | [260615-post-register-flow](.planning/quick/260615-post-register-flow/) |
 
 ### Blockers/Concerns
 
