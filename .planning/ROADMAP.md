@@ -165,6 +165,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 **UI hint**: yes
 
 ### Phase 6: Cart + Checkout
+**Plans**: 5 plans (3 waves)
 
 **Goal**: A visitor — guest or authenticated — can add products to the cart, review and adjust the order, complete a multi-step checkout, and receive an order confirmation with a persisted order record
 **Mode:** mvp
@@ -208,5 +209,5 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 | 3. Product Catalog | 5/5 | Complete   | 2026-06-14 |
 | 4. Auth + Customer Account | 5/5 | Complete   | 2026-06-14 |
 | 5. AI Style Match | 5/4 | Complete    | 2026-06-16 |
-| 6. Cart + Checkout | 0/TBD | Not started | - |
+| 6. Cart + Checkout | 0/5 | Planned | - |
 | 7. Admin Panel | 0/TBD | Not started | - |
