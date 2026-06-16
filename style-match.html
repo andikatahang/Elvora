@@ -678,8 +678,48 @@
               </template>
             </div>
 
-            <!-- Reset button -->
-            <div style="text-align:center;margin-top:32px;">
+            <!-- Save / Sign-up CTA + Reset -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:32px;">
+
+              <!-- Logged-in: session auto-saved, show link to account -->
+              <template x-if="isLoggedIn">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <a
+                    href="/account.html"
+                    style="display:inline-flex;align-items:center;gap:8px;background:var(--sage);color:white;border:none;border-radius:50px;padding:13px 28px;font-size:13px;font-weight:600;letter-spacing:0.5px;font-family:'Poppins',sans-serif;text-decoration:none;transition:all 0.2s;"
+                    onmouseover="this.style.background='var(--charcoal)'"
+                    onmouseout="this.style.background='var(--sage)'">
+                    ✦ Sesi Ini Tersimpan di Profilmu
+                  </a>
+                  <p style="font-size:11px;color:var(--text-muted);">Lihat riwayat Style Match di halaman akunmu</p>
+                </div>
+              </template>
+
+              <!-- Guest: prompt to sign up -->
+              <template x-if="!isLoggedIn">
+                <div style="background:white;border-radius:20px;padding:24px 28px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.06);max-width:380px;width:100%;">
+                  <p style="font-size:22px;margin-bottom:8px;">✨</p>
+                  <h3 style="font-family:'Playfair Display',serif;font-size:16px;color:var(--charcoal);margin-bottom:6px;">Simpan Style Report-mu</h3>
+                  <p style="font-size:12px;color:var(--text-muted);line-height:1.7;margin-bottom:16px;">
+                    Buat akun ELVORA gratis untuk menyimpan rekomendasimu dan mengakses riwayat Style Match kapanpun.
+                  </p>
+                  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                    <a href="/auth.html?tab=register"
+                      style="background:var(--charcoal);color:white;border-radius:50px;padding:10px 22px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;text-decoration:none;transition:background 0.2s;"
+                      onmouseover="this.style.background='var(--sage)'"
+                      onmouseout="this.style.background='var(--charcoal)'">
+                      Daftar Gratis
+                    </a>
+                    <a href="/auth.html"
+                      style="background:white;color:var(--charcoal);border:1.5px solid rgba(168,191,163,0.5);border-radius:50px;padding:10px 22px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;text-decoration:none;transition:all 0.2s;"
+                      onmouseover="this.style.borderColor='var(--sage)';this.style.color='var(--sage)'"
+                      onmouseout="this.style.borderColor='rgba(168,191,163,0.5)';this.style.color='var(--charcoal)'">
+                      Masuk
+                    </a>
+                  </div>
+                </div>
+              </template>
+
               <button
                 style="background:white;border:1.5px solid rgba(168,191,163,0.5);border-radius:50px;padding:12px 28px;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;color:var(--charcoal);transition:all 0.2s;"
                 @click="resetForm()">
