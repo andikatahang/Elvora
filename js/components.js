@@ -186,13 +186,13 @@ const navHTML = `
       </div>
 
       <!-- Cart bag -->
-      <a href="/cart.html" aria-label="Shopping bag" class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors relative">
+      <button @click="$store.cart.openDrawer()" aria-label="Open shopping bag" class="w-11 h-11 flex items-center justify-center text-charcoal hover:text-rose transition-colors relative" type="button">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke-linecap="round"/><line x1="3" y1="6" x2="21" y2="6"/>
           <path d="M16 10a4 4 0 01-8 0" stroke-linecap="round"/>
         </svg>
         <span x-show="$store.cart.count > 0" x-text="$store.cart.count" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose text-white text-[9px] flex items-center justify-center font-semibold" style="display:none;"></span>
-      </a>
+      </button>
 
       <!-- Mobile hamburger -->
       <button @click="navOpen = true" aria-label="Open navigation menu" class="w-11 h-11 flex items-center justify-center text-charcoal lg:hidden">
@@ -241,9 +241,9 @@ const navHTML = `
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg>
         <span class="text-sm tracking-widest uppercase" x-text="$store.auth.user?.user_metadata?.first_name || 'Account'"></span>
       </a>
-      <a href="/cart.html" aria-label="Shopping bag" class="w-11 h-11 flex items-center justify-center text-white hover:text-rose transition-colors">
+      <button @click="$store.cart.openDrawer()" aria-label="Open shopping bag" class="w-11 h-11 flex items-center justify-center text-white hover:text-rose transition-colors" type="button">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke-linecap="round"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0" stroke-linecap="round"/></svg>
-      </a>
+      </button>
     </div>
   </div>
 
@@ -330,6 +330,152 @@ const footerHTML = `
 </footer>
 `;
 
+// ─── Cart Drawer HTML ─────────────────────────────────────────────────────────
+
+const cartDrawerHTML = `
+<div id="cart-drawer-root">
+  <!-- Backdrop -->
+  <div
+    x-show="$store.cart.cartDrawerOpen"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    @click="$store.cart.closeDrawer()"
+    class="cart-drawer-backdrop"
+    style="display:none;"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Drawer panel -->
+  <div
+    x-show="$store.cart.cartDrawerOpen"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="translate-x-full opacity-0"
+    x-transition:enter-end="translate-x-0 opacity-100"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="translate-x-0 opacity-100"
+    x-transition:leave-end="translate-x-full opacity-0"
+    @keydown.escape.window="$store.cart.closeDrawer()"
+    class="cart-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Shopping bag"
+    style="display:none;"
+  >
+    <!-- Header -->
+    <div class="cart-drawer-header">
+      <h2 class="cart-drawer-title">Your Bag</h2>
+      <button
+        @click="$store.cart.closeDrawer()"
+        class="cart-drawer-close"
+        aria-label="Close shopping bag"
+      >
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18" stroke-linecap="round"/>
+          <line x1="6" y1="6" x2="18" y2="18" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="cart-drawer-body">
+
+      <!-- Empty state -->
+      <div
+        x-show="$store.cart.items.length === 0"
+        class="cart-drawer-empty"
+        style="display:none;"
+      >
+        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" style="color:rgba(168,191,163,0.5);" aria-hidden="true">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke-linecap="round"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0" stroke-linecap="round"/>
+        </svg>
+        <p style="font-size:14px;color:var(--text-muted);font-family:var(--font-body);">Your bag is empty</p>
+        <a
+          href="/shop.html"
+          @click="$store.cart.closeDrawer()"
+          class="btn-primary"
+          style="padding:12px 28px;font-size:11px;"
+        >Shop Now</a>
+      </div>
+
+      <!-- Items list -->
+      <template x-if="$store.cart.items.length > 0">
+        <div>
+          <template x-for="item in $store.cart.items" :key="item.key">
+            <div class="cart-drawer-item">
+              <!-- Thumbnail -->
+              <template x-if="item.image">
+                <img :src="item.image" :alt="item.name" class="cart-drawer-thumb" loading="lazy">
+              </template>
+              <template x-if="!item.image">
+                <div class="cart-drawer-thumb"></div>
+              </template>
+
+              <!-- Item info -->
+              <div class="cart-drawer-item-info">
+                <p class="cart-drawer-item-name" x-text="item.name"></p>
+                <p class="cart-drawer-item-variant" x-text="[item.colour, item.size].filter(Boolean).join(' / ')"></p>
+                <p class="cart-drawer-item-price" x-text="'Rp ' + (item.price * item.qty).toLocaleString('id-ID')"></p>
+
+                <!-- Qty stepper -->
+                <div class="cart-qty-stepper">
+                  <button
+                    @click="$store.cart.setQty(item.key, item.qty - 1)"
+                    class="cart-qty-btn"
+                    :aria-label="'Decrease quantity of ' + item.name"
+                  >−</button>
+                  <span class="cart-qty-display" x-text="item.qty"></span>
+                  <button
+                    @click="$store.cart.setQty(item.key, item.qty + 1)"
+                    class="cart-qty-btn"
+                    :aria-label="'Increase quantity of ' + item.name"
+                  >+</button>
+                </div>
+
+                <button
+                  @click="$store.cart.remove(item.key)"
+                  class="cart-drawer-item-remove"
+                  :aria-label="'Remove ' + item.name + ' from bag'"
+                >Remove</button>
+              </div>
+            </div>
+          </template>
+        </div>
+      </template>
+
+    </div>
+
+    <!-- Footer (only shown when items exist) -->
+    <div x-show="$store.cart.items.length > 0" class="cart-drawer-footer" style="display:none;">
+      <div class="cart-drawer-subtotal-row">
+        <span style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);">Subtotal</span>
+        <span style="font-size:16px;font-weight:600;" x-text="$store.cart.totalFormatted"></span>
+      </div>
+      <p style="font-size:11px;text-align:center;color:var(--sage);letter-spacing:1px;text-transform:uppercase;">Free Shipping</p>
+      <a
+        href="/checkout.html"
+        @click="$store.cart.closeDrawer()"
+        class="btn-primary"
+        style="text-align:center;width:100%;box-sizing:border-box;"
+        aria-label="Proceed to checkout"
+      >Checkout</a>
+      <a
+        href="/cart.html"
+        @click="$store.cart.closeDrawer()"
+        class="view-all"
+        style="text-align:center;display:block;"
+        aria-label="View full cart"
+      >View Full Bag</a>
+    </div>
+  </div>
+</div>
+`;
+
 // ─── Inject nav and footer ────────────────────────────────────────────────────
 
 const navRoot = document.getElementById('nav-root');
@@ -343,6 +489,12 @@ if (footerRoot) {
   footerRoot.innerHTML = footerHTML;
   if (window.Alpine) Alpine.initTree(footerRoot);
 }
+
+// ─── Cart drawer injection ────────────────────────────────────────────────────
+const cartDrawerRoot = document.createElement('div');
+cartDrawerRoot.innerHTML = cartDrawerHTML;
+document.body.appendChild(cartDrawerRoot);
+if (window.Alpine) Alpine.initTree(cartDrawerRoot);
 
 // ─── Active nav link detection ────────────────────────────────────────────────
 
