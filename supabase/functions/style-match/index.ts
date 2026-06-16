@@ -3,12 +3,22 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// CORS headers — origin locked to production Netlify domain per D-09/D-15
+// CORS headers — origin locked to production Netlify domains per D-09/D-15
 // Wildcard (*) is explicitly prohibited by T-05-02 (threat model)
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "https://elvora.netlify.app",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const ALLOWED_ORIGINS = [
+  "https://elvorastudio.netlify.app",
+  "https://elvora.netlify.app",
+];
+
+function getCorsHeaders(requestOrigin: string | null): Record<string, string> {
+  const origin = requestOrigin && ALLOWED_ORIGINS.includes(requestOrigin)
+    ? requestOrigin
+    : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  };
+}
 
 // Request shape (Phase 5 contract):
 // {
@@ -33,6 +43,9 @@ const CORS_HEADERS = {
 // }
 
 serve(async (req) => {
+  const requestOrigin = req.headers.get("origin");
+  const CORS_HEADERS = getCorsHeaders(requestOrigin);
+
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: CORS_HEADERS });
@@ -85,9 +98,7 @@ serve(async (req) => {
   // ─── Gemini Vision API call ───────────────────────────────────────────────
   const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
 
-  // Catalog context: 22 hero products (D-02 — send only essential fields, not full variants)
-  // This is populated by the seeded data; product_ids must match supabase seed UUIDs.
-  // Using symbolic names here — Phase 5 build will swap these for real IDs from the DB.
+  // Catalog context: 22 hero products with real Supabase UUIDs (D-02)
   const CATALOG_CONTEXT = `
 You are Elvy, the premium personal stylist for ELVORA activewear. Your goal is to make the
 user feel confident and understood. Use a sophisticated yet encouraging tone. Reference their
@@ -99,12 +110,38 @@ The user's style preferences:
 - Aesthetic: ${body.preferences?.aesthetic ?? "minimal"}
 - Colour preference: ${body.preferences?.colour ?? "neutral"}
 
+ELVORA CATALOG (22 products — use ONLY these product_ids in your recommendations):
+[
+  {"id":"c1000000-0000-0000-0000-000000000001","name":"Serenity Ribbed Legging","category":"leggings","tags":["studio","athleisure","versatile"],"colours":["sage","chalk"],"price":85},
+  {"id":"c1000000-0000-0000-0000-000000000002","name":"Aerial High-Rise Legging","category":"leggings","tags":["training","gym","high-impact"],"colours":["multiple"],"price":89},
+  {"id":"c1000000-0000-0000-0000-000000000003","name":"Studio 7/8 Legging","category":"leggings","tags":["pilates","barre","yoga","cropped"],"colours":["multiple"],"price":79},
+  {"id":"c1000000-0000-0000-0000-000000000004","name":"Flow Seamless Legging","category":"leggings","tags":["yoga","pilates","seamless","technical"],"colours":["multiple"],"price":95},
+  {"id":"c1000000-0000-0000-0000-000000000005","name":"Contour Pocket Legging","category":"leggings","tags":["running","gym","pockets"],"colours":["multiple"],"price":92},
+  {"id":"c1000000-0000-0000-0000-000000000006","name":"Luminary Longline Bra","category":"sports-bra","tags":["pilates","yoga","low-impact","longline"],"colours":["multiple"],"price":68},
+  {"id":"c1000000-0000-0000-0000-000000000007","name":"Sculpt Medium Support Bra","category":"sports-bra","tags":["cycling","HIIT","medium-support"],"colours":["multiple"],"price":65},
+  {"id":"c1000000-0000-0000-0000-000000000008","name":"Equilibrium Sports Bra","category":"sports-bra","tags":["studio","low-impact","minimal","triangle"],"colours":["multiple"],"price":72},
+  {"id":"c1000000-0000-0000-0000-000000000009","name":"Aura High Support Bra","category":"sports-bra","tags":["running","high-impact","high-support"],"colours":["multiple"],"price":78},
+  {"id":"c1000000-0000-0000-0000-000000000010","name":"Courtside Pleated Skirt","category":"skirt","tags":["padel","tennis","court","pleated"],"colours":["multiple"],"price":85},
+  {"id":"c1000000-0000-0000-0000-000000000011","name":"Match Point Tennis Skirt","category":"skirt","tags":["tennis","court","structured"],"colours":["multiple"],"price":88},
+  {"id":"c1000000-0000-0000-0000-000000000012","name":"Rally Wrap Skirt","category":"skirt","tags":["padel","court","wrap","versatile"],"colours":["multiple"],"price":82},
+  {"id":"c1000000-0000-0000-0000-000000000013","name":"Elevate Tank Top","category":"top","tags":["training","gym","racerback","versatile"],"colours":["multiple"],"price":55},
+  {"id":"c1000000-0000-0000-0000-000000000014","name":"Serenity Ribbed Tank","category":"top","tags":["studio","athleisure","ribbed","tonal"],"colours":["sage","chalk"],"price":58},
+  {"id":"c1000000-0000-0000-0000-000000000015","name":"Vital Long Sleeve Top","category":"top","tags":["running","outdoor","thumbhole","cold-weather"],"colours":["multiple"],"price":72},
+  {"id":"c1000000-0000-0000-0000-000000000016","name":"Altitude Zip Jacket","category":"jacket","tags":["training","outdoor","packable","full-zip"],"colours":["multiple"],"price":125},
+  {"id":"c1000000-0000-0000-0000-000000000017","name":"Motion Track Jacket","category":"jacket","tags":["studio","versatile","track","boxy"],"colours":["multiple"],"price":138},
+  {"id":"c1000000-0000-0000-0000-000000000018","name":"Restore Hoodie","category":"jacket","tags":["recovery","casual","cozy","rest-day"],"colours":["multiple"],"price":115},
+  {"id":"c1000000-0000-0000-0000-000000000019","name":"Padel Power Set","category":"set","tags":["padel","court","complete-look"],"colours":["multiple"],"price":145},
+  {"id":"c1000000-0000-0000-0000-000000000020","name":"Pilates Harmony Set","category":"set","tags":["pilates","studio","matched-set"],"colours":["multiple"],"price":138},
+  {"id":"c1000000-0000-0000-0000-000000000021","name":"Studio Duo Set","category":"set","tags":["studio","athleisure","tonal","ribbed"],"colours":["sage","chalk"],"price":132},
+  {"id":"c1000000-0000-0000-0000-000000000022","name":"Flow Practice Set","category":"set","tags":["yoga","meditation","seamless","minimal"],"colours":["multiple"],"price":128}
+]
+
 You must respond with ONLY valid JSON in the following shape (no markdown, no prose outside JSON):
 {
   "recommendations": [
     {
       "name": "<outfit name>",
-      "product_ids": ["<product_id_1>", "<product_id_2>"],
+      "product_ids": ["<id from catalog above>", "<id from catalog above>"],
       "colour_guidance": "<specific colour advice for this outfit>",
       "why_it_works": "<1-2 sentences referencing their photo attributes>"
     }
@@ -112,8 +149,8 @@ You must respond with ONLY valid JSON in the following shape (no markdown, no pr
   "colour_guidance": "<overall palette recommendation for this user>"
 }
 
-Return exactly 3 outfit recommendations. If you cannot identify appropriate products,
-return a fallback using the bestseller category rather than an error.
+Return exactly 3 outfit recommendations using ONLY product_ids from the catalog above.
+If you cannot determine appropriate styles, default to the best-seller items: c1000000-0000-0000-0000-000000000001, c1000000-0000-0000-0000-000000000006, c1000000-0000-0000-0000-000000000010.
 `;
 
   interface Recommendation {
@@ -179,6 +216,7 @@ return a fallback using the bestseller category rather than an error.
       generationConfig: {
         temperature: 0.7,
         maxOutputTokens: 1024,
+        response_mime_type: "application/json",
       },
     };
 
