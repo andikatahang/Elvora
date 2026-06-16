@@ -1,5 +1,5 @@
 // Phase 5 — AI Style Match Edge Function
-// Calls Gemini Vision API and persists results for authenticated users.
+// Calls NVIDIA NIM (MiniMax-M3) via OpenAI-compatible API and persists results for authenticated users.
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -95,8 +95,8 @@ serve(async (req) => {
     })
   );
 
-  // ─── Gemini Vision API call ───────────────────────────────────────────────
-  const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+  // ─── NVIDIA NIM (MiniMax-M3) API call — OpenAI-compatible ──────────────────
+  const NVIDIA_API_KEY = Deno.env.get("NVIDIA_API_KEY");
 
   // Catalog context: 22 hero products with real Supabase UUIDs (D-02)
   const CATALOG_CONTEXT = `
@@ -167,71 +167,71 @@ If you cannot determine appropriate styles, default to the best-seller items: c1
 
   let aiResult: AiResponse;
 
-  if (GEMINI_API_KEY) {
-    // Build Gemini request — include photo if provided (D-04: already resized by client)
-    type GeminiPart =
-      | { text: string }
-      | { inline_data: { mime_type: string; data: string } };
+  if (NVIDIA_API_KEY) {
+    // Build user message — include photo if provided (D-04: already resized by client)
+    type ContentPart =
+      | { type: "text"; text: string }
+      | { type: "image_url"; image_url: { url: string } };
 
-    const parts: GeminiPart[] = [{ text: CATALOG_CONTEXT }];
+    const userContent: ContentPart[] = [];
 
     if (body.photo_url) {
-      // photo_url can be a base64 data URI (data:image/jpeg;base64,...) or an https:// signed URL
-      const base64Match = body.photo_url.match(/^data:(.+);base64,(.+)$/);
-      if (base64Match) {
-        // Already a base64 data URI — use inline_data directly
-        parts.push({
-          inline_data: {
-            mime_type: base64Match[1],
-            data: base64Match[2],
-          },
-        });
-      } else if (body.photo_url.startsWith("https://")) {
-        // Signed URL from Supabase Storage — fetch and convert to base64 for Gemini
+      let photoUrl = body.photo_url;
+
+      // If signed URL, fetch and convert to base64 data URI for inline delivery
+      if (body.photo_url.startsWith("https://")) {
         try {
           const imgResponse = await fetch(body.photo_url);
           if (imgResponse.ok) {
             const imgBuffer = await imgResponse.arrayBuffer();
             const contentType = imgResponse.headers.get("content-type") ?? "image/jpeg";
-            const base64 = btoa(
-              String.fromCharCode(...new Uint8Array(imgBuffer))
-            );
-            parts.push({
-              inline_data: {
-                mime_type: contentType.split(";")[0],
-                data: base64,
-              },
-            });
+            const base64 = btoa(String.fromCharCode(...new Uint8Array(imgBuffer)));
+            photoUrl = `data:${contentType.split(";")[0]};base64,${base64}`;
           } else {
             console.warn("Failed to fetch photo from signed URL:", imgResponse.status);
+            photoUrl = "";
           }
         } catch (fetchErr) {
-          console.warn("Error fetching photo from URL, proceeding without image:", fetchErr);
+          console.warn("Error fetching photo, proceeding without image:", fetchErr);
+          photoUrl = "";
         }
+      }
+
+      if (photoUrl) {
+        userContent.push({ type: "image_url", image_url: { url: photoUrl } });
       }
     }
 
-    const geminiPayload = {
-      contents: [{ parts }],
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 1024,
-        response_mime_type: "application/json",
-      },
+    userContent.push({
+      type: "text",
+      text: "Analyze the user photo above (if provided) and recommend 3 Elvora outfits. Follow the JSON format in your instructions exactly.",
+    });
+
+    const nvidiaPayload = {
+      model: "minimax/minimax-m3",
+      messages: [
+        { role: "system", content: CATALOG_CONTEXT },
+        { role: "user", content: userContent.length === 1 ? userContent[0].text : userContent },
+      ],
+      max_tokens: 1024,
+      temperature: 0.7,
     };
 
-    const geminiResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+    const nvidiaResponse = await fetch(
+      "https://integrate.api.nvidia.com/v1/chat/completions",
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(geminiPayload),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${NVIDIA_API_KEY}`,
+        },
+        body: JSON.stringify(nvidiaPayload),
       }
     );
 
-    if (!geminiResponse.ok) {
-      const errText = await geminiResponse.text();
-      console.error("Gemini API error:", geminiResponse.status, errText);
+    if (!nvidiaResponse.ok) {
+      const errText = await nvidiaResponse.text();
+      console.error("NVIDIA NIM error:", nvidiaResponse.status, errText);
       return new Response(
         JSON.stringify({ error: "AI service temporarily unavailable" }),
         {
@@ -241,14 +241,16 @@ If you cannot determine appropriate styles, default to the best-seller items: c1
       );
     }
 
-    const geminiData = await geminiResponse.json();
-    const rawText: string =
-      geminiData?.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
+    const nvidiaData = await nvidiaResponse.json();
+    const rawText: string = nvidiaData?.choices?.[0]?.message?.content ?? "{}";
+
+    // Strip markdown code fences if model wraps JSON in ```json ... ```
+    const cleaned = rawText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
 
     try {
-      aiResult = JSON.parse(rawText) as AiResponse;
+      aiResult = JSON.parse(cleaned) as AiResponse;
     } catch {
-      console.error("Failed to parse Gemini response as JSON:", rawText);
+      console.error("Failed to parse MiniMax-M3 response as JSON:", rawText);
       return new Response(
         JSON.stringify({ error: "AI returned an unexpected format" }),
         {
@@ -258,37 +260,39 @@ If you cannot determine appropriate styles, default to the best-seller items: c1
       );
     }
   } else {
-    // Development fallback — GEMINI_API_KEY not configured
-    console.log("GEMINI_API_KEY not set — returning mock response");
+    // Development fallback — NVIDIA_API_KEY not configured
+    console.log("NVIDIA_API_KEY not set — returning mock response");
     aiResult = {
       recommendations: [
         {
           name: "Sage Studio Set",
-          product_ids: ["seed-product-id-1", "seed-product-id-2"],
-          colour_guidance:
-            "Earthy tones complement your natural colouring — lean into sage and ivory.",
-          why_it_works:
-            "The relaxed fit and muted palette align perfectly with your aesthetic preference for minimal activewear.",
+          product_ids: [
+            "c1000000-0000-0000-0000-000000000001",
+            "c1000000-0000-0000-0000-000000000006",
+          ],
+          colour_guidance: "Earthy tones complement your natural colouring — lean into sage and ivory.",
+          why_it_works: "The relaxed fit and muted palette align perfectly with your aesthetic preference for minimal activewear.",
         },
         {
-          name: "Onyx Performance Duo",
-          product_ids: ["seed-product-id-3", "seed-product-id-4"],
-          colour_guidance:
-            "Classic monochrome anchors your look with effortless confidence.",
-          why_it_works:
-            "Your preference for structured fits makes this pairing ideal for pilates or studio work.",
+          name: "Court Ready Look",
+          product_ids: [
+            "c1000000-0000-0000-0000-000000000010",
+            "c1000000-0000-0000-0000-000000000009",
+          ],
+          colour_guidance: "Classic monochrome anchors your look with effortless confidence.",
+          why_it_works: "Your preference for structured fits makes this pairing ideal for padel or tennis.",
         },
         {
           name: "Ivory Editorial Set",
-          product_ids: ["seed-product-id-5", "seed-product-id-6"],
-          colour_guidance:
-            "Cream and white tones highlight your warm undertones beautifully.",
-          why_it_works:
-            "An editorial edge that matches your stated aesthetic — elevated and wearable.",
+          product_ids: [
+            "c1000000-0000-0000-0000-000000000020",
+            "c1000000-0000-0000-0000-000000000017",
+          ],
+          colour_guidance: "Cream and white tones highlight your warm undertones beautifully.",
+          why_it_works: "An editorial edge that matches your stated aesthetic — elevated and wearable.",
         },
       ],
-      colour_guidance:
-        "Your palette is naturally suited to warm neutrals — sage, ivory, camel — with occasional slate blue for contrast.",
+      colour_guidance: "Your palette is naturally suited to warm neutrals — sage, ivory, camel — with occasional slate blue for contrast.",
     };
   }
 
