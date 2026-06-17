@@ -42,14 +42,14 @@
               const tab = new URLSearchParams(location.search).get('tab');
               if (tab === 'signup') this.tab = 'signup';
               const { data: { user } } = await window.supabase.auth.getUser();
-              if (user) window.location.href = '/account.html';
+              if (user) window.location.href = '/shop.html';
             },
 
             async handleSignIn() {
               this.loading = true; this.error = '';
               try {
                 await window.signIn(this.siUsername, this.siPassword);
-                window.location.href = '/account.html';
+                window.location.href = '/shop.html';
               } catch (e) {
                 this.error = 'Incorrect username or password. Please try again.';
               } finally { this.loading = false; }
@@ -71,7 +71,7 @@
                   position: 'right',
                   style: { background: 'var(--sage)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' }
                 }).showToast();
-                setTimeout(() => { window.location.href = '/index.html'; }, 2000);
+                setTimeout(() => { window.location.href = '/shop.html'; }, 2000);
               } catch (e) {
                 this.error = e.message?.includes('already registered') || e.message?.includes('already exists')
                   ? 'An account with this username already exists.'

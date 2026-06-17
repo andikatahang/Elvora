@@ -96,10 +96,20 @@
         },
 
         async saveProfile() {
+          if (!this.profile.username.trim()) {
+            Toastify({ text: 'Username is required.', duration: 3000, gravity: 'bottom', position: 'right',
+              style: { background: 'var(--rose)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' } }).showToast();
+            return;
+          }
+          if (!/^[a-zA-Z0-9_]+$/.test(this.profile.username)) {
+            Toastify({ text: 'Username may only contain letters, numbers, and underscores.', duration: 3000, gravity: 'bottom', position: 'right',
+              style: { background: 'var(--rose)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' } }).showToast();
+            return;
+          }
           this.profileSaving = true;
           const { error } = await window.supabase
             .from('user_profiles')
-            .update({ first_name: this.profile.first_name, last_name: this.profile.last_name })
+            .update({ first_name: this.profile.first_name, last_name: this.profile.last_name, username: this.profile.username.trim().toLowerCase() })
             .eq('id', this._currentUser.id);
           if (error) {
             Toastify({ text: 'Couldn\'t save — try again', duration: 3000, gravity: 'bottom', position: 'right',
@@ -225,12 +235,9 @@
                 type="text"
                 id="profile-username"
                 x-model="profile.username"
-                readonly
-                :disabled="true"
-                style="background:rgba(46,46,46,0.04);cursor:not-allowed;"
+                placeholder="letters, numbers, underscores"
                 autocomplete="username"
               >
-              <p class="profile-email-note">Username cannot be changed</p>
             </div>
 
             <button
