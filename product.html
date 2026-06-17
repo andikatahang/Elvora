@@ -68,7 +68,7 @@
         const { error } = await window.supabase.from('wishlist_items').delete().eq('user_id', user.id).eq('product_id', productId);
         if (error) {
           this.wishlistedIds = new Set([...this.wishlistedIds, productId]);
-          Toastify({ text: "Couldn't save item — try again", duration: 3000, gravity: 'bottom', position: 'right',
+          Toastify({ text: `Couldn't save item — try again`, duration: 3000, gravity: 'bottom', position: 'right',
             style: { background: 'var(--rose)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' } }).showToast();
         }
       } else {
@@ -76,7 +76,7 @@
         const { error } = await window.supabase.from('wishlist_items').insert({ user_id: user.id, product_id: productId });
         if (error) {
           this.wishlistedIds = new Set([...this.wishlistedIds].filter(id => id !== productId));
-          Toastify({ text: "Couldn't save item — try again", duration: 3000, gravity: 'bottom', position: 'right',
+          Toastify({ text: `Couldn't save item — try again`, duration: 3000, gravity: 'bottom', position: 'right',
             style: { background: 'var(--rose)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' } }).showToast();
         }
       }
@@ -212,7 +212,7 @@
       if (!this.showSizeGuide) return;
       const modal = document.querySelector('.size-guide-modal');
       if (!modal) return;
-      const focusable = modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex=\"-1\"])');
+      const focusable = modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex=&quot;-1&quot;])');
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       if (e.key === 'Tab') {
