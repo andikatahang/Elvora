@@ -7,6 +7,24 @@ import { supabase } from './supabase.js';
 
 const STORAGE_KEY = 'elvora_cart';
 
+async function getAuthUser() {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+}
+
+async function supabaseUpsertItem(userId, variantId, productId, qty) {
+  if (!variantId) return;
+  await supabase.from('cart_items').upsert(
+    { user_id: userId, variant_id: variantId, product_id: productId, quantity: qty },
+    { onConflict: 'user_id,variant_id' }
+  );
+}
+
+async function supabaseDeleteItem(userId, variantId) {
+  if (!variantId) return;
+  await supabase.from('cart_items').delete().eq('user_id', userId).eq('variant_id', variantId);
+}
+
 export function loadFromStorage() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
@@ -46,18 +64,25 @@ function initCartStore() {
         this.items.push({ key, productId, variantId, name, slug, price, image, colour, size, qty: 1 });
       }
       saveToStorage(this.items);
+      const newQty = existing ? existing.qty : 1;
+      getAuthUser().then(user => { if (user) supabaseUpsertItem(user.id, variantId, productId, newQty); });
     },
 
     remove(key) {
+      const item = this.items.find(i => i.key === key);
       this.items = this.items.filter(i => i.key !== key);
       saveToStorage(this.items);
+      if (item?.variantId) getAuthUser().then(user => { if (user) supabaseDeleteItem(user.id, item.variantId); });
     },
 
     setQty(key, qty) {
       if (qty <= 0) { this.remove(key); return; }
       const item = this.items.find(i => i.key === key);
-      if (item) item.qty = qty;
-      saveToStorage(this.items);
+      if (item) {
+        item.qty = qty;
+        saveToStorage(this.items);
+        if (item.variantId) getAuthUser().then(user => { if (user) supabaseUpsertItem(user.id, item.variantId, item.productId, qty); });
+      }
     },
 
     clear() {
