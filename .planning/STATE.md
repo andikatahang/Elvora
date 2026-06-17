@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Plan 06-05 complete — checkout 4-step state machine selesai (2026-06-16)
-last_updated: "2026-06-16T16:32:32Z"
-last_activity: 2026-06-16
+stopped_at: Completed 06-06-PLAN.md
+last_updated: "2026-06-17T15:53:10Z"
+last_activity: 2026-06-17
 progress:
   total_phases: 7
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 32
-  completed_plans: 31
-  percent: 97
+  completed_plans: 33
+  percent: 86
 ---
 
 # Project State
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-06-10)
 ## Current Position
 
 Phase: 6
-Plan: 05 complete — Phase 06 SELESAI
+Plan: 06 complete — Fix Dual Alpine Registration + Eager Cart Overwrite
 Status: Executing Phase 06
-Last activity: 2026-06-16
+Last activity: 2026-06-17
 
 Progress: [██████████] 100%
 
@@ -97,6 +97,8 @@ Recent decisions affecting current work:
 - Plan 06-05: window.checkoutData() pattern (bukan inline x-data) untuk hindari single-quote escaping complexity
 - Plan 06-05: Guest email TIDAK di-prefill di init() — synthetic @elvora.local dari auth.js tidak boleh masuk guest_email
 - Plan 06-05: user_id=null EKSPLISIT (bukan undefined/omit) untuk guest orders sesuai RLS requirement
+- Plan 06-06: _componentsInitDone guard pattern — wrap dual alpine:init/window.Alpine check with boolean flag to prevent double registerStores()/initAuth() execution
+- Plan 06-06: Eager loadCartFromSupabase removed from initAuth() — INITIAL_SESSION event handler is single correct cart load point; eager call raced and wiped in-flight user-added items
 
 ### Pending Todos
 
@@ -129,6 +131,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-16T16:24:00.000Z
-Stopped at: Plan 06-05 complete — Phase 06 cart-checkout SELESAI
+Last session: 2026-06-17T13:16:29.884Z
+Stopped at: context exhaustion at 76% (2026-06-17)
 Resume file: .planning/phases/07-style-match/ (Phase 07 berikutnya)
