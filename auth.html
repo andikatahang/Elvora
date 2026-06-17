@@ -41,8 +41,12 @@
             async init() {
               const tab = new URLSearchParams(location.search).get('tab');
               if (tab === 'signup') this.tab = 'signup';
-              const { data: { user } } = await window.supabase.auth.getUser();
-              if (user) window.location.href = '/shop.html';
+              const run = async () => {
+                const { data: { user } } = await window.supabase.auth.getUser();
+                if (user) window.location.href = '/shop.html';
+              };
+              if (window.supabase) { run(); }
+              else { window.addEventListener('elvora:ready', run, { once: true }); }
             },
 
             async handleSignIn() {

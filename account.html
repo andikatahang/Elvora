@@ -38,21 +38,25 @@
         setTab(tab) { this.activeTab = tab; location.hash = tab; },
 
         async init() {
-          const { data: { user } } = await window.supabase.auth.getUser();
-          if (!user) { window.location.href = '/auth.html?tab=signin'; return; }
+          const run = async () => {
+            const { data: { user } } = await window.supabase.auth.getUser();
+            if (!user) { window.location.href = '/auth.html?tab=signin'; return; }
 
-          // New Google OAuth user without username → complete profile setup first
-          if (user.app_metadata?.provider === 'google') {
-            const { data: prof } = await window.supabase
-              .from('user_profiles').select('username').eq('id', user.id).single();
-            if (!prof?.username) { window.location.href = '/setup-profile.html'; return; }
-          }
+            // New Google OAuth user without username → complete profile setup first
+            if (user.app_metadata?.provider === 'google') {
+              const { data: prof } = await window.supabase
+                .from('user_profiles').select('username').eq('id', user.id).single();
+              if (!prof?.username) { window.location.href = '/setup-profile.html'; return; }
+            }
 
-          this._currentUser = user;
-          const hash = location.hash.replace('#', '');
-          if (['profile', 'wishlist', 'preferences'].includes(hash)) this.activeTab = hash;
-          this.loading = false;
-          await Promise.all([ this.loadProfile(user), this.loadWishlist(user) ]);
+            this._currentUser = user;
+            const hash = location.hash.replace('#', '');
+            if (['profile', 'wishlist', 'preferences'].includes(hash)) this.activeTab = hash;
+            this.loading = false;
+            await Promise.all([ this.loadProfile(user), this.loadWishlist(user) ]);
+          };
+          if (window.supabase) { run(); }
+          else { window.addEventListener('elvora:ready', run, { once: true }); }
         },
 
         async loadProfile(user) {
