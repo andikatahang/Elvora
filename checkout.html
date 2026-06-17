@@ -250,7 +250,7 @@
                   </svg>
                   <span style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.6);">ELVORA PAY</span>
                 </div>
-                <p class="payment-card-number">•••• &nbsp;•••• &nbsp;•••• &nbsp;4242</p>
+                <p class="payment-card-number" x-text="cardNumber || '•••• •••• •••• ••••'"></p>
                 <div class="payment-card-meta">
                   <div><span>Name</span><br><span style="color:white;font-size:12px;margin-top:2px;display:block;" x-text="(firstName + ' ' + lastName).toUpperCase() || 'YOUR NAME'"></span></div>
                   <div><span>Expires</span><br><span style="color:white;font-size:12px;margin-top:2px;display:block;">12/28</span></div>
@@ -262,19 +262,19 @@
                 Secure payment powered by Elvora Pay
               </p>
 
-              <!-- Static form fields (visual only - MVP placeholder) -->
+              <!-- Payment form fields -->
               <div class="checkout-form-group">
-                <label class="checkout-form-label">Card Number</label>
-                <input type="text" value="4242 4242 4242 4242" class="checkout-form-input" readonly aria-label="Card number (demo)" style="background:white;cursor:default;letter-spacing:2px;">
+                <label for="checkout-card-number" class="checkout-form-label">Card Number *</label>
+                <input id="checkout-card-number" type="text" x-model="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" class="checkout-form-input" aria-label="Card number" style="letter-spacing:2px;">
               </div>
               <div class="checkout-form-row checkout-form-group">
                 <div>
-                  <label class="checkout-form-label">Expiry</label>
-                  <input type="text" value="12/28" class="checkout-form-input" readonly aria-label="Expiry date (demo)" style="background:white;cursor:default;">
+                  <label for="checkout-expiry" class="checkout-form-label">Expiry *</label>
+                  <input id="checkout-expiry" type="text" x-model="expiry" placeholder="MM/YY" maxlength="5" class="checkout-form-input" aria-label="Expiry date">
                 </div>
                 <div>
-                  <label class="checkout-form-label">CVV</label>
-                  <input type="text" value="•••" class="checkout-form-input" readonly aria-label="CVV (demo)" style="background:white;cursor:default;">
+                  <label for="checkout-cvv" class="checkout-form-label">CVV *</label>
+                  <input id="checkout-cvv" type="text" x-model="cvv" placeholder="123" maxlength="4" class="checkout-form-input" aria-label="CVV">
                 </div>
               </div>
 
