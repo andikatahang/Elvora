@@ -411,6 +411,9 @@
       postalCode: '',
       phone: '',
       errors: {},
+      cardNumber: '',
+      expiry: '',
+      cvv: '',
 
       // Step labels for indicator
       stepLabels: ['Shipping', 'Review', 'Payment', 'Confirmation'],
@@ -442,6 +445,14 @@
         return Object.keys(this.errors).length === 0;
       },
 
+      validatePayment() {
+        if (!this.cardNumber.trim()) { this.errorMsg = 'Please enter a card number.'; return false; }
+        if (!this.expiry.trim()) { this.errorMsg = 'Please enter the expiry date.'; return false; }
+        if (!this.cvv.trim()) { this.errorMsg = 'Please enter the CVV.'; return false; }
+        this.errorMsg = '';
+        return true;
+      },
+
       nextStep() {
         if (this.step === 1 && !this.validateStep1()) return;
         if (this.step < 3) {
@@ -458,6 +469,7 @@
       },
 
       async placeOrder() {
+        if (!this.validatePayment()) return;
         this.loading = true;
         this.errorMsg = '';
 
