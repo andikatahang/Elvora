@@ -157,28 +157,32 @@
               <!-- Postal code + phone -->
               <div class="checkout-form-row checkout-form-group">
                 <div>
-                  <label for="checkout-postal" class="checkout-form-label">Postal Code</label>
+                  <label for="checkout-postal" class="checkout-form-label">Postal Code *</label>
                   <input
                     id="checkout-postal"
                     type="text"
                     x-model="postalCode"
                     placeholder="10110"
                     class="checkout-form-input"
+                    :class="{ 'error': errors.postalCode }"
                     autocomplete="postal-code"
                     inputmode="numeric"
                   >
+                  <p x-show="errors.postalCode" x-text="errors.postalCode" class="checkout-field-error" style="display:none;" role="alert"></p>
                 </div>
                 <div>
-                  <label for="checkout-phone" class="checkout-form-label">Phone</label>
+                  <label for="checkout-phone" class="checkout-form-label">Phone *</label>
                   <input
                     id="checkout-phone"
                     type="tel"
                     x-model="phone"
                     placeholder="+62 812 3456 7890"
                     class="checkout-form-input"
+                    :class="{ 'error': errors.phone }"
                     autocomplete="tel"
                     inputmode="tel"
                   >
+                  <p x-show="errors.phone" x-text="errors.phone" class="checkout-field-error" style="display:none;" role="alert"></p>
                 </div>
               </div>
 
