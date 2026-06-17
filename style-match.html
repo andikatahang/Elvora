@@ -84,14 +84,15 @@
       border-radius: 16px; padding: 40px 24px;
       text-align: center; cursor: pointer;
       transition: all 0.2s; background: #fafaf9;
-      position: relative;
+      position: relative; overflow: hidden;
     }
     .sm-upload-zone:hover, .sm-upload-zone.drag-over {
       border-color: var(--sage);
       background: rgba(168,191,163,0.06);
     }
     .sm-upload-zone input[type="file"] {
-      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      opacity: 0; cursor: pointer;
     }
     .sm-upload-icon { font-size: 36px; margin-bottom: 12px; }
     .sm-upload-title { font-size: 15px; font-weight: 600; color: var(--charcoal); margin-bottom: 6px; }
@@ -466,7 +467,7 @@
                         type="file"
                         accept="image/*"
                         @change="handleFileSelect($event)"
-                        style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;">
+                        style="position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;cursor:pointer;">
                       <div class="sm-upload-icon">📸</div>
                       <div class="sm-upload-title">Pilih atau drag foto kamu</div>
                       <div class="sm-upload-hint">
@@ -518,7 +519,7 @@
                       <button
                         class="sm-chip"
                         :class="{ selected: preferences.fit === opt }"
-                        @click="preferences.fit = opt"
+                        @click="preferences.fit = preferences.fit === opt ? '' : opt"
                         x-text="opt">
                       </button>
                     </template>
@@ -533,7 +534,7 @@
                       <button
                         class="sm-chip"
                         :class="{ selected: preferences.aesthetic === opt }"
-                        @click="preferences.aesthetic = opt"
+                        @click="preferences.aesthetic = preferences.aesthetic === opt ? '' : opt"
                         x-text="opt">
                       </button>
                     </template>
@@ -548,7 +549,7 @@
                       <button
                         class="sm-chip"
                         :class="{ selected: preferences.colour === opt }"
-                        @click="preferences.colour = opt"
+                        @click="preferences.colour = preferences.colour === opt ? '' : opt"
                         x-text="opt">
                       </button>
                     </template>
