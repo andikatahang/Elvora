@@ -480,6 +480,11 @@
 
           if (!cartItems || cartItems.length === 0) {
             this.errorMsg = 'Your bag is empty. Please add items before placing an order.';
+            this.loading = false; return;
+          }
+          const missingSizes = cartItems.filter(i => !i.size || !i.variantId);
+          if (missingSizes.length > 0) {
+            this.errorMsg = 'Semua produk harus memiliki ukuran yang dipilih. Kembali ke halaman produk untuk memilih ukuran.';
             this.loading = false;
             return;
           }

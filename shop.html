@@ -41,6 +41,38 @@
         else { window.addEventListener('elvora:ready', run, { once: true }); }
       },
 
+      sizePickerProduct: null,
+
+      sizesForPicker() {
+        if (!this.sizePickerProduct) return [];
+        const p = this.sizePickerProduct;
+        const seen = new Set();
+        return (p.product_variants || []).filter(v => {
+          if (v.colour !== p.activeColour || seen.has(v.size)) return false;
+          seen.add(v.size);
+          return true;
+        });
+      },
+
+      openSizePicker(p) { this.sizePickerProduct = p; },
+      closeSizePicker() { this.sizePickerProduct = null; },
+
+      addWithSize(variant) {
+        const p = this.sizePickerProduct;
+        Alpine.store('cart').add({
+          productId: p.id,
+          variantId: variant.id,
+          name: p.name,
+          slug: p.slug,
+          price: p.base_price,
+          image: p.activeImage || '',
+          colour: p.activeColour || '',
+          size: variant.size,
+        });
+        Alpine.store('cart').openDrawer();
+        this.closeSizePicker();
+      },
+
       wishlistedIds: new Set(),
 
       async initWishlist() {
@@ -281,15 +313,12 @@
                   ></button>
                 </template>
               </div>
-              <!-- Add to Bag (stub — Phase 6 implements cart logic) -->
+              <!-- Add to Bag — opens size picker before adding to cart -->
               <button
                 class="add-cart-btn"
                 type="button"
-                @click.prevent="
-                  Alpine.store('cart').add({ productId: p.id, name: p.name, slug: p.slug, price: p.base_price, image: p.activeImage || '', colour: p.activeColour || '' });
-                  Alpine.store('cart').openDrawer()
-                "
-              >Add to Bag</button>
+                @click.prevent.stop="openSizePicker(p)"
+              >Select Size</button>
             </div>
           </a>
         </template>
@@ -309,6 +338,53 @@
       </div>
 
     </div><!-- end .shop-body -->
+
+    <!-- Size picker bottom sheet -->
+    <div
+      x-show="sizePickerProduct"
+      @click.self="closeSizePicker()"
+      style="display:none;position:fixed;inset:0;background:rgba(30,28,26,0.45);z-index:900;align-items:flex-end;justify-content:center;"
+      :style="sizePickerProduct ? 'display:flex;' : 'display:none;'"
+    >
+      <div
+        @click.stop
+        style="background:var(--cream);width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:28px 24px 44px;box-shadow:0 -8px 40px rgba(0,0,0,0.12);"
+      >
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+          <div>
+            <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:4px;" x-text="sizePickerProduct?.activeColour || ''"></p>
+            <p style="font-family:var(--font-display);font-size:20px;font-weight:400;color:var(--charcoal);" x-text="sizePickerProduct?.name || ''"></p>
+          </div>
+          <button
+            @click="closeSizePicker()"
+            style="background:none;border:none;cursor:pointer;padding:4px;color:var(--text-muted);font-size:20px;line-height:1;"
+            aria-label="Close size picker"
+          >✕</button>
+        </div>
+
+        <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin:20px 0 10px;">Select a size</p>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <template x-for="v in sizesForPicker()" :key="v.id">
+            <button
+              @click="addWithSize(v)"
+              :disabled="v.stock_quantity <= 0"
+              style="min-width:56px;padding:11px 18px;border:1px solid var(--charcoal);border-radius:4px;font-size:13px;font-family:var(--font-body);letter-spacing:0.04em;cursor:pointer;background:white;color:var(--charcoal);transition:background 0.15s,color 0.15s;"
+              :style="v.stock_quantity <= 0 ? 'opacity:0.35;cursor:not-allowed;text-decoration:line-through;' : ''"
+              x-text="v.size"
+            ></button>
+          </template>
+          <template x-if="sizesForPicker().length === 0">
+            <p style="font-size:13px;color:var(--text-muted);">No sizes available for this colour.</p>
+          </template>
+        </div>
+
+        <a
+          :href="sizePickerProduct ? '/product.html?slug=' + sizePickerProduct.slug : '#'"
+          style="display:block;text-align:center;margin-top:22px;font-size:12px;color:var(--text-muted);text-decoration:underline;letter-spacing:0.06em;"
+        >View full details & size guide →</a>
+      </div>
+    </div>
 
   </main>
 
