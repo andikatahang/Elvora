@@ -32,7 +32,13 @@ async function initAuth() {
     if (user && event === 'SIGNED_IN') {
       try { await mergeGuestCartToSupabase(user); } catch (err) { console.warn('[cart] merge failed:', err); }
     } else if (user && event === 'INITIAL_SESSION') {
-      try { await loadCartFromSupabase(user.id); } catch (err) { console.warn('[cart] load failed:', err); }
+      const localItems = loadFromStorage();
+      if (localItems.length > 0) {
+        // OAuth redirect return may carry guest items — merge instead of overwrite.
+        try { await mergeGuestCartToSupabase(user); } catch (err) { console.warn('[cart] merge on session restore failed:', err); }
+      } else {
+        try { await loadCartFromSupabase(user.id); } catch (err) { console.warn('[cart] load failed:', err); }
+      }
     } else if (!user) {
       const localItems = loadFromStorage();
       if (window.Alpine && Alpine.store('cart')) {
