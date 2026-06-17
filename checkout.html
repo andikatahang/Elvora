@@ -140,15 +140,17 @@
                   <p x-show="errors.city" x-text="errors.city" class="checkout-field-error" style="display:none;" role="alert"></p>
                 </div>
                 <div>
-                  <label for="checkout-province" class="checkout-form-label">Province</label>
+                  <label for="checkout-province" class="checkout-form-label">Province *</label>
                   <input
                     id="checkout-province"
                     type="text"
                     x-model="province"
                     placeholder="DKI Jakarta"
                     class="checkout-form-input"
+                    :class="{ 'error': errors.province }"
                     autocomplete="address-level1"
                   >
+                  <p x-show="errors.province" x-text="errors.province" class="checkout-field-error" style="display:none;" role="alert"></p>
                 </div>
               </div>
 
