@@ -12,19 +12,19 @@
 </head>
 <body>
   <div id="nav-root"></div>
-  <main x-data class="cart-page" id="cart-main">
+  <main x-data="{ _r: false }" x-init="if (window.Alpine?.stores?.cart) { _r=true } else { window.addEventListener('elvora:ready', () => { _r=true }, {once:true}) }" class="cart-page" id="cart-main">
   <div class="cart-page-inner">
     <h1 class="cart-page-heading">Your Bag
       <span
-        x-show="($store.cart?.count ?? 0) > 0"
-        x-text="'(' + ($store.cart?.count ?? 0) + ' item' + (($store.cart?.count ?? 0) !== 1 ? 's' : '') + ')'"
+        x-show="_r && $store.cart.count > 0"
+        x-text="_r ? '(' + $store.cart.count + ' item' + ($store.cart.count !== 1 ? 's' : '') + ')' : ''"
         style="font-size:16px;font-weight:400;color:var(--text-muted);font-family:var(--font-body);margin-left:12px;display:none;"
       ></span>
     </h1>
 
     <!-- Empty state — shown when cart has no items -->
     <div
-      x-show="($store.cart?.items?.length ?? 0) === 0"
+      x-show="_r && $store.cart.items.length === 0"
       class="cart-empty"
       style="display:none;"
     >
@@ -42,14 +42,14 @@
 
     <!-- Cart grid — shown when items exist -->
     <div
-      x-show="($store.cart?.items?.length ?? 0) > 0"
+      x-show="_r && $store.cart.items.length > 0"
       class="cart-layout"
       style="display:none;"
     >
       <!-- Left column: items list -->
       <div>
         <div style="border-top: 1.5px solid rgba(168,191,163,0.3);">
-          <template x-for="item in ($store.cart?.items ?? [])" :key="item.key">
+          <template x-for="item in (_r ? $store.cart.items : [])" :key="item.key">
             <div class="cart-item-row">
               <!-- Product image -->
               <div>
@@ -116,7 +116,7 @@
 
           <div class="order-summary-row">
             <span>Subtotal</span>
-            <span x-text="$store.cart?.totalFormatted ?? ''"></span>
+            <span x-text="_r ? $store.cart.totalFormatted : ''"></span>
           </div>
 
           <div class="order-summary-row">
@@ -126,7 +126,7 @@
 
           <div class="order-summary-row total">
             <span>Total</span>
-            <span x-text="$store.cart?.totalFormatted ?? ''"></span>
+            <span x-text="_r ? $store.cart.totalFormatted : ''"></span>
           </div>
 
           <p class="order-summary-shipping-note" style="margin:16px 0 20px;">Free shipping on all orders</p>
