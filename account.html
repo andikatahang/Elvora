@@ -29,6 +29,8 @@
 
         pwNew: '', pwConfirm: '', pwError: '', pwSaving: false,
 
+        deleteConfirmOpen: false, deleteConfirmText: '', deleting: false,
+
         wishlistItems: [],
         wishlistLoading: false,
 
@@ -41,13 +43,6 @@
           const run = async () => {
             const { data: { user } } = await window.supabase.auth.getUser();
             if (!user) { window.location.href = '/auth.html?tab=signin'; return; }
-
-            // New Google OAuth user without username → complete profile setup first
-            if (user.app_metadata?.provider === 'google') {
-              const { data: prof } = await window.supabase
-                .from('user_profiles').select('username').eq('id', user.id).single();
-              if (!prof?.username) { window.location.href = '/setup-profile.html'; return; }
-            }
 
             this._currentUser = user;
             const hash = location.hash.replace('#', '');
@@ -148,6 +143,24 @@
             this.wishlistItems = prev;
             Toastify({ text: 'Couldn\'t remove item — try again', duration: 3000, gravity: 'bottom', position: 'right',
               style: { background: 'var(--rose)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' } }).showToast();
+          }
+        },
+
+        async deleteAccount() {
+          this.deleting = true;
+          try {
+            const { data: { session } } = await window.supabase.auth.getSession();
+            const res = await fetch('/api/delete-account', {
+              method: 'POST',
+              headers: { 'Authorization': 'Bearer ' + session.access_token },
+            });
+            if (!res.ok) throw new Error('delete failed');
+            await window.supabase.auth.signOut();
+            window.location.href = '/index.html';
+          } catch {
+            Toastify({ text: 'Couldn\'t delete account — try again', duration: 3000, gravity: 'bottom', position: 'right',
+              style: { background: 'var(--rose)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' } }).showToast();
+            this.deleting = false;
           }
         },
 
@@ -272,6 +285,53 @@
               @click.prevent="changePassword()"
               :disabled="pwSaving"
               x-text="pwSaving ? 'Updating…' : 'Update Password'"></button>
+          </div>
+
+          <!-- Danger Zone -->
+          <div style="margin-top:40px;padding-top:28px;border-top:1px solid #f0d9d9;">
+            <h3 style="font-family:var(--font-display);font-size:20px;font-weight:700;color:#b91c1c;margin-bottom:4px;">Danger Zone</h3>
+            <p class="account-section-sub" style="margin-bottom:20px;">Permanently delete your account and all associated data. This cannot be undone.</p>
+
+            <div x-show="!deleteConfirmOpen">
+              <button
+                type="button"
+                @click="deleteConfirmOpen = true"
+                style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border:1.5px solid #b91c1c;background:transparent;color:#b91c1c;font-family:var(--font-body);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:0;transition:background 0.2s,color 0.2s;"
+                onmouseover="this.style.background='#b91c1c';this.style.color='#fff'"
+                onmouseout="this.style.background='transparent';this.style.color='#b91c1c'"
+              >Delete My Account</button>
+            </div>
+
+            <div x-show="deleteConfirmOpen" style="display:none;">
+              <p style="font-size:13px;color:#b91c1c;margin-bottom:12px;font-family:var(--font-body);">
+                Type <strong>DELETE</strong> below to confirm you want to permanently delete your account.
+              </p>
+              <div class="form-group" style="max-width:320px;">
+                <input
+                  class="form-input"
+                  type="text"
+                  x-model="deleteConfirmText"
+                  placeholder="Type DELETE to confirm"
+                  autocomplete="off"
+                  style="font-size:16px;border-color:#f0d9d9;"
+                >
+              </div>
+              <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                <button
+                  type="button"
+                  @click="deleteAccount()"
+                  :disabled="deleteConfirmText !== 'DELETE' || deleting"
+                  x-text="deleting ? 'Deleting…' : 'Confirm Delete'"
+                  style="padding:10px 20px;background:#b91c1c;color:#fff;border:none;font-family:var(--font-body);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;opacity:1;transition:opacity 0.2s;"
+                  :style="(deleteConfirmText !== 'DELETE' || deleting) ? 'opacity:0.4;cursor:not-allowed' : 'opacity:1;cursor:pointer'"
+                ></button>
+                <button
+                  type="button"
+                  @click="deleteConfirmOpen = false; deleteConfirmText = ''"
+                  style="padding:10px 20px;background:transparent;color:var(--charcoal);border:1.5px solid #d4c5b0;font-family:var(--font-body);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;"
+                >Cancel</button>
+              </div>
+            </div>
           </div>
         </section>
 
