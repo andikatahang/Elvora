@@ -30,15 +30,12 @@ async function initAuth() {
     Alpine.store('auth').loggedIn = !!user;
 
     if (user && event === 'SIGNED_IN') {
+      // Login action (manual or OAuth redirect) — merge guest cart then load authoritative state.
       try { await mergeGuestCartToSupabase(user); } catch (err) { console.warn('[cart] merge failed:', err); }
     } else if (user && event === 'INITIAL_SESSION') {
-      const localItems = loadFromStorage();
-      if (localItems.length > 0) {
-        // OAuth redirect return may carry guest items — merge instead of overwrite.
-        try { await mergeGuestCartToSupabase(user); } catch (err) { console.warn('[cart] merge on session restore failed:', err); }
-      } else {
-        try { await loadCartFromSupabase(user.id); } catch (err) { console.warn('[cart] load failed:', err); }
-      }
+      // Page load with existing session — Supabase is authoritative; never merge here to avoid
+      // doubling qty on every navigation (localStorage qty + Supabase qty would accumulate).
+      try { await loadCartFromSupabase(user.id); } catch (err) { console.warn('[cart] load failed:', err); }
     } else if (!user) {
       const localItems = loadFromStorage();
       if (window.Alpine && Alpine.store('cart')) {
