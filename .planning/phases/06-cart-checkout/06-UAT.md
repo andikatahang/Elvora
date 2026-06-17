@@ -1,5 +1,5 @@
 ---
-status: diagnosed
+status: complete
 phase: 06-cart-checkout
 source: 06-01-SUMMARY.md, 06-02-SUMMARY.md, 06-03-SUMMARY.md, 06-04-SUMMARY.md, 06-05-SUMMARY.md
 started: 2026-06-17T00:00:00Z
