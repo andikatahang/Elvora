@@ -9,3 +9,4 @@ js/__env.js
 
 # Local Netlify folder
 .netlify
+.vercel
