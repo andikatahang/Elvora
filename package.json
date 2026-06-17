@@ -3,7 +3,8 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build:css": "tailwindcss -i src/input.css -o css/style.css --minify"
+    "build:css": "tailwindcss -i src/input.css -o css/style.css --minify",
+    "build": "npm run build:css && node scripts/build-env.js"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4",
