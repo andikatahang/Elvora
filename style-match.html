@@ -376,6 +376,127 @@
       .sm-step-line { max-width: 40px; }
       .sm-outfit-images { grid-template-columns: repeat(2, 1fr); }
     }
+
+    /* ── AI Chat Section ── */
+    .sm-chat-section {
+      background: white; padding: 64px 32px;
+      display: flex; justify-content: center;
+      border-top: 1px solid rgba(168,191,163,0.2);
+    }
+    .sm-chat-wrap { width: 100%; max-width: 720px; }
+    .sm-chat-eyebrow {
+      font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--sage); text-align: center; margin-bottom: 8px;
+    }
+    .sm-chat-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px; color: var(--charcoal);
+      text-align: center; margin-bottom: 8px;
+    }
+    .sm-chat-sub {
+      font-size: 14px; color: var(--text-muted);
+      text-align: center; line-height: 1.7;
+      margin-bottom: 32px;
+    }
+    .sm-chat-card {
+      background: #fafaf9; border-radius: 24px;
+      padding: 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .sm-chat-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 20px; padding-bottom: 16px;
+      border-bottom: 1px solid rgba(168,191,163,0.2);
+    }
+    .sm-chat-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--lavender), var(--sage));
+      display: flex; align-items: center;
+      justify-content: center; font-size: 20px; flex-shrink: 0;
+    }
+    .sm-chat-name { font-size: 15px; font-weight: 600; color: var(--charcoal); }
+    .sm-chat-model { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .sm-chat-status {
+      margin-left: auto; display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: var(--sage);
+    }
+    .sm-chat-online {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--sage); flex-shrink: 0;
+    }
+    .ai-quick-btns {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+    }
+    .ai-quick {
+      background: white; border: 1px solid rgba(168,191,163,0.5);
+      border-radius: 20px; padding: 7px 14px;
+      font-size: 11.5px; letter-spacing: 0.3px;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Poppins', sans-serif; color: var(--charcoal);
+    }
+    .ai-quick:hover { background: var(--sage); color: white; border-color: var(--sage); }
+    .ai-chat-area {
+      background: white; border-radius: 16px;
+      padding: 20px; min-height: 260px; max-height: 380px;
+      overflow-y: auto; margin-bottom: 16px;
+      display: flex; flex-direction: column; gap: 14px;
+      scroll-behavior: smooth;
+      border: 1px solid rgba(168,191,163,0.2);
+    }
+    .ai-msg { display: flex; gap: 10px; align-items: flex-start; }
+    .ai-msg.user { flex-direction: row-reverse; }
+    .ai-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--lavender), var(--sage));
+      display: flex; align-items: center;
+      justify-content: center; font-size: 14px; flex-shrink: 0;
+    }
+    .ai-msg.user .ai-avatar { background: var(--charcoal); }
+    .ai-bubble {
+      background: #fafaf9; border: 1px solid rgba(168,191,163,0.25);
+      border-radius: 16px 16px 16px 4px;
+      padding: 12px 16px; font-size: 13.5px; line-height: 1.65;
+      color: var(--charcoal); max-width: 80%; white-space: pre-wrap;
+    }
+    .ai-msg.user .ai-bubble {
+      background: var(--charcoal); color: white;
+      border: none; border-radius: 16px 16px 4px 16px;
+    }
+    .ai-typing {
+      display: flex; gap: 5px; padding: 12px 16px;
+      background: #fafaf9; border: 1px solid rgba(168,191,163,0.25);
+      border-radius: 16px; width: fit-content;
+    }
+    .ai-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--sage); animation: ai-dot-bounce 1.2s infinite;
+    }
+    .ai-dot:nth-child(2) { animation-delay: 0.2s; }
+    .ai-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes ai-dot-bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+      30% { transform: translateY(-7px); opacity: 1; }
+    }
+    .ai-input-row { display: flex; gap: 10px; }
+    .ai-input {
+      flex: 1; border: 1.5px solid rgba(168,191,163,0.4);
+      border-radius: 50px; padding: 12px 20px;
+      font-size: 13.5px; font-family: 'Poppins', sans-serif;
+      outline: none; background: white; color: var(--charcoal);
+      transition: border-color 0.2s;
+    }
+    .ai-input:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(168,191,163,0.15); }
+    .ai-send {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: var(--charcoal); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; transition: background 0.2s; flex-shrink: 0; color: white;
+    }
+    .ai-send:hover:not(:disabled) { background: var(--sage); }
+    .ai-send:disabled { opacity: 0.5; cursor: not-allowed; }
+    @media (max-width: 768px) {
+      .sm-chat-section { padding: 40px 16px; }
+      .sm-chat-card { padding: 20px; }
+    }
   </style>
 </head>
 <body>
@@ -756,6 +877,53 @@
     </section>
   </main>
 
+  <!-- AI Chat Section -->
+  <section class="sm-chat-section">
+    <div class="sm-chat-wrap">
+      <p class="sm-chat-eyebrow">Tanya Langsung</p>
+      <h2 class="sm-chat-heading">Chat dengan Elvy</h2>
+      <p class="sm-chat-sub">Ada pertanyaan soal koleksi, ukuran, atau aktivitas? Tanya Elvy langsung — dia siap bantu kapanpun.</p>
+
+      <div class="sm-chat-card">
+        <div class="sm-chat-header">
+          <div class="sm-chat-avatar">🌸</div>
+          <div>
+            <div class="sm-chat-name">Elvy — AI Style Advisor</div>
+            <div class="sm-chat-model">Powered by NVIDIA NIM</div>
+          </div>
+          <div class="sm-chat-status">
+            <div class="sm-chat-online"></div>
+            Online
+          </div>
+        </div>
+
+        <!-- Quick prompt chips -->
+        <div class="ai-quick-btns" id="elvy-quick-btns">
+          <button class="ai-quick" onclick="elvySendQuick('Rekomendasiin outfit padel yang stylish dong!')">🎾 Outfit padel</button>
+          <button class="ai-quick" onclick="elvySendQuick('Mau cari set pilates yang nyaman dan aesthetic, ada rekomendasi?')">🧘 Set pilates</button>
+          <button class="ai-quick" onclick="elvySendQuick('Aku ukuran M, mau gym. Outfit apa yang cocok?')">💪 Gym outfit</button>
+          <button class="ai-quick" onclick="elvySendQuick('Ada koleksi terbaru apa di ELVORA?')">✨ Koleksi terbaru</button>
+        </div>
+
+        <!-- Chat messages -->
+        <div class="ai-chat-area" id="elvy-chat">
+          <div class="ai-msg">
+            <div class="ai-avatar">🌸</div>
+            <div class="ai-bubble">Haii! Aku Elvy, style advisor kamu di ELVORA 💚 Ada yang bisa aku bantu? Mau cari outfit buat aktivitas apa?</div>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div class="ai-input-row">
+          <input class="ai-input" id="elvy-input"
+            placeholder="Tulis pertanyaan atau cerita aktivitasmu..."
+            onkeydown="if(event.key==='Enter' && !event.shiftKey) { event.preventDefault(); elvySend(); }">
+          <button class="ai-send" id="elvy-send-btn" onclick="elvySend()" title="Kirim">➤</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <div id="footer-root"></div>
 
   <script src="/js/__env.js"></script>
@@ -764,6 +932,85 @@
   <script type="module" src="/js/components.js"></script>
   <!-- Import style-match module to register window.submitStyleMatch -->
   <script type="module" src="/js/style-match.js"></script>
+
+  <script>
+    // ── Elvy Chat ──
+    let elvyHistory = [];
+
+    function elvySendQuick(text) {
+      document.getElementById('elvy-quick-btns').style.display = 'none';
+      document.getElementById('elvy-input').value = text;
+      elvySend();
+    }
+
+    async function elvySend() {
+      const input = document.getElementById('elvy-input');
+      const sendBtn = document.getElementById('elvy-send-btn');
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      input.value = '';
+      sendBtn.disabled = true;
+
+      elvyAppendMsg(msg, 'user');
+      elvyHistory.push({ role: 'user', content: msg });
+
+      const typingId = 'elvy-typing-' + Date.now();
+      const chat = document.getElementById('elvy-chat');
+      chat.insertAdjacentHTML('beforeend',
+        '<div class="ai-msg" id="' + typingId + '">' +
+          '<div class="ai-avatar">🌸</div>' +
+          '<div class="ai-typing">' +
+            '<div class="ai-dot"></div>' +
+            '<div class="ai-dot"></div>' +
+            '<div class="ai-dot"></div>' +
+          '</div>' +
+        '</div>'
+      );
+      chat.scrollTop = chat.scrollHeight;
+
+      try {
+        const res = await fetch('/api/ai-advisor', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: elvyHistory }),
+        });
+        const data = await res.json();
+        const reply = data.reply || 'Maaf, aku lagi ada gangguan. Coba lagi ya! 🌸';
+        document.getElementById(typingId)?.remove();
+        elvyAppendMsg(reply, 'ai');
+        elvyHistory.push({ role: 'assistant', content: reply });
+      } catch {
+        document.getElementById(typingId)?.remove();
+        elvyAppendMsg('Aduh, koneksiku lagi bermasalah nih 😅 Coba lagi sebentar ya!', 'ai');
+      } finally {
+        sendBtn.disabled = false;
+        input.focus();
+      }
+    }
+
+    function elvyAppendMsg(text, role) {
+      const chat = document.getElementById('elvy-chat');
+      const isUser = role === 'user';
+      const avatar = isUser ? '👤' : '🌸';
+      const cls = isUser ? 'ai-msg user' : 'ai-msg';
+      chat.insertAdjacentHTML('beforeend',
+        '<div class="' + cls + '">' +
+          '<div class="ai-avatar">' + avatar + '</div>' +
+          '<div class="ai-bubble">' + elvyEscape(text) + '</div>' +
+        '</div>'
+      );
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function elvyEscape(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
 
   <script>
     // ── Loading messages for UX during AI processing ──
