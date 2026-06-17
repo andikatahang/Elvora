@@ -196,7 +196,7 @@
 
     openSizeGuide() {
       this.showSizeGuide = true;
-      this.\$nextTick(() => {
+      this.$nextTick(() => {
         const m = document.querySelector('.size-guide-modal');
         const first = m?.querySelector('button, [href], input');
         if (first) first.focus();
