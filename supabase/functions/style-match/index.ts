@@ -6,7 +6,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // CORS headers — origin locked to known domains per D-09/D-15
 // Wildcard (*) is explicitly prohibited by T-05-02 (threat model)
 const ALLOWED_ORIGINS = [
-  "https://elvora.vercel.app",          // production — update if Vercel URL differs
+  "https://elvorastudio.vercel.app",          // production — update if Vercel URL differs
   "https://elvorastudio.netlify.app",   // legacy Netlify
   "https://elvora.netlify.app",
   "http://localhost:3999",              // local dev
