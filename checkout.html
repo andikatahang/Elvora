@@ -430,6 +430,9 @@
         if (!this.lastName.trim()) this.errors.lastName = 'Last name required';
         if (!this.address.trim()) this.errors.address = 'Address required';
         if (!this.city.trim()) this.errors.city = 'City required';
+        if (!this.province.trim()) this.errors.province = 'Province required';
+        if (!this.postalCode.trim()) this.errors.postalCode = 'Postal code required';
+        if (!this.phone.trim()) this.errors.phone = 'Phone number required';
         return Object.keys(this.errors).length === 0;
       },
 
