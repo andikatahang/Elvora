@@ -23,10 +23,7 @@ async function initAuth() {
   const user = await getUser();
   Alpine.store('auth').user = user;
   Alpine.store('auth').loggedIn = !!user;
-
-  if (user) {
-    loadCartFromSupabase(user.id).catch(err => console.warn('[cart] initial load failed:', err));
-  }
+  // Cart load handled by INITIAL_SESSION event handler below — no eager call here.
 
   onAuthChange(async (user, event) => {
     Alpine.store('auth').user = user;
@@ -45,10 +42,16 @@ async function initAuth() {
   });
 }
 
-// alpine:init path: fires if Alpine hasn't initialized yet (e.g. script order changes)
-document.addEventListener('alpine:init', () => { registerStores(); initAuth(); });
-// Direct path: Alpine has already initialized before this module ran
-if (window.Alpine) { registerStores(); initAuth(); }
+// Guard: ensure registerStores/initAuth run exactly once regardless of Alpine init timing.
+let _componentsInitDone = false;
+function _componentsInit() {
+  if (_componentsInitDone) return;
+  _componentsInitDone = true;
+  registerStores();
+  initAuth();
+}
+document.addEventListener('alpine:init', _componentsInit);
+if (window.Alpine) _componentsInit();
 
 // ─── Nav HTML ────────────────────────────────────────────────────────────────
 
