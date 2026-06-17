@@ -40,10 +40,7 @@ export async function signIn(username, password) {
 }
 
 export async function signInWithGoogle() {
-  const isLocal = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
-  const redirectTo = isLocal
-    ? 'https://elvorastudio.netlify.app/account.html'
-    : `${window.location.origin}/account.html`;
+  const redirectTo = `${window.location.origin}/account.html`;
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: { redirectTo },

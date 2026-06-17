@@ -39,20 +39,24 @@
             spFirst: '', spLast: '', spUsername: '', spPassword: '', spConfirm: '',
 
             async init() {
-              const { data: { user } } = await window.supabase.auth.getUser();
-              if (!user) { window.location.href = '/auth.html'; return; }
+              const run = async () => {
+                const { data: { user } } = await window.supabase.auth.getUser();
+                if (!user) { window.location.href = '/auth.html'; return; }
 
-              // If user already has a username, they've completed setup
-              const { data: prof } = await window.supabase
-                .from('user_profiles').select('username, first_name, last_name').eq('id', user.id).single();
-              if (prof?.username) { window.location.href = '/account.html'; return; }
+                // If user already has a username, they've completed setup
+                const { data: prof } = await window.supabase
+                  .from('user_profiles').select('username, first_name, last_name').eq('id', user.id).single();
+                if (prof?.username) { window.location.href = '/account.html'; return; }
 
-              this._user = user;
-              // Pre-fill from Google metadata
-              const meta = user.user_metadata || {};
-              this.spFirst = meta.given_name || meta.name?.split(' ')[0] || '';
-              this.spLast = meta.family_name || meta.name?.split(' ').slice(1).join(' ') || '';
-              this.checking = false;
+                this._user = user;
+                // Pre-fill from Google metadata
+                const meta = user.user_metadata || {};
+                this.spFirst = meta.given_name || meta.name?.split(' ')[0] || '';
+                this.spLast = meta.family_name || meta.name?.split(' ').slice(1).join(' ') || '';
+                this.checking = false;
+              };
+              if (window.supabase) { run(); }
+              else { window.addEventListener('elvora:ready', run, { once: true }); }
             },
 
             async handleSetup() {
@@ -83,7 +87,7 @@
                   duration: 2000, gravity: 'bottom', position: 'right',
                   style: { background: 'var(--sage)', color: '#fff', borderRadius: '50px', fontSize: '12px', letterSpacing: '2px' }
                 }).showToast();
-                setTimeout(() => { window.location.href = '/index.html'; }, 2000);
+                setTimeout(() => { window.location.href = '/shop.html'; }, 2000);
               } catch (e) {
                 this.error = e.message?.includes('already') && e.message?.includes('username')
                   ? 'This username is already taken. Please choose another.'
