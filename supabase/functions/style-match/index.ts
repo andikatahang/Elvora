@@ -210,7 +210,7 @@ If you cannot determine appropriate styles, default to the best-seller items: c1
     });
 
     const nvidiaPayload = {
-      model: "minimax/minimax-m3",
+      model: "minimaxai/minimax-m3",
       messages: [
         { role: "system", content: CATALOG_CONTEXT },
         { role: "user", content: userContent.length === 1 ? userContent[0].text : userContent },
