@@ -140,7 +140,9 @@
           try {
             const { data, error } = await supabase
               .from('products')
-              .select('id, name, price, product_images(*), product_variants(color_name, color_hex)')
+              .select('id, name, slug, base_price, price, product_images(*), product_variants(colour, colour_hex)')
+              .eq('is_best_seller', true)
+              .eq('is_active', true)
               .order('created_at', { ascending: false })
               .limit(4);
             if (error) throw error;
@@ -174,7 +176,7 @@
 
       <div x-show="!loading && !error" class="products-grid">
         <template x-for="product in products" :key="product.id">
-          <a :href="'/product.html?id=' + product.id" class="product-card">
+          <a :href="'/product.html?slug=' + product.slug" class="product-card">
             <div class="product-img">
               <div
                 class="product-img-bg"
@@ -184,10 +186,10 @@
             <div class="product-info">
               <p class="product-sub">Activewear</p>
               <h3 x-text="product.name" class="product-name"></h3>
-              <p x-text="'Rp ' + Number(product.price).toLocaleString('id-ID')" class="product-price"></p>
+              <p x-text="'Rp ' + Number(product.base_price || product.price).toLocaleString('id-ID')" class="product-price"></p>
               <div class="product-swatches">
-                <template x-for="v in (product.product_variants ?? []).slice(0,4)" :key="v.color_name">
-                  <span class="swatch" :style="'background:' + v.color_hex" :title="v.color_name"></span>
+                <template x-for="v in (product.product_variants ?? []).slice(0,4)" :key="v.colour">
+                  <span class="swatch" :style="'background:' + v.colour_hex" :title="v.colour"></span>
                 </template>
               </div>
             </div>
