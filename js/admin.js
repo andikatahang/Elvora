@@ -92,9 +92,10 @@ function adminApp() {
     },
 
     // ── Navigation ───────────────────────────────────────────────────────────
-    setSection(name) {
+    async setSection(name) {
+      this.activeSection = name;
       window.location.hash = name;
-      // hashchange handler in init() takes care of loading
+      await this.loadSection(name);
     },
 
     // ── Section dispatcher ───────────────────────────────────────────────────
