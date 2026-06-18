@@ -208,7 +208,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
   4. An admin can create, edit, toggle visibility of, and delete testimonials, and the homepage testimonials section reflects those changes without a redeploy
   5. An admin can view the order list (sorted by most recent) and drill into any order to see all line items with product name, variant, quantity, and unit price
 
-**Plans**: 1/6 plans executed
+**Plans**: 2/6 plans executed
 
 **Wave 1** *(berjalan paralel — tidak ada dependensi)*
 
@@ -217,7 +217,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 
 **Wave 2** *(blocked on Wave 1 — berjalan paralel satu sama lain)*
 
-- [ ] 07-03-PLAN.md — Products list + delete (adminGetProducts, adminDeleteProduct)
+- [x] 07-03-PLAN.md — Products list + delete (adminGetProducts, adminDeleteProduct)
 - [ ] 07-05-PLAN.md — Testimonials CRUD + best sellers toggle (adminGetTestimonials, adminSetBestSeller)
 - [ ] 07-06-PLAN.md — Orders read view + order items expand (adminGetOrders, adminGetOrderItems)
 
@@ -239,4 +239,4 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 | 4. Auth + Customer Account | 5/5 | Complete   | 2026-06-14 |
 | 5. AI Style Match | 5/4 | Complete    | 2026-06-16 |
 | 6. Cart + Checkout | 5/5 | Complete    | 2026-06-16 |
-| 7. Admin Panel | 1/6 | In Progress|  |
+| 7. Admin Panel | 2/6 | In Progress|  |
