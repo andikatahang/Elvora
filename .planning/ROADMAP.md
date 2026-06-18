@@ -165,6 +165,7 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 **UI hint**: yes
 
 ### Phase 6: Cart + Checkout
+
 **Plans**: 5 plans (3 waves)
 
 **Goal**: A visitor — guest or authenticated — can add products to the cart, review and adjust the order, complete a multi-step checkout, and receive an order confirmation with a persisted order record
@@ -207,7 +208,23 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
   4. An admin can create, edit, toggle visibility of, and delete testimonials, and the homepage testimonials section reflects those changes without a redeploy
   5. An admin can view the order list (sorted by most recent) and drill into any order to see all line items with product name, variant, quantity, and unit price
 
-**Plans**: TBD
+**Plans**: 1/6 plans executed
+
+**Wave 1** *(berjalan paralel — tidak ada dependensi)*
+
+- [x] 07-01-PLAN.md — CSS admin + Admin SPA shell (admin.html) + admin guard (js/admin.js)
+- [ ] 07-02-PLAN.md — Migration 007_admin_policies.sql (orders + products admin SELECT RLS) + fix best sellers query di index.html
+
+**Wave 2** *(blocked on Wave 1 — berjalan paralel satu sama lain)*
+
+- [ ] 07-03-PLAN.md — Products list + delete (adminGetProducts, adminDeleteProduct)
+- [ ] 07-05-PLAN.md — Testimonials CRUD + best sellers toggle (adminGetTestimonials, adminSetBestSeller)
+- [ ] 07-06-PLAN.md — Orders read view + order items expand (adminGetOrders, adminGetOrderItems)
+
+**Wave 3** *(blocked on Wave 2 — 07-03 specifically)*
+
+- [ ] 07-04-PLAN.md — Product create/edit form + image upload (adminCreateProduct, adminUpdateProduct)
+
 **UI hint**: yes
 
 ---
@@ -222,4 +239,4 @@ Elvora is built in seven dependency-ordered phases. The schema and seed data lan
 | 4. Auth + Customer Account | 5/5 | Complete   | 2026-06-14 |
 | 5. AI Style Match | 5/4 | Complete    | 2026-06-16 |
 | 6. Cart + Checkout | 5/5 | Complete    | 2026-06-16 |
-| 7. Admin Panel | 0/TBD | Not started | - |
+| 7. Admin Panel | 1/6 | In Progress|  |
