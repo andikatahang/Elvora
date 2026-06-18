@@ -16,6 +16,22 @@ function adminApp() {
     productsLoading: false,
     showProductForm: false,
     editingProduct: null,
+    categories: [],
+    productFormSaving: false,
+    productForm: {
+      name: '',
+      slug: '',
+      description: '',
+      category_id: '',
+      base_price: '',
+      fabric_details: '',
+      care_instructions: '',
+      is_active: true,
+      variants: [],
+      imageFiles: [],
+      imagePreviews: [],
+      existingImages: [],
+    },
 
     // Orders section
     orders: [],
@@ -126,9 +142,142 @@ function adminApp() {
     },
 
     // ── Product form ─────────────────────────────────────────────────────────
-    openProductForm(product) {
-      this.editingProduct = product;
+    async openProductForm(product) {
+      if (this.categories.length === 0) {
+        try {
+          const { data } = await window.supabase
+            .from('categories')
+            .select('id, name')
+            .order('name');
+          this.categories = data || [];
+        } catch (err) {
+          showToast('Gagal memuat kategori: ' + err.message, 'error');
+        }
+      }
+
+      if (product) {
+        this.editingProduct = product;
+        this.productForm = {
+          name: product.name || '',
+          slug: product.slug || '',
+          description: product.description || '',
+          category_id: product.category_id || '',
+          base_price: product.base_price || '',
+          fabric_details: product.fabric_details || '',
+          care_instructions: product.care_instructions || '',
+          is_active: product.is_active !== false,
+          variants: (product.product_variants || []).map(v => ({
+            id: v.id,
+            colour: v.colour || '',
+            size: v.size || '',
+            colour_hex: v.colour_hex || '#888888',
+            stock_quantity: v.stock_quantity || 0,
+            sku: v.sku || '',
+          })),
+          imageFiles: [],
+          imagePreviews: [],
+          existingImages: (product.product_images || [])
+            .sort((a, b) => a.display_order - b.display_order)
+            .map(img => ({ id: img.id, url: img.url, alt_text: img.alt_text })),
+        };
+      } else {
+        this.editingProduct = null;
+        this.resetProductForm();
+      }
       this.showProductForm = true;
+    },
+
+    resetProductForm() {
+      this.productForm = {
+        name: '', slug: '', description: '', category_id: '',
+        base_price: '', fabric_details: '', care_instructions: '',
+        is_active: true, variants: [], imageFiles: [], imagePreviews: [],
+        existingImages: [],
+      };
+      this.productFormSaving = false;
+    },
+
+    addVariantRow() {
+      this.productForm.variants.push({
+        colour: '', size: '', colour_hex: '#888888', stock_quantity: 10
+      });
+    },
+
+    removeVariantRow(index) {
+      this.productForm.variants.splice(index, 1);
+      this.productForm.variants = [...this.productForm.variants];
+    },
+
+    previewImages(event) {
+      const files = Array.from(event.target.files);
+      const oversized = files.filter(f => f.size > 5 * 1024 * 1024);
+      if (oversized.length > 0) {
+        showToast('Satu atau lebih file melebihi batas 5MB', 'error');
+        event.target.value = '';
+        return;
+      }
+      const invalidType = files.filter(f => !['image/jpeg','image/png','image/webp'].includes(f.type));
+      if (invalidType.length > 0) {
+        showToast('Hanya JPEG, PNG, WebP yang diizinkan', 'error');
+        event.target.value = '';
+        return;
+      }
+      this.productForm.imageFiles = files;
+      this.productForm.imagePreviews = [];
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => { this.productForm.imagePreviews = [...this.productForm.imagePreviews, e.target.result]; };
+        reader.readAsDataURL(file);
+      });
+    },
+
+    async removeExistingImage(imageId, index) {
+      try {
+        const { error } = await window.supabase
+          .from('product_images')
+          .delete()
+          .eq('id', imageId);
+        if (error) throw error;
+        this.productForm.existingImages.splice(index, 1);
+        this.productForm.existingImages = [...this.productForm.existingImages];
+        showToast('Gambar dihapus');
+      } catch (err) {
+        showToast('Gagal menghapus gambar: ' + err.message, 'error');
+      }
+    },
+
+    async saveProduct() {
+      if (!this.productForm.name.trim()) { showToast('Nama produk wajib diisi', 'error'); return; }
+      if (!this.productForm.category_id) { showToast('Kategori wajib dipilih', 'error'); return; }
+      if (!this.productForm.base_price || this.productForm.base_price <= 0) { showToast('Harga wajib diisi', 'error'); return; }
+      if (this.productForm.variants.length === 0) { showToast('Minimal satu variant diperlukan', 'error'); return; }
+
+      for (const v of this.productForm.variants) {
+        if (!v.colour || !v.size) { showToast('Setiap variant harus memiliki colour dan size', 'error'); return; }
+      }
+
+      this.productFormSaving = true;
+      try {
+        if (this.editingProduct) {
+          await adminUpdateProduct(this.editingProduct.id, this.productForm);
+          showToast('Produk berhasil diperbarui');
+        } else {
+          await adminCreateProduct(this.productForm);
+          showToast('Produk berhasil dibuat');
+        }
+        this.showProductForm = false;
+        this.resetProductForm();
+        this.products = await adminGetProducts();
+      } catch (err) {
+        console.error('[admin] Save product error:', err);
+        if (err.message && err.message.includes('duplicate') || err.code === '23505') {
+          showToast('Slug sudah digunakan. Ubah nama produk.', 'error');
+        } else {
+          showToast('Gagal menyimpan produk: ' + err.message, 'error');
+        }
+      } finally {
+        this.productFormSaving = false;
+      }
     },
 
     // ── Testimonial form ─────────────────────────────────────────────────────
@@ -179,6 +328,148 @@ function adminApp() {
       }
     },
   };
+}
+
+// ── Slug helper ───────────────────────────────────────────────────────────────
+
+function toSlug(name) {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+// ── Product create/update ─────────────────────────────────────────────────────
+
+async function adminCreateProduct(formData) {
+  const slug = formData.slug || toSlug(formData.name);
+
+  const { data: product, error: productErr } = await window.supabase
+    .from('products')
+    .insert({
+      name: formData.name.trim(),
+      slug: slug,
+      description: formData.description.trim(),
+      category_id: formData.category_id,
+      base_price: Number(formData.base_price),
+      fabric_details: formData.fabric_details || null,
+      care_instructions: formData.care_instructions || null,
+      is_active: formData.is_active !== false,
+      is_best_seller: false,
+    })
+    .select('id')
+    .single();
+  if (productErr) throw productErr;
+  const productId = product.id;
+
+  if (formData.variants.length > 0) {
+    const variantRows = formData.variants.map((v, i) => ({
+      product_id: productId,
+      colour: v.colour.trim(),
+      colour_hex: v.colour_hex || '#888888',
+      size: v.size,
+      stock_quantity: Number(v.stock_quantity) || 0,
+      sku: `${slug}-${v.colour.toLowerCase().replace(/\s+/g,'-')}-${v.size.toLowerCase()}-${i}`,
+    }));
+    const { error: varErr } = await window.supabase
+      .from('product_variants')
+      .insert(variantRows);
+    if (varErr) throw varErr;
+  }
+
+  for (let i = 0; i < formData.imageFiles.length; i++) {
+    const file = formData.imageFiles[i];
+    const ext = file.name.split('.').pop().toLowerCase();
+    const path = `products/${productId}/${Date.now()}-${i}.${ext}`;
+    const { error: upErr } = await window.supabase.storage
+      .from('product-images')
+      .upload(path, file, { cacheControl: '3600', upsert: false });
+    if (upErr) throw upErr;
+
+    const { data: { publicUrl } } = window.supabase.storage
+      .from('product-images')
+      .getPublicUrl(path);
+
+    const { error: imgErr } = await window.supabase
+      .from('product_images')
+      .insert({
+        product_id: productId,
+        url: publicUrl,
+        alt_text: formData.name,
+        display_order: i,
+      });
+    if (imgErr) throw imgErr;
+  }
+
+  return productId;
+}
+
+async function adminUpdateProduct(productId, formData) {
+  const slug = formData.slug || toSlug(formData.name);
+
+  const { error: prodErr } = await window.supabase
+    .from('products')
+    .update({
+      name: formData.name.trim(),
+      slug: slug,
+      description: formData.description.trim(),
+      category_id: formData.category_id,
+      base_price: Number(formData.base_price),
+      fabric_details: formData.fabric_details || null,
+      care_instructions: formData.care_instructions || null,
+      is_active: formData.is_active !== false,
+    })
+    .eq('id', productId);
+  if (prodErr) throw prodErr;
+
+  const { error: delVarErr } = await window.supabase
+    .from('product_variants')
+    .delete()
+    .eq('product_id', productId);
+  if (delVarErr) throw delVarErr;
+
+  if (formData.variants.length > 0) {
+    const variantRows = formData.variants.map((v, i) => ({
+      product_id: productId,
+      colour: v.colour.trim(),
+      colour_hex: v.colour_hex || '#888888',
+      size: v.size,
+      stock_quantity: Number(v.stock_quantity) || 0,
+      sku: `${slug}-${v.colour.toLowerCase().replace(/\s+/g,'-')}-${v.size.toLowerCase()}-${i}`,
+    }));
+    const { error: varErr } = await window.supabase
+      .from('product_variants')
+      .insert(variantRows);
+    if (varErr) throw varErr;
+  }
+
+  const existingCount = (formData.existingImages || []).length;
+  for (let i = 0; i < formData.imageFiles.length; i++) {
+    const file = formData.imageFiles[i];
+    const ext = file.name.split('.').pop().toLowerCase();
+    const path = `products/${productId}/${Date.now()}-${i}.${ext}`;
+    const { error: upErr } = await window.supabase.storage
+      .from('product-images')
+      .upload(path, file, { cacheControl: '3600', upsert: false });
+    if (upErr) throw upErr;
+
+    const { data: { publicUrl } } = window.supabase.storage
+      .from('product-images')
+      .getPublicUrl(path);
+
+    const { error: imgErr } = await window.supabase
+      .from('product_images')
+      .insert({
+        product_id: productId,
+        url: publicUrl,
+        alt_text: formData.name,
+        display_order: existingCount + i,
+      });
+    if (imgErr) throw imgErr;
+  }
 }
 
 // ── Data functions ────────────────────────────────────────────────────────────
@@ -333,6 +624,9 @@ function showToast(message, type = 'success') {
 // ── Window exposure ───────────────────────────────────────────────────────────
 
 window.adminApp = adminApp;
+window.adminCreateProduct = adminCreateProduct;
+window.adminUpdateProduct = adminUpdateProduct;
+window.toSlug = toSlug;
 window.adminGetProducts = adminGetProducts;
 window.adminGetOrders = adminGetOrders;
 window.adminGetOrderItems = adminGetOrderItems;
