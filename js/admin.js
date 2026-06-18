@@ -45,6 +45,14 @@ function adminApp() {
     testimonialsLoading: false,
     showTestimonialForm: false,
     editingTestimonial: null,
+    testimonialFormSaving: false,
+    testimonialForm: {
+      customer_name: '',
+      activity_label: '',
+      quote: '',
+      display_order: 0,
+      is_active: true,
+    },
 
     // Content section
     contentLoading: false,
