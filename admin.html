@@ -158,7 +158,7 @@
           </div>
         </section>
 
-        <!-- CONTENT SECTION — plan 07-05 akan mengisi ini -->
+        <!-- CONTENT SECTION -->
         <section x-show="activeSection === 'content'" style="display:none;">
           <div class="admin-section-header">
             <div>
@@ -167,13 +167,42 @@
             </div>
           </div>
           <div class="admin-loading" x-show="contentLoading">Loading content settings...</div>
+
+          <!-- Best Sellers Grid -->
           <div x-show="!contentLoading">
-            <!-- Best Sellers toggles — plan 07-05 mengisi -->
-            <p style="font-size:13px;color:var(--text-muted);">Best sellers management — implemented in plan 07-05</p>
+            <div class="admin-form-card">
+              <p class="admin-form-title">Best Sellers</p>
+              <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Toggle produk yang tampil di section Best Sellers homepage. Maksimal 4 produk ditampilkan.</p>
+
+              <div x-show="bestSellers.length === 0" class="admin-empty-state">Memuat produk...</div>
+
+              <div x-show="bestSellers.length > 0" style="display:flex;flex-direction:column;gap:12px;">
+                <template x-for="p in bestSellers" :key="p.id">
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(168,191,163,0.1);">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                      <img
+                        :src="(p.product_images && p.product_images[0]) ? p.product_images[0].url + '?width=60' : ''"
+                        :alt="p.name"
+                        style="width:48px;height:48px;border-radius:8px;object-fit:cover;background:var(--sage-light);"
+                        x-show="p.product_images && p.product_images[0]"
+                      >
+                      <div>
+                        <p x-text="p.name" style="font-size:14px;font-weight:500;color:var(--charcoal);"></p>
+                        <p x-text="'Rp ' + Number(p.base_price).toLocaleString('id-ID')" style="font-size:12px;color:var(--text-muted);"></p>
+                      </div>
+                    </div>
+                    <label class="admin-toggle" style="display:inline-block;" :title="p.is_best_seller ? 'Remove from best sellers' : 'Add to best sellers'">
+                      <input type="checkbox" :checked="p.is_best_seller" @change="toggleBestSeller(p.id, $event.target.checked, p)">
+                      <span class="admin-toggle-slider"></span>
+                    </label>
+                  </div>
+                </template>
+              </div>
+            </div>
           </div>
         </section>
 
-        <!-- TESTIMONIALS SECTION — plan 07-05 akan mengisi ini -->
+        <!-- TESTIMONIALS SECTION -->
         <section x-show="activeSection === 'testimonials'" style="display:none;">
           <div class="admin-section-header">
             <div>
@@ -183,7 +212,82 @@
             <button @click="openTestimonialForm(null)" class="admin-btn-sm admin-btn-primary">+ Add Testimonial</button>
           </div>
           <div class="admin-loading" x-show="testimonialsLoading">Loading testimonials...</div>
-          <p style="font-size:13px;color:var(--text-muted);" x-show="!testimonialsLoading">Testimonials management — implemented in plan 07-05</p>
+
+          <!-- Testimonials list table -->
+          <div x-show="!testimonialsLoading && testimonials.length > 0" class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Author</th>
+                  <th>Activity</th>
+                  <th>Quote (preview)</th>
+                  <th>Visible</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="t in testimonials" :key="t.id">
+                  <tr>
+                    <td x-text="t.customer_name"></td>
+                    <td x-text="t.activity_label || '—'"></td>
+                    <td x-text="(t.quote || '').substring(0, 60) + ((t.quote || '').length > 60 ? '...' : '')"></td>
+                    <td>
+                      <label class="admin-toggle" style="display:inline-block;">
+                        <input type="checkbox" :checked="t.is_active" @change="toggleTestimonialVisibility(t.id, $event.target.checked)">
+                        <span class="admin-toggle-slider"></span>
+                      </label>
+                    </td>
+                    <td style="display:flex;gap:8px;">
+                      <button @click="openTestimonialForm(t)" class="admin-btn-sm admin-btn-secondary">Edit</button>
+                      <button @click="deleteTestimonial(t.id, t.customer_name)" class="admin-btn-sm admin-btn-danger">Delete</button>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+          <div class="admin-empty-state" x-show="!testimonialsLoading && testimonials.length === 0">No testimonials yet.</div>
+
+          <!-- Testimonial form modal -->
+          <div x-show="showTestimonialForm" style="position:fixed;inset:0;z-index:500;background:rgba(46,46,46,0.5);display:flex;align-items:center;justify-content:center;padding:20px;">
+            <div class="admin-form-card" style="width:100%;max-width:500px;max-height:90vh;overflow-y:auto;">
+              <p class="admin-form-title" x-text="editingTestimonial ? 'Edit Testimonial' : 'Add Testimonial'"></p>
+
+              <div class="admin-form-group">
+                <label class="admin-form-label">Author Name *</label>
+                <input x-model="testimonialForm.customer_name" type="text" class="admin-form-input" placeholder="e.g. Anisa R.">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Activity Label</label>
+                <input x-model="testimonialForm.activity_label" type="text" class="admin-form-input" placeholder="e.g. Padel Player">
+              </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">Quote *</label>
+                <textarea x-model="testimonialForm.quote" class="admin-form-textarea" placeholder="Customer's testimonial text..."></textarea>
+              </div>
+              <div class="admin-form-row">
+                <div class="admin-form-group">
+                  <label class="admin-form-label">Display Order</label>
+                  <input x-model.number="testimonialForm.display_order" type="number" class="admin-form-input" placeholder="0" min="0">
+                </div>
+                <div class="admin-form-group" style="display:flex;align-items:center;gap:10px;padding-top:28px;">
+                  <label class="admin-toggle" style="display:inline-block;">
+                    <input type="checkbox" x-model="testimonialForm.is_active">
+                    <span class="admin-toggle-slider"></span>
+                  </label>
+                  <span style="font-size:13px;color:var(--charcoal);">Visible on homepage</span>
+                </div>
+              </div>
+
+              <div class="admin-form-actions">
+                <button @click="showTestimonialForm = false; resetTestimonialForm()" type="button" class="admin-btn-sm admin-btn-secondary">Cancel</button>
+                <button @click="saveTestimonial()" type="button" class="admin-btn-sm admin-btn-primary" :disabled="testimonialFormSaving">
+                  <span x-show="!testimonialFormSaving" x-text="editingTestimonial ? 'Save Changes' : 'Add Testimonial'"></span>
+                  <span x-show="testimonialFormSaving">Saving...</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </section>
 
       </main>

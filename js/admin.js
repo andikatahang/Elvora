@@ -88,8 +88,12 @@ function adminApp() {
         this.ordersLoading = true;
         try {
           this.orders = await adminGetOrders();
+          // Reset any open order detail when reloading the section
+          this.selectedOrderId = null;
+          this.orderItems = [];
         } catch (err) {
-          showToast('Gagal memuat pesanan: ' + err.message, 'error');
+          console.error('[admin] Load orders error:', err);
+          showToast('Gagal memuat orders: ' + err.message, 'error');
         } finally {
           this.ordersLoading = false;
         }
@@ -153,19 +157,26 @@ function adminApp() {
 
     // ── Order items toggle ───────────────────────────────────────────────────
     async toggleOrderItems(orderId) {
+      // Collapse if already open
       if (this.selectedOrderId === orderId) {
         this.selectedOrderId = null;
+        this.orderItems = [];
         return;
       }
+
       this.selectedOrderId = orderId;
+      this.orderItems = [];
       this.loadingItems = true;
+
       try {
         this.orderItems = await adminGetOrderItems(orderId);
       } catch (err) {
-        showToast(err.message, 'error');
-        this.orderItems = [];
+        console.error('[admin] Load order items error:', err);
+        showToast('Gagal memuat order items: ' + err.message, 'error');
+        this.selectedOrderId = null;
+      } finally {
+        this.loadingItems = false;
       }
-      this.loadingItems = false;
     },
   };
 }
@@ -249,12 +260,45 @@ async function adminDeleteProduct(id) {
   if (prodDelErr) throw prodDelErr;
 }
 
-async function adminGetOrders(limit = 50) { // eslint-disable-line no-unused-vars
-  return [];
+async function adminGetOrders(limit = 50) {
+  // Requires orders_admin_select RLS policy from migration 007.
+  // Without it, Supabase returns [] silently — empty state in the UI
+  // will prompt the admin to check the migration.
+  const { data, error } = await window.supabase
+    .from('orders')
+    .select(`
+      id,
+      created_at,
+      status,
+      subtotal,
+      guest_email,
+      user_id,
+      shipping_address
+    `)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return data || [];
 }
 
-async function adminGetOrderItems(orderId) { // eslint-disable-line no-unused-vars
-  return [];
+async function adminGetOrderItems(orderId) {
+  // Uses snapshot columns (product_name, variant_label, unit_price) stored at
+  // checkout time — consistent even if the original product is later edited/deleted.
+  const { data, error } = await window.supabase
+    .from('order_items')
+    .select(`
+      id,
+      product_name,
+      variant_label,
+      unit_price,
+      quantity
+    `)
+    .eq('order_id', orderId)
+    .order('id', { ascending: true });
+
+  if (error) throw error;
+  return data || [];
 }
 
 async function adminGetTestimonials() {
