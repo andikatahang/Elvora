@@ -112,7 +112,10 @@
             </div>
           </div>
           <div class="admin-loading" x-show="ordersLoading">Loading orders...</div>
-          <div class="admin-empty-state" x-show="!ordersLoading && orders.length === 0">No orders yet.</div>
+          <div class="admin-empty-state" x-show="!ordersLoading && orders.length === 0">
+            <p style="margin-bottom:8px;">Belum ada orders.</p>
+            <p style="font-size:12px;color:var(--text-muted);">Jika sudah ada checkout, pastikan migration <code>007_admin_policies.sql</code> sudah diapply ke Supabase.</p>
+          </div>
           <div class="admin-table-wrap" x-show="!ordersLoading && orders.length > 0">
             <table class="admin-table">
               <thead>
@@ -128,16 +131,16 @@
               <tbody>
                 <template x-for="o in orders" :key="o.id">
                   <tr class="admin-order-row">
-                    <td x-text="o.id.substring(0,8).toUpperCase()"></td>
-                    <td x-text="o.guest_email || 'Registered User'"></td>
+                    <td><span style="font-family:monospace;font-size:12px;letter-spacing:1px;" x-text="o.id.substring(0,8).toUpperCase()"></span></td>
+                    <td x-text="o.guest_email || '—'"></td>
                     <td x-text="'Rp ' + Number(o.subtotal).toLocaleString('id-ID')"></td>
                     <td><span class="admin-badge admin-badge-active" x-text="o.status || 'pending'"></span></td>
-                    <td x-text="new Date(o.created_at).toLocaleDateString('id-ID')"></td>
+                    <td x-text="new Date(o.created_at).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'})"></td>
                     <td>
                       <button @click="toggleOrderItems(o.id)" class="admin-btn-sm admin-btn-secondary">Details</button>
                     </td>
                   </tr>
-                  <tr x-show="selectedOrderId === o.id">
+                  <tr x-show="selectedOrderId === o.id" style="display:none;">
                     <td colspan="6">
                       <div class="admin-order-items">
                         <div x-show="loadingItems" style="font-size:13px;color:var(--text-muted);">Loading items...</div>
