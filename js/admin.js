@@ -290,8 +290,92 @@ function adminApp() {
 
     // ── Testimonial form ─────────────────────────────────────────────────────
     openTestimonialForm(testimonial) {
-      this.editingTestimonial = testimonial;
+      if (testimonial) {
+        this.editingTestimonial = testimonial;
+        this.testimonialForm = {
+          id: testimonial.id,
+          customer_name: testimonial.customer_name || '',
+          quote: testimonial.quote || '',
+          activity_label: testimonial.activity_label || '',
+          display_order: testimonial.display_order || 0,
+          is_active: testimonial.is_active !== false,
+        };
+      } else {
+        this.editingTestimonial = null;
+        this.resetTestimonialForm();
+      }
       this.showTestimonialForm = true;
+    },
+
+    resetTestimonialForm() {
+      this.testimonialForm = {
+        customer_name: '', quote: '', activity_label: '',
+        display_order: 0, is_active: true,
+      };
+      this.testimonialFormSaving = false;
+    },
+
+    async saveTestimonial() {
+      if (!this.testimonialForm.customer_name.trim()) {
+        showToast('Nama author wajib diisi', 'error');
+        return;
+      }
+      if (!this.testimonialForm.quote.trim()) {
+        showToast('Quote wajib diisi', 'error');
+        return;
+      }
+      this.testimonialFormSaving = true;
+      try {
+        await adminSaveTestimonial(this.testimonialForm);
+        showToast(this.editingTestimonial ? 'Testimonial diperbarui' : 'Testimonial ditambahkan');
+        this.showTestimonialForm = false;
+        this.resetTestimonialForm();
+        this.testimonials = await adminGetTestimonials();
+      } catch (err) {
+        showToast('Gagal menyimpan: ' + err.message, 'error');
+      } finally {
+        this.testimonialFormSaving = false;
+      }
+    },
+
+    async toggleTestimonialVisibility(id, isActive) {
+      try {
+        await adminToggleTestimonial(id, isActive);
+        const t = this.testimonials.find(t => t.id === id);
+        if (t) t.is_active = isActive;
+        this.testimonials = [...this.testimonials];
+        showToast(isActive ? 'Testimonial ditampilkan' : 'Testimonial disembunyikan');
+      } catch (err) {
+        showToast('Gagal update: ' + err.message, 'error');
+        this.testimonials = await adminGetTestimonials();
+      }
+    },
+
+    async deleteTestimonial(id, name) {
+      if (!window.confirm(`Hapus testimonial dari "${name}"?`)) return;
+      try {
+        await adminDeleteTestimonial(id);
+        this.testimonials = await adminGetTestimonials();
+        showToast('Testimonial dihapus');
+      } catch (err) {
+        showToast('Gagal menghapus: ' + err.message, 'error');
+      }
+    },
+
+    // ── Best sellers toggle ──────────────────────────────────────────────────
+    async toggleBestSeller(productId, isBestSeller, product) {
+      try {
+        await adminSetBestSeller(productId, isBestSeller);
+        product.is_best_seller = isBestSeller;
+        this.bestSellers = [...this.bestSellers];
+        showToast(isBestSeller
+          ? `"${product.name}" ditambahkan ke Best Sellers`
+          : `"${product.name}" dihapus dari Best Sellers`
+        );
+      } catch (err) {
+        showToast('Gagal update: ' + err.message, 'error');
+        this.bestSellers = await adminGetProducts();
+      }
     },
 
     // ── Delete product ───────────────────────────────────────────────────────
@@ -601,11 +685,70 @@ async function adminGetOrderItems(orderId) {
 }
 
 async function adminGetTestimonials() {
-  return [];
+  // No is_active filter — admin sees ALL testimonials including inactive
+  const { data, error } = await window.supabase
+    .from('testimonials')
+    .select('id, customer_name, quote, activity_label, display_order, is_active, created_at')
+    .order('display_order', { ascending: true });
+  if (error) throw error;
+  return data || [];
 }
 
 async function adminGetCollections() {
-  return [];
+  const { data, error } = await window.supabase
+    .from('collections')
+    .select('id, name, slug, is_featured, display_order')
+    .order('display_order', { ascending: true });
+  if (error) throw error;
+  return data || [];
+}
+
+// ── Testimonial helpers ───────────────────────────────────────────────────────
+
+async function adminSaveTestimonial(testimonialData) {
+  const payload = {
+    customer_name: testimonialData.customer_name.trim(),
+    quote: testimonialData.quote.trim(),
+    activity_label: testimonialData.activity_label || null,
+    display_order: Number(testimonialData.display_order) || 0,
+    is_active: testimonialData.is_active !== false,
+  };
+  if (testimonialData.id) {
+    const { error } = await window.supabase
+      .from('testimonials')
+      .update(payload)
+      .eq('id', testimonialData.id);
+    if (error) throw error;
+  } else {
+    const { error } = await window.supabase
+      .from('testimonials')
+      .insert(payload);
+    if (error) throw error;
+  }
+}
+
+async function adminToggleTestimonial(id, isActive) {
+  const { error } = await window.supabase
+    .from('testimonials')
+    .update({ is_active: isActive })
+    .eq('id', id);
+  if (error) throw error;
+}
+
+async function adminDeleteTestimonial(id) {
+  const { error } = await window.supabase
+    .from('testimonials')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+}
+
+async function adminSetBestSeller(productId, isBestSeller) {
+  const { error } = await window.supabase
+    .from('products')
+    .update({ is_best_seller: isBestSeller })
+    .eq('id', productId);
+  if (error) throw error;
 }
 
 // ── Toast helper ─────────────────────────────────────────────────────────────
@@ -640,4 +783,8 @@ window.adminGetOrders = adminGetOrders;
 window.adminGetOrderItems = adminGetOrderItems;
 window.adminGetTestimonials = adminGetTestimonials;
 window.adminGetCollections = adminGetCollections;
+window.adminSaveTestimonial = adminSaveTestimonial;
+window.adminToggleTestimonial = adminToggleTestimonial;
+window.adminDeleteTestimonial = adminDeleteTestimonial;
+window.adminSetBestSeller = adminSetBestSeller;
 window.showToast = showToast;
