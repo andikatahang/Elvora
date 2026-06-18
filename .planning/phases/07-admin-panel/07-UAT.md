@@ -1,10 +1,11 @@
 ---
-status: diagnosed
+status: resolved
 phase: 07-admin-panel
 source:
   - .planning/phases/07-admin-panel/07-SUMMARY.md
+  - .planning/phases/07-admin-panel/07-07-SUMMARY.md
 started: 2026-06-18T12:00:00.000Z
-updated: 2026-06-18T14:30:00.000Z
+updated: 2026-06-18T16:00:00.000Z
 ---
 
 ## Current Test
@@ -92,8 +93,8 @@ skipped: 0
 ## Gaps
 
 - truth: "Product form includes a working image upload area with a file input"
-  status: failed
-  reason: "User reported: Yes, but can't upload image, the input missing"
+  status: resolved
+  reason: "Fixed: admin.html file input wrapped in <label> with class=admin-form-input (commit ebf53d4)"
   severity: major
   test: 4
   root_cause: "admin.html:197-203 file input has no CSS class — Tailwind v4 Preflight strips border/background/padding from bare inputs, making it invisible. Other form inputs use .admin-form-input which restores these styles, but the file input was the only one left unstyled."
@@ -107,8 +108,8 @@ skipped: 0
   debug_session: ".planning/debug/product-image-upload-missing.md"
 
 - truth: "Clicking Details on an order row expands inline line items below it"
-  status: failed
-  reason: "User reported: the Details button dont show anything"
+  status: resolved
+  reason: "Fixed: 008_order_items_admin_policy.sql created (commit ebf53d4) — apply via Supabase Dashboard SQL Editor to activate"
   severity: major
   test: 9
   root_cause: "Missing order_items_admin_select RLS policy in 007_admin_policies.sql. The only existing policy (order_items_select_own from 001_schema.sql) grants SELECT only where the order belongs to auth.uid(). Admin viewing other users' orders fails this check — Supabase silently returns [] with no error. Alpine toggle and JS logic are correct."
@@ -122,8 +123,8 @@ skipped: 0
   debug_session: ".planning/debug/order-details-expand-broken.md"
 
 - truth: "Homepage Best Sellers section displays products toggled active in admin Content panel"
-  status: failed
-  reason: "User reported: Ya, tapi section Best sellers di Home-page tidak menampilkan apa apa walaupun sudah active"
+  status: resolved
+  reason: "Fixed: toggleBestSeller() + adminSetBestSeller() added to adminApp() (commit 882be00)"
   severity: major
   test: 10
   root_cause: "toggleBestSeller() is entirely absent from adminApp() in js/admin.js. admin.html:316 binds @change=\"toggleBestSeller(p.id, $event.target.checked, p)\" but the function was never implemented. Toggle fires Alpine ReferenceError silently — no Supabase UPDATE sent, is_best_seller stays false for all products. Homepage query (.eq('is_best_seller', true)) correctly returns zero rows."
@@ -138,8 +139,8 @@ skipped: 0
   debug_session: ".planning/debug/best-sellers-empty-homepage.md"
 
 - truth: "Testimonials section loads and shows all rows including inactive ones"
-  status: failed
-  reason: "User reported: Error loading testimonials — console shows 404 for a .map sourcemap file; likely Supabase query or RLS failure"
+  status: resolved
+  reason: "Fixed: adminGetTestimonials() stub replaced with real Supabase query (commit 882be00)"
   severity: major
   test: 11
   root_cause: "adminGetTestimonials() in js/admin.js (lines 603-605) is an unimplemented stub: entire body is 'return [];' — never queries Supabase. UI shows empty state, user interprets as error. The 404 .map error is unrelated CDN sourcemap noise (Toastify or similar). RLS policy testimonials_admin_all (using is_admin()) exists in 001_schema.sql and would permit the query."
@@ -151,8 +152,8 @@ skipped: 0
   debug_session: ".planning/debug/testimonials-load-failure.md"
 
 - truth: "Clicking Save in Add Testimonial modal creates a new testimonial record"
-  status: failed
-  reason: "User reported: ReferenceError: Can't find variable: saveTestimonial — function not exposed in Alpine adminApp() component"
+  status: resolved
+  reason: "Fixed: saveTestimonial(), resetTestimonialForm(), deleteTestimonial(), toggleTestimonialVisibility() all added to adminApp() (commit 882be00)"
   severity: major
   test: 12
   root_cause: "saveTestimonial(), resetTestimonialForm(), and deleteTestimonial() are all absent from adminApp() in js/admin.js. Commit 7179d20 added testimonialForm/testimonialFormSaving state properties but omitted the action methods. Only openTestimonialForm() was implemented. admin.html calls all 4 methods — 3 of which don't exist."
