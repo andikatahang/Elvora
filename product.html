@@ -335,13 +335,17 @@
       <div class="mt-8 lg:mt-0">
 
         <!-- Name & Price -->
+        <p
+          x-text="product?.categories?.name"
+          class="text-[11px] font-medium tracking-widest uppercase text-[#8A8A8A] mb-2"
+        ></p>
         <h1
           x-text="product?.name"
           class="font-display text-charcoal mb-2 leading-tight"
           style="font-size: clamp(22px, 3vw, 28px);"
         ></h1>
         <p
-          x-text="'$' + Number(product?.base_price).toFixed(2)"
+          x-text="'Rp ' + Number(product?.base_price).toLocaleString('id-ID')"
           class="text-[15px] font-semibold text-charcoal mb-6"
         ></p>
 

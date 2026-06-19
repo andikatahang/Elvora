@@ -28,7 +28,7 @@ This document describes how artificial intelligence (AI) tools were used in the 
 - Writing Supabase SQL migrations (001 through 005) — schema creation, RLS policies, seed data (22 products, 220 variants, 32 reviews, 5 testimonials).
 - Building Supabase Edge Functions in Deno/TypeScript: the `style-match` function that proxies Gemini Vision API calls.
 - Writing JavaScript ES modules: `supabase.js`, `cart.js`, `style-match.js`, `products.js`, `auth.js`, `components.js`.
-- Writing `netlify.toml` configuration and Netlify build pipeline setup.
+- Writing `vercel.json` configuration and Vercel build pipeline setup.
 - Debugging RLS policy errors, CORS configuration, and Alpine.js reactivity issues.
 - Generating planning documents (PRD, architecture, task lists, risk registers).
 
@@ -163,7 +163,7 @@ Direct browser calls to the Gemini API would expose the API key in DevTools Netw
 
 ```
 Browser (no API key)
-  → Netlify / Supabase (authenticated request via JWT)
+  → Vercel / Supabase (authenticated request via JWT)
     → Supabase Edge Function (Deno, Node.js 20 runtime)
       → Gemini API (server-side, GEMINI_API_KEY in secrets)
         ← JSON response
@@ -175,7 +175,7 @@ Browser (no API key)
 **Key security properties of this pattern:**
 1. `GEMINI_API_KEY` lives only in Supabase Edge Function secrets — never in browser-visible code.
 2. The edge function validates the user's JWT before making any Gemini call — unauthenticated requests return 401.
-3. CORS is locked to `https://elvorastudio.netlify.app` — cross-origin requests from other domains are rejected.
+3. CORS is locked to `https://elvorastudio.vercel.app` — cross-origin requests from other domains are rejected.
 4. The anon key (used to call the edge function) is safe to expose in browser code — it is a publishable key, and Row Level Security enforces data isolation.
 
 ---

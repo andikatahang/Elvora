@@ -13,9 +13,9 @@ The defining differentiator is an AI-powered Style Match feature: users upload a
 | Frontend UI | Alpine.js 3.x | Reactive cart, modals, auth state, filters |
 | Styling | Tailwind CSS v4 (CLI build) | Utility-first; bespoke luxury design tokens |
 | Backend | Supabase (Auth + DB + Storage) | Auth, PostgreSQL, file storage, RLS security |
-| AI Proxy | Netlify Functions (Node.js 20) | Secure API key proxy for Claude Vision |
+| AI Proxy | Vercel Functions (Node.js 20) | Secure API key proxy for Claude Vision |
 | AI Model | Claude Haiku (claude-haiku-4-5) | Style Match photo analysis + outfit recommendation |
-| Deployment | Netlify | Static hosting + serverless functions |
+| Deployment | Vercel | Static hosting + serverless functions |
 
 ---
 
@@ -70,21 +70,21 @@ npx @tailwindcss/cli@next -i src/input.css -o css/style.css --watch
 npx @tailwindcss/cli@next -i src/input.css -o css/style.css --minify
 ```
 
-The compiled `css/style.css` is gitignored — Netlify runs the build command automatically on deploy.
+The compiled `css/style.css` is gitignored — Vercel runs the build command automatically on deploy.
 
 ---
 
 ## Deployment
 
-This project deploys to **Netlify**. The `netlify.toml` at the project root configures the build automatically.
+This project deploys to **Vercel**. The `vercel.json` at the project root configures the build automatically.
 
 **Steps:**
 1. Push code to your GitHub repository (main branch)
-2. Go to [app.netlify.com](https://app.netlify.com) → Add new site → Import an existing project → GitHub
-3. Select the Elvora repository; build settings are auto-detected from `netlify.toml`
-4. Before deploying, add environment variables in: Site configuration → Environment variables
-5. Click Deploy site
-6. The site will be live at your Netlify-assigned URL (e.g., `https://elvora.netlify.app`)
+2. Go to [vercel.com](https://vercel.com) → Add New Project → Import from GitHub
+3. Select the Elvora repository; build settings are auto-detected from `vercel.json`
+4. Before deploying, add environment variables in: Project Settings → Environment Variables
+5. Click Deploy
+6. The site will be live at your Vercel-assigned URL (e.g., `https://elvora.vercel.app`)
 
 ---
 
@@ -92,9 +92,9 @@ This project deploys to **Netlify**. The `netlify.toml` at the project root conf
 
 | Variable | Where to Set | Source |
 |----------|-------------|--------|
-| `SUPABASE_URL` | Netlify platform env vars + GitHub Actions secret | Supabase Dashboard → Project Settings → API → Project URL |
-| `SUPABASE_ANON_KEY` | Netlify platform env vars | Supabase Dashboard → Project Settings → API → anon (public) key |
-| `ANTHROPIC_API_KEY` | Netlify platform env vars (Netlify Function only) | Anthropic Console → API Keys |
+| `SUPABASE_URL` | Vercel Project Settings → Environment Variables | Supabase Dashboard → Project Settings → API → Project URL |
+| `SUPABASE_ANON_KEY` | Vercel Project Settings → Environment Variables | Supabase Dashboard → Project Settings → API → anon (public) key |
+| `ANTHROPIC_API_KEY` | Vercel Project Settings → Environment Variables (Vercel Function only) | Anthropic Console → API Keys |
 
 > Security note: The `SUPABASE_ANON_KEY` is safe to use in browser code — it is a publishable key. Security is enforced by Row Level Security (RLS) policies on every database table. The `service_role` key must never appear in any frontend file.
 

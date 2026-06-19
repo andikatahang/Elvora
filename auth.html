@@ -43,7 +43,11 @@
               if (tab === 'signup') this.tab = 'signup';
               const run = async () => {
                 const { data: { user } } = await window.supabase.auth.getUser();
-                if (user) window.location.href = '/shop.html';
+                if (user) {
+                  window.location.replace(
+                    user.app_metadata?.role === 'admin' ? '/admin.html' : '/shop.html'
+                  );
+                }
               };
               if (window.supabase) { run(); }
               else { window.addEventListener('elvora:ready', run, { once: true }); }
@@ -52,8 +56,9 @@
             async handleSignIn() {
               this.loading = true; this.error = '';
               try {
-                await window.signIn(this.siUsername, this.siPassword);
-                window.location.href = '/shop.html';
+                const data = await window.signIn(this.siUsername, this.siPassword);
+                const isAdmin = data?.user?.app_metadata?.role === 'admin';
+                window.location.replace(isAdmin ? '/admin.html' : '/shop.html');
               } catch (e) {
                 this.error = 'Incorrect username or password. Please try again.';
               } finally { this.loading = false; }

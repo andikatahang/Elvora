@@ -66,7 +66,7 @@ Backend is powered by Supabase (auth, database, storage) for rapid implementatio
 | Technology | Version | Purpose | Why |
 |------------|---------|---------|-----|
 | Claude API (Anthropic) | claude-haiku-4-5 | Style Match: analyze user photo → recommend catalog products | Fastest + cheapest Claude model with full vision support; $1/$5 per MTok input/output; sufficient for outfit recommendation task |
-| Netlify Functions | Node.js 20 | API key proxy — browser calls Netlify function, function calls Claude | Keeps `ANTHROPIC_API_KEY` out of browser bundle; Netlify free tier includes 125,000 invocations/month |
+| Vercel Functions | Node.js 20 | API key proxy — browser calls Vercel function, function calls Claude | Keeps `ANTHROPIC_API_KEY` out of browser bundle; Vercel free tier includes 100,000 invocations/month |
 
 ### Image Upload — Supabase Storage (Product Images)
 
@@ -74,11 +74,10 @@ Backend is powered by Supabase (auth, database, storage) for rapid implementatio
 
 | Platform | Tier | Why |
 |----------|------|-----|
-| Netlify | Free | Framework-agnostic; handles static HTML + Alpine naturally; free Netlify Functions for Claude proxy; drag-and-drop deploy or GitHub CI; 100 GB bandwidth/month free |
-| Vercel | Free (fallback) | Also works; slightly more opinionated toward Next.js but handles static fine; serverless functions available |
+| Vercel | Free | Framework-agnostic; handles static HTML + Alpine naturally; free Vercel Functions for Claude proxy; GitHub CI built-in; 100 GB bandwidth/month free |
 | Cloudflare Pages | Free (alternative) | Generous free tier; edge functions available; slightly more setup for environment variables |
 
-# netlify.toml
+# vercel.json
 
 ### Supporting Libraries
 
@@ -107,9 +106,9 @@ Backend is powered by Supabase (auth, database, storage) for rapid implementatio
 | CSS | Tailwind CSS v4 | Pure custom CSS | Faster to build with Tailwind; consistent scale; custom CSS viable but slower without a preprocessor setup |
 | CSS | Tailwind CSS v4 | Tailwind v3 | v4 is current; v3 has different config format; no reason to use older version on greenfield |
 | AI model | claude-haiku-4-5 | claude-sonnet-4-6 | 3x more expensive; not needed for outfit recommendation task; Haiku is sufficient |
-| AI proxy | Netlify Functions | Supabase Edge Functions | Both work; Netlify keeps all hosting in one place; Supabase Edge Functions are Deno-based (less familiar) |
-| AI proxy | Netlify Functions | Direct browser call | NEVER — exposes API key in devtools |
-| Deployment | Netlify | GitHub Pages | GitHub Pages is static-only; no serverless functions for Claude proxy; would require a separate backend |
+| AI proxy | Vercel Functions | Supabase Edge Functions | Both work; Vercel keeps all hosting in one place; Supabase Edge Functions are Deno-based (less familiar) |
+| AI proxy | Vercel Functions | Direct browser call | NEVER — exposes API key in devtools |
+| Deployment | Vercel | GitHub Pages | GitHub Pages is static-only; no serverless functions for Claude proxy; would require a separate backend |
 
 ## Installation
 
@@ -123,9 +122,9 @@ Backend is powered by Supabase (auth, database, storage) for rapid implementatio
 
 # Production build
 
-### Netlify Functions (Claude proxy)
+### Vercel Functions (Claude proxy)
 
-# Local dev
+# Local dev (requires Vercel CLI)
 
 # .env (local only, never commit)
 
@@ -139,8 +138,8 @@ Backend is powered by Supabase (auth, database, storage) for rapid implementatio
 | Supabase JS SDK v2 | HIGH | Official docs; CDN install confirmed; anon key + RLS security model well-documented; free tier limits confirmed sufficient |
 | Tailwind v4 for luxury aesthetic | HIGH | No framework opinions imposed; luxury brands (Alo Yoga tier) commonly use utility-first CSS; v4 CLI confirmed stable |
 | Claude Haiku for vision | HIGH | All current Claude models confirmed vision-capable; Haiku pricing and model ID confirmed from official docs; proxy pattern is standard practice |
-| Netlify Functions as proxy | HIGH | Standard pattern; widely documented; 125k invocations/month free; sufficient for assessment demo load |
-| Deployment on Netlify free | HIGH | Static HTML + Alpine + Netlify Functions confirmed working pattern; 100 GB bandwidth sufficient |
+| Vercel Functions as proxy | HIGH | Standard pattern; widely documented; 100k invocations/month free; sufficient for assessment demo load |
+| Deployment on Vercel free | HIGH | Static HTML + Alpine + Vercel Functions confirmed working pattern; 100 GB bandwidth sufficient |
 | Vite as optional bundler | MEDIUM | Recommended only if project grows; skip for early phases to avoid premature tooling overhead |
 
 ## What NOT to Use
@@ -152,7 +151,7 @@ Backend is powered by Supabase (auth, database, storage) for rapid implementatio
 | SvelteKit | Requires compilation step and framework conventions that don't align with "lightweight JS framework" constraint |
 | Bootstrap 5 | Imposes visual identity that conflicts with premium quiet-luxury brand aesthetic; utility override fights Bootstrap defaults |
 | Firebase / Amplify | Redundant with Supabase already chosen; two backend services adds unnecessary complexity |
-| Express.js / custom server | Explicitly out of scope per project constraints; Supabase + Netlify Functions replaces it entirely |
+| Express.js / custom server | Explicitly out of scope per project constraints; Supabase + Vercel Functions replaces it entirely |
 | GraphQL | No benefit at this data complexity level; Supabase's PostgREST query builder via the JS SDK is sufficient |
 | Webpack | Unnecessary if using Vite or no bundler; Webpack config overhead is not justified |
 | Redux / Zustand | Alpine.store() is sufficient for cart, auth, and filter state; no need for external state library |
@@ -173,13 +172,11 @@ Backend is powered by Supabase (auth, database, storage) for rapid implementatio
 - Supabase free tier limits: https://supabase.com/pricing
 - Claude models overview (official): https://platform.claude.com/docs/en/about-claude/models/overview
 - Claude vision docs: https://platform.claude.com/docs/en/build-with-claude/vision
-- Netlify Functions API key proxy: https://msof.me/blog/protecting-api-keys-in-frontend-apps-with-netlify-functions/
-- FreeCodeCamp Netlify Functions guide: https://www.freecodecamp.org/news/hide-api-keys-in-frontend-apps-using-netlify-functions/
-- Netlify AI Gateway: https://www.netlify.com/platform/ai-gateway/
-- Netlify free tier limits: https://www.netlify.com/pricing/
+- Vercel Functions docs: https://vercel.com/docs/functions
+- Vercel environment variables: https://vercel.com/docs/projects/environment-variables
+- Vercel free tier limits: https://vercel.com/pricing
 - Tailwind CSS v4 CDN/Play CDN: https://tailwindcss.com/docs/installation/play-cdn
 - Tailwind v4 announcement: https://tailwindcss.com/blog/tailwindcss-v4
-- Vercel vs Netlify comparison: https://vercel.com/kb/guide/vercel-vs-netlify
 
 <!-- GSD:stack-end -->
 

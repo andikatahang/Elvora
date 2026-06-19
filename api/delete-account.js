@@ -43,8 +43,15 @@ export default async (req) => {
     Prefer: 'return=minimal',
   };
 
-  // Delete user-owned data before removing the auth record
+  // Delete user-owned data before removing the auth record.
+  // cart_items has a FK to auth.users so it must be deleted first.
+  await fetch(`${supabaseUrl}/rest/v1/cart_items?user_id=eq.${userId}`, {
+    method: 'DELETE', headers: serviceHeaders,
+  });
   await fetch(`${supabaseUrl}/rest/v1/wishlist_items?user_id=eq.${userId}`, {
+    method: 'DELETE', headers: serviceHeaders,
+  });
+  await fetch(`${supabaseUrl}/rest/v1/reviews?user_id=eq.${userId}`, {
     method: 'DELETE', headers: serviceHeaders,
   });
   await fetch(`${supabaseUrl}/rest/v1/user_profiles?id=eq.${userId}`, {

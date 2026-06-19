@@ -14,12 +14,12 @@ updated: "2026-06-14T09:00:00Z"
 ## Current Test
 <!-- OVERWRITE each test - shows where we are -->
 
-number: 4
-name: Sort selector changes product order
+number: 7
+name: Add-to-cart stub shows toast notification
 expected: |
-  On /shop.html, change the sort dropdown from "New Arrivals" to "Price: High to Low".
-  The grid re-renders with the most expensive products first. Changing to "Price: Low to High"
-  reverses that order.
+  On /shop.html, click the "Add to Bag" button on any product card.
+  A charcoal/dark toast notification briefly appears confirming the action.
+  No page navigation occurs.
 awaiting: user response
 
 ## Tests
@@ -44,15 +44,15 @@ severity: major
 
 ### 4. Sort selector changes product order
 expected: On /shop.html, change the sort dropdown from "New Arrivals" to "Price: High to Low". The grid re-renders with the most expensive products first. Changing to "Price: Low to High" reverses that order.
-result: [pending]
+result: pass
 
 ### 5. URL syncs with active filters
 expected: After selecting activity "Pilates" and sort "Price: Low to High", the browser URL updates (e.g. ?category=pilates&sort=price-asc) without a full page reload. Copying and pasting that URL into a new tab restores the same filters automatically.
-result: [pending]
+result: pass
 
 ### 6. Colour swatch hover swaps product card image
 expected: On a product card in the grid that has multiple colour variants, hovering over a colour dot (swatch) changes the product card's main image to show that colour. Moving off reverts it. Clicking a swatch pins that colour.
-result: [pending]
+result: pass
 
 ### 7. Add-to-cart stub shows toast notification
 expected: On /shop.html, click the "Add to Bag" button on any product card. A charcoal/dark toast notification briefly appears at the bottom-right of the screen confirming the action. No page navigation occurs.
@@ -113,11 +113,11 @@ result: [pending]
 ## Summary
 
 total: 20
-passed: 0
+passed: 3
 issues: 3
 skipped: 0
 blocked: 0
-pending: 17
+pending: 14
 
 ## Gaps
 
