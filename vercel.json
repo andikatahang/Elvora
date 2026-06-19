@@ -2,7 +2,6 @@
   "buildCommand": "npm install && npm run build:css && echo \"window.__ENV = { SUPABASE_URL: '${SUPABASE_URL}', SUPABASE_ANON_KEY: '${SUPABASE_ANON_KEY}' };\" > js/__env.js",
   "outputDirectory": ".",
   "framework": null,
-  "nodeVersion": "20.x",
   "routes": [
     {
       "src": "/api/(.*)",
