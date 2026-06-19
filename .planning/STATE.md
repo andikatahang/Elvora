@@ -5,8 +5,8 @@ milestone_name: milestone
 current_phase: 07
 current_phase_name: admin-panel
 status: executing
-stopped_at: all 7 phases complete (2026-06-18)
-last_updated: "2026-06-18T13:58:51.658Z"
+stopped_at: context exhaustion at 75% (2026-06-18)
+last_updated: "2026-06-18T14:32:03.971Z"
 last_activity: 2026-06-18
 last_activity_desc: Phase 07 execution started
 progress:
@@ -119,6 +119,7 @@ None yet.
 | 260615-reau | Ganti auth email ke username; fix simpan profil ke Supabase; migration 004 tambah kolom username | 2026-06-15 | 9b3bab7 | [260615-replace-email-auth-with-username](.planning/quick/260615-replace-email-auth-with-username/) |
 | 260615-goau | Tambah Google OAuth di form login dan registrasi; auto-upsert profil dari Google metadata | 2026-06-15 | a3c40ce | [260615-google-oauth](.planning/quick/260615-google-oauth/) |
 | 260615-prfl | Post-register redirect ke home; setup-profile.html untuk Google OAuth; ubah password di profil | 2026-06-15 | 721a4f7 | [260615-post-register-flow](.planning/quick/260615-post-register-flow/) |
+| 260619-kcu | Admin redirect — storefront pages redirect to admin.html when admin is logged in | 2026-06-19 | 0a84c8b | [260619-kcu-re-structure-the-page-for-user-type-admi](.planning/quick/260619-kcu-re-structure-the-page-for-user-type-admi/) |
 
 ### Blockers/Concerns
 
@@ -137,6 +138,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-18T13:58:46.724Z
-Stopped at: context exhaustion at 78% (2026-06-18)
+Last session: 2026-06-18T14:32:03.966Z
+Stopped at: context exhaustion at 75% (2026-06-18)
 Resume file: .planning/phases/07-style-match/ (Phase 07 berikutnya)
