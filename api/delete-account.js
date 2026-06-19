@@ -43,17 +43,16 @@ export default async (req) => {
     Prefer: 'return=minimal',
   };
 
-  // Delete user-owned data before removing the auth record.
-  // cart_items has a FK to auth.users so it must be deleted first.
-  await fetch(`${supabaseUrl}/rest/v1/cart_items?user_id=eq.${userId}`, {
-    method: 'DELETE', headers: serviceHeaders,
-  });
-  await fetch(`${supabaseUrl}/rest/v1/wishlist_items?user_id=eq.${userId}`, {
-    method: 'DELETE', headers: serviceHeaders,
-  });
-  await fetch(`${supabaseUrl}/rest/v1/reviews?user_id=eq.${userId}`, {
-    method: 'DELETE', headers: serviceHeaders,
-  });
+  // Delete all user-owned rows that have FK constraints to auth.users.
+  // Must complete before the auth user can be removed.
+  const userFilter = `user_id=eq.${userId}`;
+  await Promise.all([
+    fetch(`${supabaseUrl}/rest/v1/cart_items?${userFilter}`,       { method: 'DELETE', headers: serviceHeaders }),
+    fetch(`${supabaseUrl}/rest/v1/wishlist_items?${userFilter}`,   { method: 'DELETE', headers: serviceHeaders }),
+    fetch(`${supabaseUrl}/rest/v1/orders?${userFilter}`,           { method: 'DELETE', headers: serviceHeaders }),
+    fetch(`${supabaseUrl}/rest/v1/ai_style_sessions?${userFilter}`,{ method: 'DELETE', headers: serviceHeaders }),
+    fetch(`${supabaseUrl}/rest/v1/reviews?${userFilter}`,          { method: 'DELETE', headers: serviceHeaders }),
+  ]);
   await fetch(`${supabaseUrl}/rest/v1/user_profiles?id=eq.${userId}`, {
     method: 'DELETE', headers: serviceHeaders,
   });
