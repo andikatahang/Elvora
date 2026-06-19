@@ -355,7 +355,8 @@ body {
     width: 240px; flex-shrink: 0; background: white;
     border-right: 1px solid rgba(168,191,163,0.2);
     padding: 32px 0; display: flex; flex-direction: column;
-    min-height: 100vh; position: sticky; top: 0;
+    height: 100vh; position: fixed; top: 0; left: 0;
+    overflow-y: auto; z-index: 100;
   }
   .admin-sidebar-logo {
     font-family: var(--font-display); font-size: 18px; font-weight: 700;
@@ -377,7 +378,7 @@ body {
     color: var(--charcoal); background: var(--sage-light); font-weight: 600;
   }
   .admin-main {
-    flex: 1; padding: 40px; overflow-y: auto;
+    flex: 1; padding: 40px; margin-left: 240px;
   }
   .admin-page-title {
     font-family: var(--font-display); font-size: 28px; font-weight: 700;
@@ -508,7 +509,7 @@ body {
 
   @media (max-width: 768px) {
     .admin-shell { flex-direction: column; }
-    .admin-sidebar { width: 100%; min-height: auto; position: static; flex-direction: row; overflow-x: auto; padding: 16px; }
+    .admin-sidebar { width: 100%; height: auto; min-height: auto; position: static; flex-direction: row; overflow-x: auto; overflow-y: visible; padding: 16px; }
     .admin-sidebar-logo { display: none; }
     .admin-main { padding: 20px; }
     .admin-form-row { grid-template-columns: 1fr; }
