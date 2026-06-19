@@ -11,6 +11,27 @@
   <!-- Toastify for ATC stub notifications (Pitfall 6 prevention) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <!-- Sub-category data inlined synchronously so window.SUBCATEGORY_STYLES is available
+       before Alpine initialises — avoids race condition with the ES module version. -->
+  <script>
+  window.SUBCATEGORY_STYLES = [
+    { slug: 'matcha-babe',     name: 'Matcha Babe',     category: 'padel'    },
+    { slug: 'court-crush',     name: 'Court Crush',     category: 'padel'    },
+    { slug: 'rally-ready',     name: 'Rally Ready',     category: 'padel'    },
+    { slug: 'soft-flow',       name: 'Soft Flow',       category: 'pilates'  },
+    { slug: 'main-character',  name: 'Main Character',  category: 'pilates'  },
+    { slug: 'studio-muse',     name: 'Studio Muse',     category: 'pilates'  },
+    { slug: 'love-match',      name: 'Love Match',      category: 'tennis'   },
+    { slug: 'ace-energy',      name: 'Ace Energy',      category: 'tennis'   },
+    { slug: 'court-girl',      name: 'Court Girl',      category: 'tennis'   },
+    { slug: 'power-mood',      name: 'Power Mood',      category: 'training' },
+    { slug: 'built-different', name: 'Built Different', category: 'training' },
+    { slug: 'hot-girl-lift',   name: 'Hot Girl Lift',   category: 'training' },
+    { slug: 'run-era',         name: 'Run Era',          category: 'running'  },
+    { slug: 'pace-mode',       name: 'Pace Mode',       category: 'running'  },
+    { slug: 'runners-high',    name: "Runner's High",   category: 'running'  },
+  ];
+  </script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"></script>
 </head>
 <body>
@@ -24,11 +45,6 @@
       sub: null,
       sort: 'new-arrivals',
       search: '',
-
-      get subCategoriesForActivity() {
-        if (!window.SUBCATEGORY_STYLES || this.category === 'all') return [];
-        return window.SUBCATEGORY_STYLES.filter(sc => sc.category === this.category);
-      },
 
       async init() {
         const params = new URLSearchParams(window.location.search);
@@ -251,7 +267,7 @@
 
       <!-- Sub-category pills — shown below activity tabs when category !== 'all' -->
       <div x-show="category !== 'all'" class="subcategory-pills" style="display:none;">
-        <template x-for="sc in subCategoriesForActivity" :key="sc.slug">
+        <template x-for="sc in (window.SUBCATEGORY_STYLES || []).filter(s => s.category === category)" :key="sc.slug">
           <button
             class="subcategory-pill"
             type="button"
