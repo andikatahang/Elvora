@@ -3,6 +3,63 @@
 // All admin operations are protected by RLS is_admin() policies — client-side
 // redirect is defence-in-depth, not the primary security control.
 
+// ── Activity / subcollection constants ───────────────────────────────────────
+
+const ACTIVITY_SUBCOLLECTIONS = {
+  padel:    [
+    { slug: 'matcha-babe',     label: 'Matcha Babe' },
+    { slug: 'court-crush',     label: 'Court Crush' },
+    { slug: 'rally-ready',     label: 'Rally Ready' },
+  ],
+  pilates:  [
+    { slug: 'soft-flow',       label: 'Soft Flow' },
+    { slug: 'main-character',  label: 'Main Character' },
+    { slug: 'studio-muse',     label: 'Studio Muse' },
+  ],
+  tennis:   [
+    { slug: 'love-match',      label: 'Love Match' },
+    { slug: 'ace-energy',      label: 'Ace Energy' },
+    { slug: 'court-girl',      label: 'Court Girl' },
+  ],
+  training: [
+    { slug: 'power-mood',      label: 'Power Mood' },
+    { slug: 'built-different', label: 'Built Different' },
+    { slug: 'hot-girl-lift',   label: 'Hot Girl Lift' },
+  ],
+  running:  [
+    { slug: 'run-era',         label: 'Run Era' },
+    { slug: 'pace-mode',       label: 'Pace Mode' },
+    { slug: 'runners-high',    label: "Runner's High" },
+  ],
+};
+
+// Reverse map: subcollection slug → activity key
+const SUBCOL_ACTIVITY_MAP = Object.fromEntries(
+  Object.entries(ACTIVITY_SUBCOLLECTIONS).flatMap(([act, subs]) =>
+    subs.map(s => [s.slug, act])
+  )
+);
+
+// Subcollection slug → collection slugs to add to collection_products.
+// Padel and pilates also add to a top-level collection so the activity tab filter works.
+const SUBCOL_TO_COLLECTIONS = {
+  'matcha-babe':     ['padel-edit', 'matcha-babe'],
+  'court-crush':     ['padel-edit', 'court-crush'],
+  'rally-ready':     ['padel-edit', 'rally-ready'],
+  'soft-flow':       ['studio-essentials', 'soft-flow'],
+  'main-character':  ['studio-essentials', 'main-character'],
+  'studio-muse':     ['studio-essentials', 'studio-muse'],
+  'love-match':      ['love-match'],
+  'ace-energy':      ['ace-energy'],
+  'court-girl':      ['court-girl'],
+  'power-mood':      ['power-mood'],
+  'built-different': ['built-different'],
+  'hot-girl-lift':   ['hot-girl-lift'],
+  'run-era':         ['run-era'],
+  'pace-mode':       ['pace-mode'],
+  'runners-high':    ['runners-high'],
+};
+
 function adminApp() {
   return {
     // Guard state
@@ -16,13 +73,15 @@ function adminApp() {
     productsLoading: false,
     showProductForm: false,
     editingProduct: null,
-    categories: [],
     productFormSaving: false,
+    aiAnalyzing: false,
+    aiSuggested: false,
     productForm: {
       name: '',
       slug: '',
       description: '',
-      category_id: '',
+      activity: '',
+      subcollection: '',
       base_price: '',
       fabric_details: '',
       care_instructions: '',
@@ -150,27 +209,22 @@ function adminApp() {
       window.location.replace('/index.html');
     },
 
+    // ── Activity helpers (called from Alpine templates) ───────────────────────
+    getSubcollections(activity) {
+      return ACTIVITY_SUBCOLLECTIONS[activity] || [];
+    },
+
     // ── Product form ─────────────────────────────────────────────────────────
     async openProductForm(product) {
-      if (this.categories.length === 0) {
-        try {
-          const { data } = await window.supabase
-            .from('categories')
-            .select('id, name')
-            .order('name');
-          this.categories = data || [];
-        } catch (err) {
-          showToast('Gagal memuat kategori: ' + err.message, 'error');
-        }
-      }
-
       if (product) {
         this.editingProduct = product;
+        this.aiSuggested = false;
         this.productForm = {
           name: product.name || '',
           slug: product.slug || '',
           description: product.description || '',
-          category_id: product.category_id || '',
+          activity: '',
+          subcollection: '',
           base_price: product.base_price || '',
           fabric_details: product.fabric_details || '',
           care_instructions: product.care_instructions || '',
@@ -189,6 +243,23 @@ function adminApp() {
             .sort((a, b) => a.display_order - b.display_order)
             .map(img => ({ id: img.id, url: img.url, alt_text: img.alt_text })),
         };
+        // Load existing collection assignments (non-blocking)
+        try {
+          const { data: colAssign } = await window.supabase
+            .from('collection_products')
+            .select('collections(slug)')
+            .eq('product_id', product.id);
+          if (colAssign && colAssign.length > 0) {
+            const slugs = colAssign.map(ca => ca.collections?.slug).filter(Boolean);
+            const foundSub = slugs.find(s => SUBCOL_ACTIVITY_MAP[s]);
+            if (foundSub) {
+              this.productForm.subcollection = foundSub;
+              this.productForm.activity = SUBCOL_ACTIVITY_MAP[foundSub] || '';
+            }
+          }
+        } catch (e) {
+          console.warn('[admin] Could not load collection assignments:', e.message);
+        }
       } else {
         this.editingProduct = null;
         this.resetProductForm();
@@ -198,12 +269,14 @@ function adminApp() {
 
     resetProductForm() {
       this.productForm = {
-        name: '', slug: '', description: '', category_id: '',
+        name: '', slug: '', description: '',
+        activity: '', subcollection: '',
         base_price: '', fabric_details: '', care_instructions: '',
         is_active: true, variants: [], imageFiles: [], imagePreviews: [],
         existingImages: [],
       };
       this.productFormSaving = false;
+      this.aiSuggested = false;
     },
 
     addVariantRow() {
@@ -233,9 +306,67 @@ function adminApp() {
       }
       this.productForm.imageFiles = files;
       this.productForm.imagePreviews = [];
+      // Trigger AI subcollection analysis on the first image (non-blocking)
+      if (files.length > 0) this.analyzeProductImage(files[0]);
       files.forEach(file => {
         const reader = new FileReader();
         reader.onload = e => { this.productForm.imagePreviews = [...this.productForm.imagePreviews, e.target.result]; };
+        reader.readAsDataURL(file);
+      });
+    },
+
+    async analyzeProductImage(file) {
+      this.aiAnalyzing = true;
+      this.aiSuggested = false;
+      try {
+        const dataUrl = await this.compressImageForAI(file);
+        const base64 = dataUrl.split(',')[1];
+        const res = await fetch('/api/analyze-product-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: base64, mediaType: 'image/jpeg' }),
+        });
+        if (!res.ok) return;
+        const result = await res.json();
+        if (result.activity && result.subcollection) {
+          this.productForm.activity = result.activity;
+          this.productForm.subcollection = result.subcollection;
+          this.aiSuggested = true;
+        }
+      } catch (err) {
+        console.warn('[admin] AI image analysis failed (non-blocking):', err.message);
+      } finally {
+        this.aiAnalyzing = false;
+      }
+    },
+
+    compressImageForAI(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const maxSize = 800;
+            let { width, height } = img;
+            if (width > maxSize || height > maxSize) {
+              if (width > height) {
+                height = Math.round(height * maxSize / width);
+                width = maxSize;
+              } else {
+                width = Math.round(width * maxSize / height);
+                height = maxSize;
+              }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.75));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
         reader.readAsDataURL(file);
       });
     },
@@ -257,7 +388,7 @@ function adminApp() {
 
     async saveProduct() {
       if (!this.productForm.name.trim()) { showToast('Nama produk wajib diisi', 'error'); return; }
-      if (!this.productForm.category_id) { showToast('Kategori wajib dipilih', 'error'); return; }
+      if (!this.productForm.activity) { showToast('Kategori wajib dipilih', 'error'); return; }
       if (!this.productForm.base_price || this.productForm.base_price <= 0) { showToast('Harga wajib diisi', 'error'); return; }
       if (this.productForm.variants.length === 0) { showToast('Minimal satu variant diperlukan', 'error'); return; }
 
@@ -446,7 +577,6 @@ async function adminCreateProduct(formData) {
       name: formData.name.trim(),
       slug: slug,
       description: formData.description.trim(),
-      category_id: formData.category_id,
       base_price: Number(formData.base_price),
       fabric_details: formData.fabric_details || null,
       care_instructions: formData.care_instructions || null,
@@ -497,6 +627,8 @@ async function adminCreateProduct(formData) {
     if (imgErr) throw imgErr;
   }
 
+  await adminSaveProductCollections(productId, formData.subcollection);
+
   return productId;
 }
 
@@ -509,7 +641,6 @@ async function adminUpdateProduct(productId, formData) {
       name: formData.name.trim(),
       slug: slug,
       description: formData.description.trim(),
-      category_id: formData.category_id,
       base_price: Number(formData.base_price),
       fabric_details: formData.fabric_details || null,
       care_instructions: formData.care_instructions || null,
@@ -563,6 +694,41 @@ async function adminUpdateProduct(productId, formData) {
       });
     if (imgErr) throw imgErr;
   }
+
+  await adminSaveProductCollections(productId, formData.subcollection);
+}
+
+// ── Collection assignment ─────────────────────────────────────────────────────
+
+async function adminSaveProductCollections(productId, subcollectionSlug) {
+  // Remove all existing collection assignments for this product
+  const { error: delErr } = await window.supabase
+    .from('collection_products')
+    .delete()
+    .eq('product_id', productId);
+  if (delErr) throw delErr;
+
+  const slugs = SUBCOL_TO_COLLECTIONS[subcollectionSlug] || [];
+  if (slugs.length === 0) return;
+
+  const { data: cols, error: fetchErr } = await window.supabase
+    .from('collections')
+    .select('id, slug')
+    .in('slug', slugs);
+  if (fetchErr) throw fetchErr;
+
+  if (!cols || cols.length === 0) return;
+
+  const rows = cols.map((c, i) => ({
+    collection_id: c.id,
+    product_id: productId,
+    display_order: i,
+  }));
+
+  const { error: insertErr } = await window.supabase
+    .from('collection_products')
+    .insert(rows);
+  if (insertErr) throw insertErr;
 }
 
 // ── Data functions ────────────────────────────────────────────────────────────
@@ -579,12 +745,10 @@ async function adminGetProducts() {
       base_price,
       is_active,
       is_best_seller,
-      category_id,
       description,
       fabric_details,
       care_instructions,
       created_at,
-      categories(id, name),
       product_images(id, url, alt_text, display_order),
       product_variants(id, colour, colour_hex, size, stock_quantity, sku)
     `)

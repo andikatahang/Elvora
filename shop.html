@@ -265,20 +265,6 @@
         </div>
       </div>
 
-      <!-- Sub-category pills — shown below activity tabs when category !== 'all' -->
-      <div x-show="category !== 'all'" class="subcategory-pills" style="display:none;">
-        <template x-for="sc in (window.SUBCATEGORY_STYLES || []).filter(s => s.category === category)" :key="sc.slug">
-          <button
-            class="subcategory-pill"
-            type="button"
-            :class="sub === sc.slug && 'active'"
-            :aria-pressed="sub === sc.slug"
-            @click="sub = (sub === sc.slug ? null : sc.slug); fetchProducts()"
-            x-text="sc.name"
-          ></button>
-        </template>
-      </div>
-
       <!-- Skeleton loading grid — shown while fetching -->
       <div class="shop-grid" x-show="loading" style="display:none;">
         <template x-for="n in 6" :key="n">

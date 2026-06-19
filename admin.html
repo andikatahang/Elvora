@@ -116,16 +116,36 @@
               <div class="admin-form-row">
                 <div class="admin-form-group">
                   <label class="admin-form-label">Category *</label>
-                  <select x-model="productForm.category_id" class="admin-form-select">
+                  <select x-model="productForm.activity" @change="productForm.subcollection = ''; aiSuggested = false;" class="admin-form-select">
                     <option value="">Select category...</option>
-                    <template x-for="cat in categories" :key="cat.id">
-                      <option :value="cat.id" x-text="cat.name"></option>
-                    </template>
+                    <option value="padel">Padel</option>
+                    <option value="pilates">Pilates</option>
+                    <option value="tennis">Tennis</option>
+                    <option value="training">Training / Gym</option>
+                    <option value="running">Running</option>
                   </select>
                 </div>
                 <div class="admin-form-group">
                   <label class="admin-form-label">Base Price (Rp) *</label>
                   <input x-model.number="productForm.base_price" type="number" class="admin-form-input" placeholder="e.g. 450000" min="0">
+                </div>
+              </div>
+
+              <!-- Style Collection — determines shop sub-filter -->
+              <div class="admin-form-row">
+                <div class="admin-form-group">
+                  <label class="admin-form-label" style="display:flex;align-items:center;gap:8px;">
+                    <span>Style Collection</span>
+                    <span x-show="aiAnalyzing" style="font-size:10px;color:var(--text-muted);font-family:var(--font-body);font-weight:400;text-transform:none;letter-spacing:1px;">⟳ AI menganalisis...</span>
+                    <span x-show="aiSuggested && !aiAnalyzing" style="font-size:10px;color:#7a9e7e;font-family:var(--font-body);font-weight:400;text-transform:none;letter-spacing:1px;">✦ Saran AI</span>
+                  </label>
+                  <select x-model="productForm.subcollection" @change="aiSuggested = false" class="admin-form-select" :disabled="!productForm.activity">
+                    <option value="">Select style...</option>
+                    <template x-for="sub in getSubcollections(productForm.activity)" :key="sub.slug">
+                      <option :value="sub.slug" x-text="sub.label"></option>
+                    </template>
+                  </select>
+                  <p x-show="!productForm.activity" style="font-size:11px;color:var(--text-muted);margin-top:4px;">Pilih activity terlebih dahulu</p>
                 </div>
               </div>
 
