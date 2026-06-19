@@ -59,7 +59,7 @@
             .from('user_profiles')
             .select('first_name, last_name, username, preferred_activity, fit_preference, style_aesthetic, colour_preference')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
           if (data) {
             this.profile = { first_name: data.first_name || '', last_name: data.last_name || '', username: data.username || user.user_metadata?.username || '' };
             this.prefs = { activity: data.preferred_activity, fit: data.fit_preference, aesthetic: data.style_aesthetic, colour: data.colour_preference };
