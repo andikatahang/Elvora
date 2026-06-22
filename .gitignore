@@ -10,3 +10,6 @@ js/__env.js
 # Local Netlify folder
 .netlify
 .vercel
+
+# Claude Code worktrees (local only, never commit)
+.claude/worktrees/
